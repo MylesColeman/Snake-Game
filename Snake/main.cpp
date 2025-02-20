@@ -53,7 +53,7 @@ int main()
     text.setPosition({ 85.0f, 70.0f });
 
     // Starts a clock to track FPS
-    float fps;
+    int fps;
     sf::Clock clock = sf::Clock::Clock();
     sf::Time previousTime = clock.getElapsedTime();
     sf::Time currentTime;
