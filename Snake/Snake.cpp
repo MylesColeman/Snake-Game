@@ -14,6 +14,7 @@ void Snake::Display(sf::RenderWindow &window)
 
 void Snake::Update()
 {
+	// Checks for keyboard input
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && m_direction != Direction::Down)
 	{
 		m_direction = Direction::Up;
@@ -31,8 +32,8 @@ void Snake::Update()
 		m_direction = Direction::Right;
 	}
 
+	// Causes the snake to move every 0.2 seconds
 	sf::Time elapstedTime = clock.getElapsedTime();
-
 	if (elapstedTime.asSeconds() >= 0.2f)
 	{
 		switch (m_direction)
