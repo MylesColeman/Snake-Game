@@ -17,6 +17,7 @@ void Game::Run()
         window.clear(); // Resets the window for use
 
         m_snake.Display(window);
+        m_snake.Update();
 
         window.display();
     }
