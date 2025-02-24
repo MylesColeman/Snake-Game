@@ -1,5 +1,4 @@
 #include "Snake.h"
-#include <iostream>
 
 void Snake::Display(sf::RenderWindow &window)
 {
@@ -15,38 +14,43 @@ void Snake::Display(sf::RenderWindow &window)
 
 void Snake::Update()
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && m_direction != Direction::Down)
 	{
 		m_direction = Direction::Up;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) && m_direction != Direction::Up)
 	{
-		m_direction = Direction::Up;
+		m_direction = Direction::Down;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && m_direction != Direction::Right)
 	{
-		m_direction = Direction::Up;
+		m_direction = Direction::Left;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) && m_direction != Direction::Left)
 	{
-		m_direction = Direction::Up;
+		m_direction = Direction::Right;
 	}
 
-	switch (m_direction)
-	{
-	case Snake::Direction::Up:
-		headPosY -= 20;
-		break;
-	case Snake::Direction::Down:
-		headPosY += 20;
-		break;
-	case Snake::Direction::Left:
-		headPosX -= 20;
-		break;
-	case Snake::Direction::Right:
-		headPosX += 20;
-		break;
-	}
+	sf::Time elapstedTime = clock.getElapsedTime();
 
-	std::cout << headPosX << std::endl;
+	if (elapstedTime.asSeconds() >= 0.2f)
+	{
+		switch (m_direction)
+		{
+		case Snake::Direction::Up:
+			headPosY -= 20;
+			break;
+		case Snake::Direction::Down:
+			headPosY += 20;
+			break;
+		case Snake::Direction::Left:
+			headPosX -= 20;
+			break;
+		case Snake::Direction::Right:
+			headPosX += 20;
+			break;
+		}
+
+		clock.restart();
+	}
 }

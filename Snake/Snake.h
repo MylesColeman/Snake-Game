@@ -5,6 +5,9 @@ class Snake
 {
 private:
 	float headPosX = 20.0f, headPosY = 20.0f;
+
+	sf::Clock clock;
+
 	enum class Direction { Up, Down, Left, Right };
 	Direction m_direction = Direction::Right;
 
