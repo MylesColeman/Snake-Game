@@ -1,8 +1,12 @@
 #include "Game.h"
 
+const float simulationTimer = 0.2f;
+
 void Game::Run()
 {
     sf::RenderWindow window(sf::VideoMode({ 1920,1200 }), "GSE - Snake Game - E4109732");
+
+    sf::Clock simulationClock;
 
     // Loops whilst the window is open
     while (window.isOpen())
@@ -19,7 +23,12 @@ void Game::Run()
         m_tankWalls.Draw(window);
 
         m_playerSnake.Display(window);
-        m_playerSnake.Update();
+
+        if (simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
+        {
+            m_playerSnake.Update();
+            simulationClock.restart();
+        }
 
         window.display();
     }

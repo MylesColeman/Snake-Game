@@ -33,28 +33,22 @@ void Snake::Update()
 		m_direction = Direction::Right;
 	}
 
-	// Causes the snake to move every 0.2 seconds
-	sf::Time elapstedTime = clock.getElapsedTime();
-	if (elapstedTime.asSeconds() >= 0.2f)
+	// Causes the snake to move
+	switch (m_direction)
 	{
-		switch (m_direction)
-		{
-		case Direction::Up:
-			m_headPosition.y -= segmentSize;
-			break;
-		case Direction::Down:
-			m_headPosition.y += segmentSize;
-			break;
-		case Direction::Left:
-			m_headPosition.x -= segmentSize;
-			break;
-		case Direction::Right:
-			m_headPosition.x += segmentSize;
-			break;
-		default:
-			std::cout << "Error - Unknown Direction" << std::endl;
-		}
-
-		clock.restart();
+	case Direction::Up:
+		m_headPosition.y -= segmentSize;
+		break;
+	case Direction::Down:
+		m_headPosition.y += segmentSize;
+		break;
+	case Direction::Left:
+		m_headPosition.x -= segmentSize;
+		break;
+	case Direction::Right:
+		m_headPosition.x += segmentSize;
+		break;
+	default:
+		std::cout << "Error - Unknown Direction" << std::endl;
 	}
 }
