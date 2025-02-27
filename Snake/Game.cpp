@@ -2,7 +2,7 @@
 
 void Game::Run()
 {
-    sf::RenderWindow window(sf::VideoMode({ 1024,800 }), "GSE - Snake Game - E4109732");
+    sf::RenderWindow window(sf::VideoMode({ 1920,1200 }), "GSE - Snake Game - E4109732");
 
     // Loops whilst the window is open
     while (window.isOpen())
@@ -16,8 +16,8 @@ void Game::Run()
 
         window.clear(); // Resets the window for use
 
-        m_snake.Display(window);
-        m_snake.Update();
+        m_playerSnake.Display(window);
+        m_playerSnake.Update();
 
         window.display();
     }

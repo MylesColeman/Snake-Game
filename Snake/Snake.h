@@ -4,6 +4,7 @@
 class Snake
 {
 private:
+	float segmentSize = 20.0f;
 	float headPosX = 20.0f, headPosY = 20.0f;
 
 	sf::Clock clock;

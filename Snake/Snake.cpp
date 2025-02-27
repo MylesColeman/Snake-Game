@@ -2,14 +2,14 @@
 
 void Snake::Display(sf::RenderWindow &window)
 {
-	sf::RectangleShape snakeHead({ (20.0f), (20.0f) });
-	snakeHead.setFillColor(sf::Color::Green);
-	snakeHead.setOutlineThickness(-3.0f);
-	snakeHead.setOutlineColor(sf::Color::Cyan);
-	snakeHead.setOrigin({ (10.0f), (10.0f) });
-	snakeHead.setPosition({ (headPosX), (headPosY) });
+	sf::RectangleShape snakeSegment({ (segmentSize), (segmentSize) });
+	snakeSegment.setFillColor(sf::Color::Green);
+	snakeSegment.setOutlineThickness(-3.0f);
+	snakeSegment.setOutlineColor(sf::Color::Cyan);
+	snakeSegment.setOrigin({ (10.0f), (10.0f) });
+	snakeSegment.setPosition({ (headPosX), (headPosY) });
 
-	window.draw(snakeHead);
+	window.draw(snakeSegment);
 }
 
 void Snake::Update()
@@ -39,16 +39,16 @@ void Snake::Update()
 		switch (m_direction)
 		{
 		case Snake::Direction::Up:
-			headPosY -= 20;
+			headPosY -= segmentSize;
 			break;
 		case Snake::Direction::Down:
-			headPosY += 20;
+			headPosY += segmentSize;
 			break;
 		case Snake::Direction::Left:
-			headPosX -= 20;
+			headPosX -= segmentSize;
 			break;
 		case Snake::Direction::Right:
-			headPosX += 20;
+			headPosX += segmentSize;
 			break;
 		}
 
