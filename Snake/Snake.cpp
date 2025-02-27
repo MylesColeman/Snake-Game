@@ -1,4 +1,5 @@
 #include "Snake.h"
+#include <iostream>
 
 void Snake::Display(sf::RenderWindow &window)
 {
@@ -6,7 +7,7 @@ void Snake::Display(sf::RenderWindow &window)
 	snakeSegment.setFillColor(sf::Color::Green);
 	snakeSegment.setOutlineThickness(-3.0f);
 	snakeSegment.setOutlineColor(sf::Color::Cyan);
-	snakeSegment.setOrigin({ (10.0f), (10.0f) });
+	snakeSegment.setOrigin({ (segmentSize / 2), (segmentSize / 2) });
 	snakeSegment.setPosition({ (headPosX), (headPosY) });
 
 	window.draw(snakeSegment);
@@ -31,10 +32,14 @@ void Snake::Update()
 	{
 		m_direction = Direction::Right;
 	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P) && m_direction != Direction::Left)
+	{
+		m_direction = Direction::Error;
+	}
 
 	// Causes the snake to move every 0.2 seconds
 	sf::Time elapstedTime = clock.getElapsedTime();
-	if (elapstedTime.asSeconds() >= 0.1f)
+	if (elapstedTime.asSeconds() >= 0.2f)
 	{
 		switch (m_direction)
 		{
@@ -50,8 +55,12 @@ void Snake::Update()
 		case Snake::Direction::Right:
 			headPosX += segmentSize;
 			break;
+		case Snake::Direction::Error:
+			break;
 		}
 
 		clock.restart();
 	}
+
+	std::cout << headPosX << " " << headPosY << std::endl;
 }

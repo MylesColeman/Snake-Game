@@ -19,7 +19,7 @@ void Game::Run()
         m_tankWalls.Draw(window);
 
         m_playerSnake.Display(window);
-        //m_playerSnake.Update();
+        m_playerSnake.Update();
 
         window.display();
     }

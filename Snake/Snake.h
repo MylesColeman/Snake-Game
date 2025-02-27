@@ -5,12 +5,12 @@ class Snake
 {
 private:
 	float segmentSize = 30.0f;
-	float headPosX = 330.0f, headPosY = 1130.0f;
+	float headPosX = 395.0f, headPosY = 1125.0f;
 
 	sf::Clock clock;
 
-	enum class Direction { Up, Down, Left, Right };
-	Direction m_direction = Direction::Right;
+	enum class Direction { Up, Down, Left, Right, Error};
+	Direction m_direction = Direction::Error;
 
 public:
 	void Display(sf::RenderWindow &window); // Defines and displays the snake
