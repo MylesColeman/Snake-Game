@@ -34,7 +34,7 @@ void Snake::Update()
 
 	// Causes the snake to move every 0.2 seconds
 	sf::Time elapstedTime = clock.getElapsedTime();
-	if (elapstedTime.asSeconds() >= 0.2f)
+	if (elapstedTime.asSeconds() >= 0.1f)
 	{
 		switch (m_direction)
 		{
