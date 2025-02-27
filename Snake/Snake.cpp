@@ -8,7 +8,7 @@ void Snake::Display(sf::RenderWindow &window)
 	snakeSegment.setOutlineThickness(-3.0f);
 	snakeSegment.setOutlineColor(sf::Color::Cyan);
 	snakeSegment.setOrigin({ (segmentSize / 2), (segmentSize / 2) });
-	snakeSegment.setPosition({ (headPosX), (headPosY) });
+	snakeSegment.setPosition(m_headPosition);
 
 	window.draw(snakeSegment);
 }
@@ -32,10 +32,6 @@ void Snake::Update()
 	{
 		m_direction = Direction::Right;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P) && m_direction != Direction::Left)
-	{
-		m_direction = Direction::Error;
-	}
 
 	// Causes the snake to move every 0.2 seconds
 	sf::Time elapstedTime = clock.getElapsedTime();
@@ -43,24 +39,22 @@ void Snake::Update()
 	{
 		switch (m_direction)
 		{
-		case Snake::Direction::Up:
-			headPosY -= segmentSize;
+		case Direction::Up:
+			m_headPosition.y -= segmentSize;
 			break;
-		case Snake::Direction::Down:
-			headPosY += segmentSize;
+		case Direction::Down:
+			m_headPosition.y += segmentSize;
 			break;
-		case Snake::Direction::Left:
-			headPosX -= segmentSize;
+		case Direction::Left:
+			m_headPosition.x -= segmentSize;
 			break;
-		case Snake::Direction::Right:
-			headPosX += segmentSize;
+		case Direction::Right:
+			m_headPosition.x += segmentSize;
 			break;
-		case Snake::Direction::Error:
-			break;
+		default:
+			std::cout << "Error - Unknown Direction" << std::endl;
 		}
 
 		clock.restart();
 	}
-
-	std::cout << headPosX << " " << headPosY << std::endl;
 }

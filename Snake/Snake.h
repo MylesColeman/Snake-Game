@@ -1,16 +1,23 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+enum class Direction
+{
+	Up,
+	Down,
+	Left,
+	Right
+};
+
 class Snake
 {
 private:
 	float segmentSize = 30.0f;
-	float headPosX = 395.0f, headPosY = 1125.0f;
+	sf::Vector2f m_headPosition{ 395.0f, 1125.0f };
 
 	sf::Clock clock;
 
-	enum class Direction { Up, Down, Left, Right, Error};
-	Direction m_direction = Direction::Error;
+	Direction m_direction{ Direction::Right };
 
 public:
 	void Display(sf::RenderWindow &window); // Defines and displays the snake
