@@ -22,5 +22,6 @@ public:
 	inline static float segmentSize = 30.0f;
 
 	void Display(sf::RenderWindow &window); // Defines and displays the snake
-	void Update(); // Handles snake movement and other updates
+	void MovementInput(); // Handles the input for movement
+	void Update(); // Handles the snake's movement
 };

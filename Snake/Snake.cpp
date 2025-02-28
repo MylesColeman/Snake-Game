@@ -13,7 +13,7 @@ void Snake::Display(sf::RenderWindow &window)
 	window.draw(snakeSegment);
 }
 
-void Snake::Update()
+void Snake::MovementInput()
 {
 	// Checks for keyboard input
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && m_direction != Direction::Down)
@@ -32,7 +32,10 @@ void Snake::Update()
 	{
 		m_direction = Direction::Right;
 	}
+}
 
+void Snake::Update()
+{
 	// Causes the snake to move
 	switch (m_direction)
 	{
