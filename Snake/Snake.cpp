@@ -16,19 +16,19 @@ void Snake::Display(sf::RenderWindow &window)
 void Snake::MovementInput()
 {
 	// Checks for keyboard input
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && m_direction != Direction::Down)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && m_previousDirection != Direction::Down)
 	{
 		m_direction = Direction::Up;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) && m_direction != Direction::Up)
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) && m_previousDirection != Direction::Up)
 	{
 		m_direction = Direction::Down;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && m_direction != Direction::Right)
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && m_previousDirection != Direction::Right)
 	{
 		m_direction = Direction::Left;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) && m_direction != Direction::Left)
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) && m_previousDirection != Direction::Left)
 	{
 		m_direction = Direction::Right;
 	}
@@ -36,22 +36,28 @@ void Snake::MovementInput()
 
 void Snake::Update()
 {
+	std::cout << m_headPosition.x << " and " << m_headPosition.y << std::endl;
 	// Causes the snake to move
 	switch (m_direction)
 	{
 	case Direction::Up:
 		m_headPosition.y -= segmentSize;
+		m_previousDirection = Direction::Up;
 		break;
 	case Direction::Down:
 		m_headPosition.y += segmentSize;
+		m_previousDirection = Direction::Down;
 		break;
 	case Direction::Left:
 		m_headPosition.x -= segmentSize;
+		m_previousDirection = Direction::Left;
 		break;
 	case Direction::Right:
 		m_headPosition.x += segmentSize;
+		m_previousDirection = Direction::Right;
 		break;
 	default:
 		std::cout << "Error - Unknown Direction" << std::endl;
+		break;
 	}
 }

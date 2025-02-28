@@ -14,10 +14,8 @@ class Snake
 private:
 	sf::Vector2f m_headPosition{ 395.0f, 1125.0f };
 
-	sf::Clock clock;
-
 	Direction m_direction{ Direction::Right };
-
+	Direction m_previousDirection{ Direction::Right };
 public:
 	inline static float segmentSize = 30.0f;
 
