@@ -1,6 +1,11 @@
 #include "Snake.h"
 #include <iostream>
 
+Snake::Snake(int type)
+{
+	m_controlType = type;
+}
+
 void Snake::Display(sf::RenderWindow &window)
 {
 	sf::RectangleShape snakeSegment({ (segmentSize), (segmentSize) });
@@ -15,22 +20,46 @@ void Snake::Display(sf::RenderWindow &window)
 
 void Snake::MovementInput()
 {
-	// Checks for keyboard input
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && m_previousDirection != Direction::Down)
+	// The control scheme for both players
+	if (m_controlType == 0)
 	{
-		m_direction = Direction::Up;
+		// Checks for keyboard input
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && m_previousDirection != Direction::Down)
+		{
+			m_direction = Direction::Up;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) && m_previousDirection != Direction::Up)
+		{
+			m_direction = Direction::Down;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && m_previousDirection != Direction::Right)
+		{
+			m_direction = Direction::Left;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) && m_previousDirection != Direction::Left)
+		{
+			m_direction = Direction::Right;
+		}
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) && m_previousDirection != Direction::Up)
+	else if (m_controlType == 1)
 	{
-		m_direction = Direction::Down;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && m_previousDirection != Direction::Right)
-	{
-		m_direction = Direction::Left;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) && m_previousDirection != Direction::Left)
-	{
-		m_direction = Direction::Right;
+		// Checks for keyboard input
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) && m_previousDirection != Direction::Down)
+		{
+			m_direction = Direction::Up;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down) && m_previousDirection != Direction::Up)
+		{
+			m_direction = Direction::Down;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) && m_previousDirection != Direction::Right)
+		{
+			m_direction = Direction::Left;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && m_previousDirection != Direction::Left)
+		{
+			m_direction = Direction::Right;
+		}
 	}
 }
 

@@ -8,6 +8,9 @@ void Game::Run()
 
     sf::Clock simulationClock;
 
+    for (int i = 0; i < 2; i++)
+        m_snakeVector.push_back(new Snake(i));
+
     // Loops whilst the window is open
     while (window.isOpen())
     {
@@ -22,16 +25,21 @@ void Game::Run()
 
         m_tankWalls.Draw(window);
 
-        m_playerSnake.Display(window);
+        for (Snake* snake : m_snakeVector)
+            snake->Display(window);
 
         m_playerSnake.MovementInput();
 
         if (simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
         {
-            m_playerSnake.Update();
+            for(Snake* snake: m_snakeVector)
+                snake->Update();
             simulationClock.restart();
         }
 
         window.display();
     }
+
+    for (Snake* snake : m_snakeVector)
+        delete snake;
 }
