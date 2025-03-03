@@ -4,7 +4,10 @@
 class Collectable
 {
 private:
+	int m_collectableValue{ 0 };
 
+	sf::Vector2f m_fruitPosition{ 395.0f, 900.0f };
 public:
-	void Draw();
+	Collectable(int value, sf::Vector2f fruitPosition);
+	void Draw(sf::RenderWindow& window);
 };

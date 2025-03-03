@@ -1,6 +1,34 @@
 #include "Collectable.h"
+#include "Snake.h"
+#include <iostream>
 
-void Collectable::Draw()
+Collectable::Collectable(int value, sf::Vector2f fruitPosition) : m_collectableValue(value), m_fruitPosition(fruitPosition)
 {
 
+}
+
+void Collectable::Draw(sf::RenderWindow& window)
+{
+	sf::CircleShape collectableFruit(Snake::segmentSize / 2);
+	collectableFruit.setOutlineThickness(-3.0f);
+	collectableFruit.setOrigin({ (Snake::segmentSize / 2), (Snake::segmentSize / 2) });
+	collectableFruit.setPosition(m_fruitPosition);
+
+	if (m_collectableValue == 0)
+	{
+		collectableFruit.setFillColor({ (233), (26), (26) });
+		collectableFruit.setOutlineColor({ (168), (21), (21) });
+	}
+	else if (m_collectableValue == 1)
+	{
+		collectableFruit.setFillColor({ (66), (222), (23) });
+		collectableFruit.setOutlineColor({ (50), (155), (21) });
+	}
+	else if (m_collectableValue == 2)
+	{
+		collectableFruit.setFillColor({ (17), (48), (224) });
+		collectableFruit.setOutlineColor({ (15), (34), (142) });
+	}
+
+	window.draw(collectableFruit);
 }

@@ -23,7 +23,7 @@ public:
 
 	Snake(int type, sf::Vector2f headPosition);
 
-	void Display(sf::RenderWindow &window); // Defines and displays the snake
+	void Draw(sf::RenderWindow &window); // Defines and displays the snake
 	void MovementInput(); // Handles the input for movement
 	void Update(); // Handles the snake's movement
 };

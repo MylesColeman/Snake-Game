@@ -6,23 +6,22 @@ Snake::Snake(int type, sf::Vector2f headPosition) : m_controlType(type), m_headP
 	
 }
 
-void Snake::Display(sf::RenderWindow &window)
+void Snake::Draw(sf::RenderWindow &window)
 {
 	sf::RectangleShape snakeSegment({ (segmentSize), (segmentSize) });
 	snakeSegment.setOutlineThickness(-3.0f);
 	snakeSegment.setOrigin({ (segmentSize / 2), (segmentSize / 2) });
+	snakeSegment.setPosition(m_headPosition);
 
 	if (m_controlType == 0)
 	{
 		snakeSegment.setFillColor({ (212), (202), (19) });
 		snakeSegment.setOutlineColor({ (103), (99), (14) });
-		snakeSegment.setPosition(m_headPosition);
 	}
 	else if (m_controlType == 1)
 	{
 		snakeSegment.setFillColor({ (203), (203), (196) });
 		snakeSegment.setOutlineColor({ (64), (64), (58) });
-		snakeSegment.setPosition(m_headPosition);
 	}
 	
 

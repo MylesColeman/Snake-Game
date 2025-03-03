@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "Snake.h"
+#include <iostream>
 
 const float simulationTimer = 0.2f;
 
@@ -25,6 +25,9 @@ void Game::Run()
     for (int i = 0; i < 2; i++)
         m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(window.getSize().x, window.getSize().y)));
 
+    for (int i = 0; i < 5; i++)
+        m_collectableVector.push_back(new Collectable(rand() % 3, GetRandomFreePosition(window.getSize().x, window.getSize().y)));
+
     // Loops whilst the window is open
     while (window.isOpen())
     {
@@ -49,8 +52,13 @@ void Game::Run()
 
         for (Snake* snake : m_snakeVector)
         {
-            snake->Display(window);
+            snake->Draw(window);
             snake->MovementInput();
+        }
+
+        for (Collectable* collectable : m_collectableVector)
+        {
+            collectable->Draw(window);
         }
 
         window.display();
@@ -58,4 +66,7 @@ void Game::Run()
 
     for (Snake* snake : m_snakeVector)
         delete snake;
+
+    for (Collectable* collectable : m_collectableVector)
+        delete collectable;
 }
