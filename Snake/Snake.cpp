@@ -9,11 +9,22 @@ Snake::Snake(int type)
 void Snake::Display(sf::RenderWindow &window)
 {
 	sf::RectangleShape snakeSegment({ (segmentSize), (segmentSize) });
-	snakeSegment.setFillColor(sf::Color::Green);
 	snakeSegment.setOutlineThickness(-3.0f);
-	snakeSegment.setOutlineColor(sf::Color::Cyan);
 	snakeSegment.setOrigin({ (segmentSize / 2), (segmentSize / 2) });
-	snakeSegment.setPosition(m_headPosition);
+
+	if (m_controlType == 0)
+	{
+		snakeSegment.setFillColor({ (212), (202), (19) });
+		snakeSegment.setOutlineColor({ (103), (99), (14) });
+		snakeSegment.setPosition(m_headPosition);
+	}
+	else if (m_controlType == 1)
+	{
+		snakeSegment.setFillColor({ (203), (203), (196) });
+		snakeSegment.setOutlineColor({ (64), (64), (58) });
+		snakeSegment.setPosition({(m_headPosition.x + 30.0f), (m_headPosition.y + 30.0f)});
+	}
+	
 
 	window.draw(snakeSegment);
 }
@@ -65,7 +76,6 @@ void Snake::MovementInput()
 
 void Snake::Update()
 {
-	std::cout << m_headPosition.x << " and " << m_headPosition.y << std::endl;
 	// Causes the snake to move
 	switch (m_direction)
 	{

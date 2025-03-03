@@ -26,9 +26,10 @@ void Game::Run()
         m_tankWalls.Draw(window);
 
         for (Snake* snake : m_snakeVector)
+        {
             snake->Display(window);
-
-        m_playerSnake.MovementInput();
+            snake->MovementInput();
+        }
 
         if (simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
         {

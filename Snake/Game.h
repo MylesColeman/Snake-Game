@@ -9,7 +9,6 @@ class Game
 {
 private:
 	Wall m_tankWalls;
-	Snake m_playerSnake;
 	std::vector<Snake*> m_snakeVector;
 public: 
 	void Run();
