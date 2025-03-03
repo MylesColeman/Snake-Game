@@ -5,13 +5,13 @@ const float simulationTimer = 0.2f;
 
 sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight)
 {
-    int rangeX = screenWidth + 130;
+    int rangeX = screenWidth - 150;
     int rangeY = screenHeight - 60;
 
     int randomX = rand() % (rangeX / (int)Snake::segmentSize) * Snake::segmentSize;
     int randomY = rand() % (rangeY / (int)Snake::segmentSize) * Snake::segmentSize;
 
-    return sf::Vector2f((float)randomX + 130, (float)randomY + 60);
+    return sf::Vector2f((float)randomX + 155, (float)randomY + 15);
 }
 
 void Game::Run()
@@ -37,6 +37,7 @@ void Game::Run()
 
         if (simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
         {
+            
             for (Snake* snake : m_snakeVector)
                 snake->Update();
             simulationClock.restart();

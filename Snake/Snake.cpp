@@ -22,7 +22,7 @@ void Snake::Display(sf::RenderWindow &window)
 	{
 		snakeSegment.setFillColor({ (203), (203), (196) });
 		snakeSegment.setOutlineColor({ (64), (64), (58) });
-		snakeSegment.setPosition({(m_headPosition.x + 30.0f), (m_headPosition.y + 30.0f)});
+		snakeSegment.setPosition(m_headPosition);
 	}
 	
 
