@@ -21,6 +21,13 @@ void Game::Run()
                 window.close();
         }
 
+        if (simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
+        {
+            for (Snake* snake : m_snakeVector)
+                snake->Update();
+            simulationClock.restart();
+        }
+
         window.clear(); // Resets the window for use
 
         m_tankWalls.Draw(window);
@@ -29,13 +36,6 @@ void Game::Run()
         {
             snake->Display(window);
             snake->MovementInput();
-        }
-
-        if (simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
-        {
-            for(Snake* snake: m_snakeVector)
-                snake->Update();
-            simulationClock.restart();
         }
 
         window.display();
