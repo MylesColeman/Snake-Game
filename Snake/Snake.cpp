@@ -1,9 +1,9 @@
 #include "Snake.h"
 #include <iostream>
 
-Snake::Snake(int type)
+Snake::Snake(int type, sf::Vector2f headPosition) : m_controlType(type), m_headPosition(headPosition)
 {
-	m_controlType = type;
+	
 }
 
 void Snake::Display(sf::RenderWindow &window)

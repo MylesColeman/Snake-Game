@@ -21,7 +21,7 @@ private:
 public:
 	inline static float segmentSize = 30.0f;
 
-	Snake(int type);
+	Snake(int type, sf::Vector2f headPosition);
 
 	void Display(sf::RenderWindow &window); // Defines and displays the snake
 	void MovementInput(); // Handles the input for movement

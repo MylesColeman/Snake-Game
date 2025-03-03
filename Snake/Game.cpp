@@ -1,15 +1,29 @@
 #include "Game.h"
+#include "Snake.h"
 
 const float simulationTimer = 0.2f;
 
+sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight)
+{
+    int rangeX = screenWidth + 130;
+    int rangeY = screenHeight - 60;
+
+    int randomX = rand() % (rangeX / (int)Snake::segmentSize) * Snake::segmentSize;
+    int randomY = rand() % (rangeY / (int)Snake::segmentSize) * Snake::segmentSize;
+
+    return sf::Vector2f((float)randomX + 130, (float)randomY + 60);
+}
+
 void Game::Run()
 {
+    srand(time(0));
+
     sf::RenderWindow window(sf::VideoMode({ 1920,1200 }), "GSE - Snake Game - E4109732");
 
     sf::Clock simulationClock;
 
     for (int i = 0; i < 2; i++)
-        m_snakeVector.push_back(new Snake(i));
+        m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(window.getSize().x, window.getSize().y)));
 
     // Loops whilst the window is open
     while (window.isOpen())
