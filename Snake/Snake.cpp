@@ -1,42 +1,81 @@
 #include "Snake.h"
 #include <iostream>
 
+Snake::Snake(int type)
+{
+	m_controlType = type;
+}
+
 void Snake::Display(sf::RenderWindow &window)
 {
 	sf::RectangleShape snakeSegment({ (segmentSize), (segmentSize) });
-	snakeSegment.setFillColor(sf::Color::Green);
 	snakeSegment.setOutlineThickness(-3.0f);
-	snakeSegment.setOutlineColor(sf::Color::Cyan);
 	snakeSegment.setOrigin({ (segmentSize / 2), (segmentSize / 2) });
-	snakeSegment.setPosition(m_headPosition);
+
+	if (m_controlType == 0)
+	{
+		snakeSegment.setFillColor({ (212), (202), (19) });
+		snakeSegment.setOutlineColor({ (103), (99), (14) });
+		snakeSegment.setPosition(m_headPosition);
+	}
+	else if (m_controlType == 1)
+	{
+		snakeSegment.setFillColor({ (203), (203), (196) });
+		snakeSegment.setOutlineColor({ (64), (64), (58) });
+		snakeSegment.setPosition({(m_headPosition.x + 30.0f), (m_headPosition.y + 30.0f)});
+	}
+	
 
 	window.draw(snakeSegment);
 }
 
 void Snake::MovementInput()
 {
-	// Checks for keyboard input
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && m_previousDirection != Direction::Down)
+	// The control scheme for both players
+	if (m_controlType == 0)
 	{
-		m_direction = Direction::Up;
+		// Checks for keyboard input
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && m_previousDirection != Direction::Down)
+		{
+			m_direction = Direction::Up;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) && m_previousDirection != Direction::Up)
+		{
+			m_direction = Direction::Down;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && m_previousDirection != Direction::Right)
+		{
+			m_direction = Direction::Left;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) && m_previousDirection != Direction::Left)
+		{
+			m_direction = Direction::Right;
+		}
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) && m_previousDirection != Direction::Up)
+	else if (m_controlType == 1)
 	{
-		m_direction = Direction::Down;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && m_previousDirection != Direction::Right)
-	{
-		m_direction = Direction::Left;
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) && m_previousDirection != Direction::Left)
-	{
-		m_direction = Direction::Right;
+		// Checks for keyboard input
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) && m_previousDirection != Direction::Down)
+		{
+			m_direction = Direction::Up;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down) && m_previousDirection != Direction::Up)
+		{
+			m_direction = Direction::Down;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) && m_previousDirection != Direction::Right)
+		{
+			m_direction = Direction::Left;
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && m_previousDirection != Direction::Left)
+		{
+			m_direction = Direction::Right;
+		}
 	}
 }
 
 void Snake::Update()
 {
-	std::cout << m_headPosition.x << " and " << m_headPosition.y << std::endl;
 	// Causes the snake to move
 	switch (m_direction)
 	{
