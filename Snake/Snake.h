@@ -29,4 +29,7 @@ public:
 	void Draw(sf::RenderWindow &window); // Defines and displays the snake
 	void MovementInput(); // Handles the input for movement
 	void Update(); // Handles the snake's movement
+	void GrowAmount(int amount);
+
+	const std::list<sf::Vector2f>& getSegmentList() const;
 };

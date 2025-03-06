@@ -39,14 +39,31 @@ void Game::Run()
         {
             
             for (Snake* snake : m_snakeVector)
+            {
                 snake->Update();
-
+                
+                // Loops through the collectables vector only incrementing if a collision isn't detected
+                for (auto it = m_collectableVector.begin(); it != m_collectableVector.end();)
+                {
+                    if (snake->getSegmentList().front() == (*it)->getCollectablePosition())
+                    {
+                        snake->GrowAmount((*it)->getCollectableValue());
+                        delete* it;
+                        it = m_collectableVector.erase(it);
+                    }
+                    else
+                    {
+                        ++it;
+                    }
+                }
+            }
+                
             // Rolls a dice 1 to 20, and if 1 lands checks whether a new collectable can be created (limit of 5)
             if (rand() % 20 == 0)
             {
                 if (m_collectableVector.size() < 5)
                 {
-                    m_collectableVector.push_back(new Collectable(rand() % 3, GetRandomFreePosition(window.getSize().x, window.getSize().y)));
+                    m_collectableVector.push_back(new Collectable(rand() % 3 + 1, GetRandomFreePosition(window.getSize().x, window.getSize().y)));
                 }
             }
 

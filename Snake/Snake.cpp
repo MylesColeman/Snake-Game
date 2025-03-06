@@ -115,3 +115,13 @@ void Snake::Update()
 		m_growAmount--;
 	}
 }
+
+void Snake::GrowAmount(int amount)
+{
+	m_growAmount += amount;
+}
+
+const std::list<sf::Vector2f>& Snake::getSegmentList() const
+{
+	return m_segmentList;
+}
