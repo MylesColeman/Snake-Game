@@ -8,15 +8,15 @@ sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight)
     int rangeX = screenWidth - 150;
     int rangeY = screenHeight - 60;
 
-    int randomX = rand() % (rangeX / (int)Snake::segmentSize) * Snake::segmentSize;
-    int randomY = rand() % (rangeY / (int)Snake::segmentSize) * Snake::segmentSize;
+    int randomX = rand() % (rangeX / (int)Snake::segmentSize) * (int)Snake::segmentSize;
+    int randomY = rand() % (rangeY / (int)Snake::segmentSize) * (int)Snake::segmentSize;
 
     return sf::Vector2f((float)randomX + 155, (float)randomY + 15);
 }
 
 void Game::Run()
 {
-    srand(time(0));
+    srand((unsigned int)time(0));
 
     sf::RenderWindow window(sf::VideoMode({ 1920,1200 }), "GSE - Snake Game - E4109732");
 
@@ -24,9 +24,6 @@ void Game::Run()
 
     for (int i = 0; i < 2; i++)
         m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(window.getSize().x, window.getSize().y)));
-
-    for (int i = 0; i < 5; i++)
-        m_collectableVector.push_back(new Collectable(rand() % 3, GetRandomFreePosition(window.getSize().x, window.getSize().y)));
 
     // Loops whilst the window is open
     while (window.isOpen())
@@ -43,6 +40,16 @@ void Game::Run()
             
             for (Snake* snake : m_snakeVector)
                 snake->Update();
+
+            // Rolls a dice 1 to 20, and if 1 lands checks whether a new collectable can be created (limit of 5)
+            if (rand() % 20 == 0)
+            {
+                if (m_collectableVector.size() < 5)
+                {
+                    m_collectableVector.push_back(new Collectable(rand() % 3, GetRandomFreePosition(window.getSize().x, window.getSize().y)));
+                }
+            }
+
             simulationClock.restart();
         }
 
