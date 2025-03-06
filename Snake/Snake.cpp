@@ -1,31 +1,37 @@
 #include "Snake.h"
 #include <iostream>
 
-Snake::Snake(int type, sf::Vector2f headPosition) : m_controlType(type), m_headPosition(headPosition)
+Snake::Snake(int type, sf::Vector2f headPosition) : m_controlType(type)
 {
-	
+	for (int i = 1; i <= m_startingSegments; i++)
+	{
+		m_segmentList.push_back({ headPosition.x - (i * segmentSize), headPosition.y});
+	}
 }
 
 void Snake::Draw(sf::RenderWindow &window)
 {
-	sf::RectangleShape snakeSegment({ (segmentSize), (segmentSize) });
-	snakeSegment.setOutlineThickness(-3.0f);
-	snakeSegment.setOrigin({ (segmentSize / 2), (segmentSize / 2) });
-	snakeSegment.setPosition(m_headPosition);
-
-	if (m_controlType == 0)
+	for (sf::Vector2f segment : m_segmentList)
 	{
-		snakeSegment.setFillColor({ (212), (202), (19) });
-		snakeSegment.setOutlineColor({ (103), (99), (14) });
-	}
-	else if (m_controlType == 1)
-	{
-		snakeSegment.setFillColor({ (203), (203), (196) });
-		snakeSegment.setOutlineColor({ (64), (64), (58) });
-	}
-	
+		sf::RectangleShape snakeSegment({ (segmentSize), (segmentSize) });
+		snakeSegment.setOutlineThickness(-3.0f);
+		snakeSegment.setOrigin({ (segmentSize / 2), (segmentSize / 2) });
+		snakeSegment.setPosition(segment);
 
-	window.draw(snakeSegment);
+		if (m_controlType == 0)
+		{
+			snakeSegment.setFillColor({ (212), (202), (19) });
+			snakeSegment.setOutlineColor({ (103), (99), (14) });
+		}
+		else if (m_controlType == 1)
+		{
+			snakeSegment.setFillColor({ (203), (203), (196) });
+			snakeSegment.setOutlineColor({ (64), (64), (58) });
+		}
+
+
+		window.draw(snakeSegment);
+	}
 }
 
 void Snake::MovementInput()
@@ -79,23 +85,33 @@ void Snake::Update()
 	switch (m_direction)
 	{
 	case Direction::Up:
-		m_headPosition.y -= segmentSize;
+		m_segmentList.push_front({ m_segmentList.front().x, m_segmentList.front().y - segmentSize });
 		m_previousDirection = Direction::Up;
 		break;
 	case Direction::Down:
-		m_headPosition.y += segmentSize;
+		m_segmentList.push_front({ m_segmentList.front().x, m_segmentList.front().y + segmentSize });
 		m_previousDirection = Direction::Down;
 		break;
 	case Direction::Left:
-		m_headPosition.x -= segmentSize;
+		m_segmentList.push_front({ m_segmentList.front().x - segmentSize, m_segmentList.front().y});
 		m_previousDirection = Direction::Left;
 		break;
 	case Direction::Right:
-		m_headPosition.x += segmentSize;
+		m_segmentList.push_front({ m_segmentList.front().x + segmentSize, m_segmentList.front().y });
 		m_previousDirection = Direction::Right;
 		break;
 	default:
 		std::cout << "Error - Unknown Direction" << std::endl;
 		break;
+	}
+
+	// Only removes the last item from the list if the snake isn't currently growing
+	if (m_growAmount == 0)
+	{
+		m_segmentList.pop_back();
+	}
+	else
+	{
+		m_growAmount--;
 	}
 }

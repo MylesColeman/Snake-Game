@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <list>
 
 enum class Direction
 {
@@ -14,7 +15,9 @@ class Snake
 private:
 	int m_controlType{ 0 }; // Used to determine a player 1 and 2, and their control scheme
 
-	sf::Vector2f m_headPosition{ 395.0f, 1125.0f };
+	std::list<sf::Vector2f> m_segmentList;
+	int m_startingSegments{ 4 };
+	int m_growAmount{ 0 };
 
 	Direction m_direction{ Direction::Right };
 	Direction m_previousDirection{ Direction::Right };
