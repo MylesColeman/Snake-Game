@@ -80,9 +80,13 @@ void Game::Run()
                     }
                 }
 
-                if (snake->getSegmentList().front().x < 135 || snake->getSegmentList().front().x > 1915)
+                if (snake->getSegmentList().front().x < m_tankWalls.getLeftWallPos() - (m_tankWalls.getWallWidth() / 2) || snake->getSegmentList().front().x > window.getSize().x - m_tankWalls.getWallWidth() || snake->getSegmentList().front().y < 0)
                 {
-                    // TODO Wall Collision Death
+                    std::cout << "Outside Bounds" << std::endl;
+                }
+                else if (snake->getSegmentList().front().y > window.getSize().y - m_tankWalls.getWallWidth() - m_tankWalls.getSurfaceHeight())
+                {
+                    std::cout << "Hit Floor" << std::endl;
                 }
             }
                 
@@ -91,7 +95,7 @@ void Game::Run()
             {
                 if (m_collectableVector.size() < 5)
                 {
-                    m_collectableVector.push_back(new Collectable(rand() % 3 + 1, GetRandomFreePosition(window.getSize().x, window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector)));
+                    m_collectableVector.push_back(new Collectable(rand() % 3 + 1, GetRandomFreePosition(window.getSize().x, window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector))); // Creates a collectable and assigns it a random value
                 }
             }
 
