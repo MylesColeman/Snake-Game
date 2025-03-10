@@ -3,15 +3,39 @@
 
 const float simulationTimer = 0.2f;
 
-sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight)
+sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight, Wall tankWalls, std::vector<Snake*> snakeVector, std::vector<Collectable*> collectableVector)
 {
-    int rangeX = screenWidth - 150;
-    int rangeY = screenHeight - 60;
+    int posBuffer = 300;
 
-    int randomX = rand() % (rangeX / (int)Snake::segmentSize) * (int)Snake::segmentSize;
-    int randomY = rand() % (rangeY / (int)Snake::segmentSize) * (int)Snake::segmentSize;
+    int rangeX = screenWidth - (int)tankWalls.getLeftWallPos() - (int)tankWalls.getWallWidth() - posBuffer;
+    int rangeY = screenHeight - (int)tankWalls.getSurfaceHeight() - (int)tankWalls.getWallWidth() - posBuffer;
 
-    return sf::Vector2f((float)randomX + 155, (float)randomY + 15);
+    int randomX = (rand() % (rangeX / (int)Snake::segmentSize) * (int)Snake::segmentSize) + ((int)Snake::segmentSize / 2) +(int)tankWalls.getLeftWallPos() + (int)Snake::segmentSize + (posBuffer / 2);
+    int randomY = (rand() % (rangeY / (int)Snake::segmentSize) * (int)Snake::segmentSize) + ((int)Snake::segmentSize / 2) + (posBuffer / 2);
+    sf::Vector2f randomVector = { (float)randomX, (float)randomY };
+
+    // Ensures the position is free, checking off the snake
+    for (Snake* snake : snakeVector)
+    {
+        for (const auto& segment : snake->getSegmentList())
+        {
+            if (randomVector == segment)
+            {
+                return GetRandomFreePosition(screenWidth, screenHeight, tankWalls, snakeVector, collectableVector);
+            }
+        }
+    }
+
+    // Ensures the position is free, checking off the collectabkes x value. - As only one fruit can grow in each collumn
+    for (Collectable* collectable : collectableVector)
+    {
+        if (randomVector.x == collectable->getCollectablePosition().x)
+        {
+            return GetRandomFreePosition(screenWidth, screenHeight, tankWalls, snakeVector, collectableVector);
+        }
+    }
+
+    return randomVector;
 }
 
 void Game::Run()
@@ -23,7 +47,7 @@ void Game::Run()
     sf::Clock simulationClock;
 
     for (int i = 0; i < 2; i++)
-        m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(window.getSize().x, window.getSize().y)));
+        m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(window.getSize().x, window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector)));
 
     // Loops whilst the window is open
     while (window.isOpen())
@@ -37,7 +61,6 @@ void Game::Run()
 
         if (simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
         {
-            
             for (Snake* snake : m_snakeVector)
             {
                 snake->Update();
@@ -56,6 +79,11 @@ void Game::Run()
                         ++it;
                     }
                 }
+
+                if (snake->getSegmentList().front().x < 135 || snake->getSegmentList().front().x > 1915)
+                {
+                    // TODO Wall Collision Death
+                }
             }
                 
             // Rolls a dice 1 to 20, and if 1 lands checks whether a new collectable can be created (limit of 5)
@@ -63,7 +91,7 @@ void Game::Run()
             {
                 if (m_collectableVector.size() < 5)
                 {
-                    m_collectableVector.push_back(new Collectable(rand() % 3 + 1, GetRandomFreePosition(window.getSize().x, window.getSize().y)));
+                    m_collectableVector.push_back(new Collectable(rand() % 3 + 1, GetRandomFreePosition(window.getSize().x, window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector)));
                 }
             }
 
