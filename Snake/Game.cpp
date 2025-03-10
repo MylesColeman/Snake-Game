@@ -18,7 +18,7 @@ void Game::Run()
 {
     srand((unsigned int)time(0));
 
-    sf::RenderWindow window(sf::VideoMode({ 1920,1200 }), "GSE - Snake Game - E4109732");
+    sf::RenderWindow window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen);
 
     sf::Clock simulationClock;
 
