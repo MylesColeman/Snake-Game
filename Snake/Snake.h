@@ -7,13 +7,18 @@ enum class Direction
 	Up,
 	Down,
 	Left,
-	Right
+	Right,
+	None
 };
+
+class Collectable;
+class Wall;
 
 class Snake
 {
 private:
 	int m_controlType{ 0 }; // Used to determine a player 1 and 2, and their control scheme
+	bool m_isAlive{ true };
 
 	std::list<sf::Vector2f> m_segmentList;
 	int m_startingSegments{ 4 };
@@ -29,7 +34,12 @@ public:
 	void Draw(sf::RenderWindow &window); // Defines and displays the snake
 	void MovementInput(); // Handles the input for movement
 	void Update(); // Handles the snake's movement
+
+	void CollectableCollision(std::vector<Collectable*>& collectableVector);
+	void BoundsCollision(sf::RenderWindow& window, Wall tankWalls);
 	void GrowAmount(int amount);
+
+	void isDead();
 
 	const std::list<sf::Vector2f>& getSegmentList() const;
 };

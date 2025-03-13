@@ -64,30 +64,8 @@ void Game::Run()
             for (Snake* snake : m_snakeVector)
             {
                 snake->Update();
-                
-                // Loops through the collectables vector only incrementing if a collision isn't detected
-                for (auto it = m_collectableVector.begin(); it != m_collectableVector.end();)
-                {
-                    if (snake->getSegmentList().front() == (*it)->getCollectablePosition())
-                    {
-                        snake->GrowAmount((*it)->getCollectableValue());
-                        delete* it;
-                        it = m_collectableVector.erase(it);
-                    }
-                    else
-                    {
-                        ++it;
-                    }
-                }
-
-                if (snake->getSegmentList().front().x < m_tankWalls.getLeftWallPos() - (m_tankWalls.getWallWidth() / 2) || snake->getSegmentList().front().x > m_window.getSize().x - m_tankWalls.getWallWidth() || snake->getSegmentList().front().y < 0)
-                {
-                    std::cout << "Outside Bounds" << std::endl;
-                }
-                else if (snake->getSegmentList().front().y > m_window.getSize().y - m_tankWalls.getWallWidth() - m_tankWalls.getSurfaceHeight())
-                {
-                    std::cout << "Hit Floor" << std::endl;
-                }
+                snake->CollectableCollision(m_collectableVector);
+                snake->BoundsCollision(m_window, m_tankWalls);
             }
                 
             // Rolls a dice 1 to 20, and if 1 lands checks whether a new collectable can be created (limit of 5)
