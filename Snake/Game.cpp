@@ -66,6 +66,8 @@ void Game::Run()
                 snake->Update();
                 snake->CollectableCollision(m_collectableVector);
                 snake->BoundsCollision(m_window, m_tankWalls);
+                snake->SelfCollision();
+
                 snake->isDead(m_window, m_tankWalls);
             }
                 

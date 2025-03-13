@@ -38,6 +38,7 @@ void Snake::Draw(sf::RenderWindow &window)
 
 void Snake::MovementInput()
 {
+	// Only allows keyboard input if the snake is alive
 	if (m_isAlive)
 	{
 		// The control scheme for both players
@@ -129,7 +130,7 @@ void Snake::CollectableCollision(std::vector<Collectable*>& collectableVector)
 	// Loops through the collectables vector only incrementing if a collision isn't detected
 	for (auto it = collectableVector.begin(); it != collectableVector.end();)
 	{
-		if (getSegmentList().front() == (*it)->getCollectablePosition())
+		if (m_segmentList.front() == (*it)->getCollectablePosition())
 		{
 			GrowAmount((*it)->getCollectableValue());
 			delete* it;
@@ -144,26 +145,8 @@ void Snake::CollectableCollision(std::vector<Collectable*>& collectableVector)
 
 void Snake::BoundsCollision(sf::RenderWindow& window, Wall tankWalls)
 {
-	if (getSegmentList().front().x < tankWalls.getLeftWallPos() - (tankWalls.getWallWidth() / 2) || getSegmentList().front().x > window.getSize().x - tankWalls.getWallWidth() || getSegmentList().front().y < 0 || getSegmentList().front().y > window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight())
-	{
-		m_segmentList.pop_front();
-		if (m_direction == Direction::Up)
-		{
-			m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y + segmentSize });
-		}
-		else if (m_direction == Direction::Down)
-		{
-			m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y - segmentSize });
-		}
-		else if (m_direction == Direction::Left)
-		{
-			m_segmentList.push_back({ m_segmentList.back().x + segmentSize, m_segmentList.back().y });
-		}
-		else if (m_direction == Direction::Right)
-		{
-			m_segmentList.push_back({ m_segmentList.back().x - segmentSize, m_segmentList.back().y }); 
-		}
-		
+	if (m_segmentList.front().x < tankWalls.getLeftWallPos() - (tankWalls.getWallWidth() / 2) || m_segmentList.front().x > window.getSize().x - tankWalls.getWallWidth() || m_segmentList.front().y < 0 || m_segmentList.front().y > window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight())
+	{	
 		m_isAlive = false;
 	}
 }
@@ -175,7 +158,18 @@ void Snake::OtherSnakeCollision()
 
 void Snake::SelfCollision()
 {
+	// Starts the check from the second position, skipping the head
+	auto it = m_segmentList.begin();
+	++it; 
 
+	for (; it != m_segmentList.end(); ++it)
+	{
+		if (m_segmentList.front() == *it)
+		{
+			m_isAlive = false;
+			break;
+		}
+	}
 }
 
 void Snake::GrowAmount(int amount)
@@ -185,17 +179,43 @@ void Snake::GrowAmount(int amount)
 
 void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
 {
+	// Checks if dead
 	if (!m_isAlive)
 	{
-		m_direction = Direction::None;
+		// Ensures the resizing is only done once
+		if (!deadLoop)
+		{
+			m_segmentList.pop_front();
 
+			if (m_direction == Direction::Up)
+			{
+				m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y + segmentSize });
+			}
+			else if (m_direction == Direction::Down)
+			{
+				m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y - segmentSize });
+			}
+			else if (m_direction == Direction::Left)
+			{
+				m_segmentList.push_back({ m_segmentList.back().x + segmentSize, m_segmentList.back().y });
+			}
+			else if (m_direction == Direction::Right)
+			{
+				m_segmentList.push_back({ m_segmentList.back().x - segmentSize, m_segmentList.back().y });
+			}
+
+			deadLoop = true;
+		}
+
+		m_direction = Direction::None; // Sets Direction to none, stopping the snake from moving
+		
+		// Checks if the snake's corpse has fallen to the bottom of the tank
 		if (!atBottom)
 		{
 			for (auto& segment : m_segmentList)
 			{
 				segment.y += 30;
 
-				std::cout << segment.y << std::endl;
 				if (segment.y >= window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight() - segmentSize)
 				{
 					atBottom = true;
