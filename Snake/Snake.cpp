@@ -167,7 +167,6 @@ void Snake::SelfCollision()
 		if (m_segmentList.front() == *it)
 		{
 			m_isAlive = false;
-			break;
 		}
 	}
 }
