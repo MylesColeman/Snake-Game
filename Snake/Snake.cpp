@@ -149,23 +149,33 @@ void Snake::BoundsCollision(sf::RenderWindow& window, Wall tankWalls)
 		m_segmentList.pop_front();
 		if (m_direction == Direction::Up)
 		{
-			m_segmentList.push_front({ m_segmentList.front().x, m_segmentList.front().y + segmentSize });
+			m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y + segmentSize });
 		}
 		else if (m_direction == Direction::Down)
 		{
-			m_segmentList.push_front({ m_segmentList.front().x, m_segmentList.front().y - segmentSize });
+			m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y - segmentSize });
 		}
 		else if (m_direction == Direction::Left)
 		{
-			m_segmentList.push_front({ m_segmentList.front().x + segmentSize, m_segmentList.front().y });
+			m_segmentList.push_back({ m_segmentList.back().x + segmentSize, m_segmentList.back().y });
 		}
 		else if (m_direction == Direction::Right)
 		{
 			m_segmentList.push_back({ m_segmentList.back().x - segmentSize, m_segmentList.back().y }); 
 		}
 		
-		isDead();
+		m_isAlive = false;
 	}
+}
+
+void Snake::OtherSnakeCollision()
+{
+
+}
+
+void Snake::SelfCollision()
+{
+
 }
 
 void Snake::GrowAmount(int amount)
@@ -173,10 +183,26 @@ void Snake::GrowAmount(int amount)
 	m_growAmount += amount;
 }
 
-void Snake::isDead()
+void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
 {
-	m_isAlive = false;
-	m_direction = Direction::None;
+	if (!m_isAlive)
+	{
+		m_direction = Direction::None;
+
+		if (!atBottom)
+		{
+			for (auto& segment : m_segmentList)
+			{
+				segment.y += 30;
+
+				std::cout << segment.y << std::endl;
+				if (segment.y >= window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight() - segmentSize)
+				{
+					atBottom = true;
+				}
+			}
+		}
+	}
 }
 
 const std::list<sf::Vector2f>& Snake::getSegmentList() const

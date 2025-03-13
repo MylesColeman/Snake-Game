@@ -26,6 +26,8 @@ private:
 
 	Direction m_direction{ Direction::Right };
 	Direction m_previousDirection{ Direction::Right };
+
+	bool atBottom{ false };
 public:
 	inline static float segmentSize = 30.0f;
 
@@ -37,9 +39,12 @@ public:
 
 	void CollectableCollision(std::vector<Collectable*>& collectableVector);
 	void BoundsCollision(sf::RenderWindow& window, Wall tankWalls);
+	void OtherSnakeCollision();
+	void SelfCollision();
+
 	void GrowAmount(int amount);
 
-	void isDead();
+	void isDead(sf::RenderWindow& window, Wall tankWalls);
 
 	const std::list<sf::Vector2f>& getSegmentList() const;
 };

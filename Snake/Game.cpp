@@ -66,6 +66,7 @@ void Game::Run()
                 snake->Update();
                 snake->CollectableCollision(m_collectableVector);
                 snake->BoundsCollision(m_window, m_tankWalls);
+                snake->isDead(m_window, m_tankWalls);
             }
                 
             // Rolls a dice 1 to 20, and if 1 lands checks whether a new collectable can be created (limit of 5)
