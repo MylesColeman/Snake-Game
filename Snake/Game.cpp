@@ -42,21 +42,21 @@ void Game::Run()
 {
     srand((unsigned int)time(0));
 
-    sf::RenderWindow window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen);
+    m_window.create(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen);
 
     sf::Clock simulationClock;
 
     for (int i = 0; i < 2; i++)
-        m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(window.getSize().x, window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector)));
+        m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector)));
 
     // Loops whilst the window is open
-    while (window.isOpen())
+    while (m_window.isOpen())
     {
         // Checks if the window has been closed
-        while (const std::optional event = window.pollEvent())
+        while (const std::optional event = m_window.pollEvent())
         {
             if (event->is<sf::Event::Closed>())
-                window.close();
+                m_window.close();
         }
 
         if (simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
@@ -80,11 +80,11 @@ void Game::Run()
                     }
                 }
 
-                if (snake->getSegmentList().front().x < m_tankWalls.getLeftWallPos() - (m_tankWalls.getWallWidth() / 2) || snake->getSegmentList().front().x > window.getSize().x - m_tankWalls.getWallWidth() || snake->getSegmentList().front().y < 0)
+                if (snake->getSegmentList().front().x < m_tankWalls.getLeftWallPos() - (m_tankWalls.getWallWidth() / 2) || snake->getSegmentList().front().x > m_window.getSize().x - m_tankWalls.getWallWidth() || snake->getSegmentList().front().y < 0)
                 {
                     std::cout << "Outside Bounds" << std::endl;
                 }
-                else if (snake->getSegmentList().front().y > window.getSize().y - m_tankWalls.getWallWidth() - m_tankWalls.getSurfaceHeight())
+                else if (snake->getSegmentList().front().y > m_window.getSize().y - m_tankWalls.getWallWidth() - m_tankWalls.getSurfaceHeight())
                 {
                     std::cout << "Hit Floor" << std::endl;
                 }
@@ -95,29 +95,29 @@ void Game::Run()
             {
                 if (m_collectableVector.size() < 5)
                 {
-                    m_collectableVector.push_back(new Collectable(rand() % 3 + 1, GetRandomFreePosition(window.getSize().x, window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector))); // Creates a collectable and assigns it a random value
+                    m_collectableVector.push_back(new Collectable(rand() % 3 + 1, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector))); // Creates a collectable and assigns it a random value
                 }
             }
 
             simulationClock.restart();
         }
 
-        window.clear(); // Resets the window for use
+        m_window.clear(); // Resets the window for use
 
-        m_tankWalls.Draw(window);
+        m_tankWalls.Draw(m_window);
 
         for (Snake* snake : m_snakeVector)
         {
-            snake->Draw(window);
+            snake->Draw(m_window);
             snake->MovementInput();
         }
 
         for (Collectable* collectable : m_collectableVector)
         {
-            collectable->Draw(window);
+            collectable->Draw(m_window);
         }
 
-        window.display();
+        m_window.display();
     }
 
     for (Snake* snake : m_snakeVector)
