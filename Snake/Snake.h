@@ -40,7 +40,7 @@ public:
 
 	void CollectableCollision(std::vector<Collectable*>& collectableVector);
 	void BoundsCollision(sf::RenderWindow& window, Wall tankWalls);
-	void OtherSnakeCollision();
+	void OtherSnakeCollision(Snake* other);
 	void SelfCollision();
 
 	void GrowAmount(int amount);

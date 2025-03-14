@@ -151,9 +151,20 @@ void Snake::BoundsCollision(sf::RenderWindow& window, Wall tankWalls)
 	}
 }
 
-void Snake::OtherSnakeCollision()
+void Snake::OtherSnakeCollision(Snake* other)
 {
+	assert(other);
 
+	for (const auto& segment : m_segmentList)
+	{
+		if (other != this)
+		{
+			if (segment == other->getSegmentList().front())
+			{
+				m_isAlive = false;
+			}
+		}
+	}
 }
 
 void Snake::SelfCollision()
@@ -213,11 +224,13 @@ void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
 		{
 			for (auto& segment : m_segmentList)
 			{
-				segment.y += 30;
-
 				if (segment.y >= window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight() - segmentSize)
 				{
 					atBottom = true;
+				}
+				else
+				{
+					segment.y += 30;
 				}
 			}
 		}
