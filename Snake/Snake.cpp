@@ -157,13 +157,13 @@ void Snake::OtherSnakeCollision(Snake* other)
 	if (m_segmentList.front() == other->getSegmentList().front())
 	{
 		m_isAlive = false;
-		// TODO - Kill other snake!
+		other->setToDead(m_isAlive);
 	}
 	for (const auto& segment : m_segmentList)
 	{
 		if (segment == other->getSegmentList().front())
 		{
-			m_isAlive = false;
+			other->setToDead(m_isAlive);
 		}
 	}
 }
@@ -249,4 +249,9 @@ void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
 const std::list<sf::Vector2f>& Snake::getSegmentList() const
 {
 	return m_segmentList;
+}
+
+void Snake::setToDead(bool m_isAlive)
+{
+	m_isAlive = false;
 }
