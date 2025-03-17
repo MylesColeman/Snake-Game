@@ -107,7 +107,6 @@ void Snake::Update()
 		m_previousDirection = Direction::Right;
 		break;
 	case Direction::None:
-		m_previousDirection = Direction::None;
 		break;
 	default:
 		std::cout << "Error - Unknown Direction" << std::endl;
@@ -115,11 +114,11 @@ void Snake::Update()
 	}
 
 	// Only removes the last item from the list if the snake isn't currently growing
-	if (m_growAmount == 0 && m_isAlive)
+	if (m_growAmount == 0 || !m_atBottom)
 	{
 		m_segmentList.pop_back();
 	}
-	else if (m_growAmount != 0 && m_isAlive)
+	else if (m_growAmount != 0)
 	{
 		m_growAmount--;
 	}
@@ -153,16 +152,11 @@ void Snake::BoundsCollision(sf::RenderWindow& window, Wall tankWalls)
 
 void Snake::OtherSnakeCollision(Snake* other)
 {
-	assert(other);
-
 	for (const auto& segment : m_segmentList)
 	{
-		if (other != this)
+		if (segment == other->getSegmentList().front())
 		{
-			if (segment == other->getSegmentList().front())
-			{
-				m_isAlive = false;
-			}
+			m_isAlive = false;
 		}
 	}
 }
@@ -192,47 +186,51 @@ void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
 	// Checks if dead
 	if (!m_isAlive)
 	{
-		// Ensures the resizing is only done once
-		if (!deadLoop)
-		{
-			m_segmentList.pop_front();
-
-			if (m_direction == Direction::Up)
-			{
-				m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y + segmentSize });
-			}
-			else if (m_direction == Direction::Down)
-			{
-				m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y - segmentSize });
-			}
-			else if (m_direction == Direction::Left)
-			{
-				m_segmentList.push_back({ m_segmentList.back().x + segmentSize, m_segmentList.back().y });
-			}
-			else if (m_direction == Direction::Right)
-			{
-				m_segmentList.push_back({ m_segmentList.back().x - segmentSize, m_segmentList.back().y });
-			}
-
-			deadLoop = true;
-		}
-
-		m_direction = Direction::None; // Sets Direction to none, stopping the snake from moving
-		
 		// Checks if the snake's corpse has fallen to the bottom of the tank
-		if (!atBottom)
+		if (!m_atBottom)
 		{
 			for (auto& segment : m_segmentList)
 			{
-				if (segment.y >= window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight() - segmentSize)
+				if (segment.y + segmentSize >= window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight() - segmentSize)
 				{
-					atBottom = true;
-				}
-				else
-				{
-					segment.y += 30;
+					m_atBottom = true;
+					break;
 				}
 			}
+
+			// Ensures the resizing is only done once
+			if (!m_deadLoop)
+			{
+				m_segmentList.pop_front();
+
+				if (m_direction == Direction::Up)
+				{
+					m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y + segmentSize });
+				}
+				else if (m_direction == Direction::Down)
+				{
+					m_segmentList.pop_front();
+					m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y - segmentSize });
+					m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y - segmentSize });
+				}
+				else if (m_direction == Direction::Left)
+				{
+					m_segmentList.push_back({ m_segmentList.back().x + segmentSize, m_segmentList.back().y });
+				}
+				else if (m_direction == Direction::Right)
+				{
+					m_segmentList.push_back({ m_segmentList.back().x - segmentSize, m_segmentList.back().y });
+				}
+
+				m_deadLoop = true;
+			}
+
+			m_direction = Direction::Down;
+		}
+		else
+		{
+			m_growAmount++;
+			m_direction = Direction::None;
 		}
 	}
 }

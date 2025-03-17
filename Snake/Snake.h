@@ -27,8 +27,8 @@ private:
 	Direction m_direction{ Direction::Right };
 	Direction m_previousDirection{ Direction::Right };
 
-	bool atBottom{ false };
-	bool deadLoop{ false };
+	bool m_atBottom{ false };
+	bool m_deadLoop{ false };
 public:
 	inline static float segmentSize = 30.0f;
 

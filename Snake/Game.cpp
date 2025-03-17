@@ -71,6 +71,14 @@ void Game::Run()
 
                 snake->isDead(m_window, m_tankWalls);
             }
+
+            for (size_t i = 0; i < m_snakeVector.size(); i++)
+            {
+                for (size_t j = i + 1; j < m_snakeVector.size(); j++)
+                {
+                    m_snakeVector[i]->OtherSnakeCollision(m_snakeVector[j]);
+                }
+            }
                 
             // Rolls a dice 1 to 20, and if 1 lands checks whether a new collectable can be created (limit of 5)
             if (rand() % 20 == 0)
