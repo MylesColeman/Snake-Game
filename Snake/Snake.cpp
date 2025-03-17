@@ -152,6 +152,13 @@ void Snake::BoundsCollision(sf::RenderWindow& window, Wall tankWalls)
 
 void Snake::OtherSnakeCollision(Snake* other)
 {
+	assert(other);
+
+	if (m_segmentList.front() == other->getSegmentList().front())
+	{
+		m_isAlive = false;
+		// TODO - Kill other snake!
+	}
 	for (const auto& segment : m_segmentList)
 	{
 		if (segment == other->getSegmentList().front())
@@ -191,6 +198,7 @@ void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
 		{
 			for (auto& segment : m_segmentList)
 			{
+				// Checks whether the snake is at the bottom
 				if (segment.y + segmentSize >= window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight() - segmentSize)
 				{
 					m_atBottom = true;
@@ -209,6 +217,7 @@ void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
 				}
 				else if (m_direction == Direction::Down)
 				{
+					// Extra movements to fix death on ground level
 					m_segmentList.pop_front();
 					m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y - segmentSize });
 					m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y - segmentSize });
@@ -225,10 +234,12 @@ void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
 				m_deadLoop = true;
 			}
 
+			// Sets direction to down, so the snake moves to the floor upon death
 			m_direction = Direction::Down;
 		}
 		else
 		{
+			// Stops movement and ensures the snake is the correct size
 			m_growAmount++;
 			m_direction = Direction::None;
 		}
