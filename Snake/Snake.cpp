@@ -20,12 +20,12 @@ void Snake::Draw(sf::RenderWindow &window)
 		snakeSegment.setOrigin({ (segmentSize / 2), (segmentSize / 2) });
 		snakeSegment.setPosition(segment);
 
-		if (m_controlType == 0)
+		if (m_controlType == 0) // Yellow Snake
 		{
 			snakeSegment.setFillColor({ (212), (202), (19) });
 			snakeSegment.setOutlineColor({ (103), (99), (14) });
 		}
-		else if (m_controlType == 1)
+		else if (m_controlType == 1) // White Snake
 		{
 			snakeSegment.setFillColor({ (203), (203), (196) });
 			snakeSegment.setOutlineColor({ (64), (64), (58) });
@@ -107,6 +107,7 @@ void Snake::Update()
 		m_previousDirection = Direction::Right;
 		break;
 	case Direction::None:
+		m_previousDirection = Direction::None;
 		break;
 	default:
 		std::cout << "Error - Unknown Direction" << std::endl;
@@ -154,16 +155,31 @@ void Snake::OtherSnakeCollision(Snake* other)
 {
 	assert(other);
 
+	// Check for head-on collision
 	if (m_segmentList.front() == other->getSegmentList().front())
 	{
+		std::cout << "Head-on collision detected!" << std::endl;
 		m_isAlive = false;
-		other->setToDead(m_isAlive);
+		other->setToDead(false); 
 	}
+
+	// Check if this snake's head collides with the other snake's body
+	for (const auto& segment : other->getSegmentList())
+	{
+		if (m_segmentList.front() == segment)
+		{
+			std::cout << "This snake's head collided with the other snake's body!" << std::endl;
+			m_isAlive = false; 
+		}
+	}
+
+	// Check if the other snake's head collides with this snake's body
 	for (const auto& segment : m_segmentList)
 	{
-		if (segment == other->getSegmentList().front())
+		if (other->getSegmentList().front() == segment)
 		{
-			other->setToDead(m_isAlive);
+			std::cout << "The other snake's head collided with this snake's body!" << std::endl;
+			other->setToDead(false); 
 		}
 	}
 }
@@ -193,47 +209,44 @@ void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
 	// Checks if dead
 	if (!m_isAlive)
 	{
+		for (auto& segment : m_segmentList)
+		{
+			// Checks whether the snake is at the bottom
+			if (segment.y >= window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight() - segmentSize)
+			{
+				m_atBottom = true;
+				break;
+			}
+		}
+
+		// Ensures the resizing is only done once
+		if (!m_deadLoop)
+		{
+			m_segmentList.pop_front();
+
+			if (m_direction == Direction::Up)
+			{
+				m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y + segmentSize });
+			}
+			else if (m_direction == Direction::Down)
+			{
+				m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y - segmentSize });
+			}
+			else if (m_direction == Direction::Left)
+			{
+				m_segmentList.push_back({ m_segmentList.back().x + segmentSize, m_segmentList.back().y });
+			}
+			else if (m_direction == Direction::Right)
+			{
+				m_segmentList.push_back({ m_segmentList.back().x - segmentSize, m_segmentList.back().y });
+			}
+
+			m_deadLoop = true;
+		}
+
 		// Checks if the snake's corpse has fallen to the bottom of the tank
 		if (!m_atBottom)
 		{
-			for (auto& segment : m_segmentList)
-			{
-				// Checks whether the snake is at the bottom
-				if (segment.y + segmentSize >= window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight() - segmentSize)
-				{
-					m_atBottom = true;
-					break;
-				}
-			}
-
-			// Ensures the resizing is only done once
-			if (!m_deadLoop)
-			{
-				m_segmentList.pop_front();
-
-				if (m_direction == Direction::Up)
-				{
-					m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y + segmentSize });
-				}
-				else if (m_direction == Direction::Down)
-				{
-					// Extra movements to fix death on ground level
-					m_segmentList.pop_front();
-					m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y - segmentSize });
-					m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y - segmentSize });
-				}
-				else if (m_direction == Direction::Left)
-				{
-					m_segmentList.push_back({ m_segmentList.back().x + segmentSize, m_segmentList.back().y });
-				}
-				else if (m_direction == Direction::Right)
-				{
-					m_segmentList.push_back({ m_segmentList.back().x - segmentSize, m_segmentList.back().y });
-				}
-
-				m_deadLoop = true;
-			}
-
 			// Sets direction to down, so the snake moves to the floor upon death
 			m_direction = Direction::Down;
 		}
@@ -251,7 +264,7 @@ const std::list<sf::Vector2f>& Snake::getSegmentList() const
 	return m_segmentList;
 }
 
-void Snake::setToDead(bool m_isAlive)
+void Snake::setToDead(bool isAlive)
 {
-	m_isAlive = false;
+	m_isAlive = isAlive;
 }
