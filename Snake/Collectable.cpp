@@ -30,7 +30,23 @@ void Collectable::Draw(sf::RenderWindow& window)
 		collectableFruit.setOutlineColor({ (15), (34), (142) });
 	}
 
+	if (!m_isAlive)
+	{
+		collectableFruit.setFillColor({ (0), (0), (0), (0) });
+		collectableFruit.setOutlineColor({ (0),(0),(0),(0) });
+	}
+
 	window.draw(collectableFruit);
+}
+
+const bool& Collectable::getCollectableAliveStatus() const
+{
+	return m_isAlive;
+}
+
+void Collectable::setToDead(bool isAlive)
+{
+	m_isAlive = isAlive;
 }
 
 const sf::Vector2f& Collectable::getCollectablePosition() const

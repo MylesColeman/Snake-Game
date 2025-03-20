@@ -130,11 +130,10 @@ void Snake::CollectableCollision(std::vector<Collectable*>& collectableVector)
 	// Loops through the collectables vector only incrementing if a collision isn't detected
 	for (auto it = collectableVector.begin(); it != collectableVector.end();)
 	{
-		if (m_segmentList.front() == (*it)->getCollectablePosition())
+		if (m_segmentList.front() == (*it)->getCollectablePosition() && (*it)->getCollectableAliveStatus())
 		{
 			GrowAmount((*it)->getCollectableValue());
-			delete* it;
-			it = collectableVector.erase(it);
+			(*it)->setToDead(false);
 		}
 		else
 		{

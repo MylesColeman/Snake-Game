@@ -48,5 +48,5 @@ public:
 	void isDead(sf::RenderWindow& window, Wall tankWalls);
 
 	const std::list<sf::Vector2f>& getSegmentList() const;
-	void setToDead(bool m_isAlive);
+	void setToDead(bool isAlive);
 };
