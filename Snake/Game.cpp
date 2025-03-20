@@ -74,12 +74,56 @@ void Game::SwitchState(GameState newState)
 }
 
 // Before game - start screen
-void Game::FrontEndState(sf::RenderWindow& window)
+void Game::FrontEndState(sf::RenderWindow& window, bool showText)
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+    {
         SwitchState(GameState::InGame);
+        simulationClock.restart();
+    }
+
+    sf::Font mainFont("data\\Snake Chan.ttf");
+
+    sf::Text title(mainFont);
+    title.setCharacterSize(72);
+    title.setFillColor({ (212), (202), (19) });
+    title.setOutlineThickness(-3.0f);
+    title.setOutlineColor({ (103), (99), (14) });
+    title.setStyle(sf::Text::Bold);
+    title.setString("Sea Snake");
+    title.setOrigin(title.getGlobalBounds().getCenter());
+    title.setPosition({window.getSize().x / 2.0f, window.getSize().y / 6.0f });
+
+    sf::Text inputText(mainFont);
+    inputText.setCharacterSize(36);
+    inputText.setOutlineThickness(-3.0f);
+    inputText.setString("Press Space to Play");
+    inputText.setOrigin(inputText.getGlobalBounds().getCenter());
+    inputText.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 2.0f });
+
+    
+
+    if (simulationClock.getElapsedTime().asSeconds() >= 0.8)
+    {
+        m_showText = !m_showText;
+        simulationClock.restart();
+    }
+
+    if (showText)
+    {
+        inputText.setFillColor({ (203), (203), (196) });
+        inputText.setOutlineColor({ (64), (64), (58) });
+    }
+    else
+    {
+        inputText.setFillColor({ (0), (0), (0), (0) });
+        inputText.setOutlineColor({ (0), (0), (0), (0) });
+    }
 
     m_window.clear(); // Resets the window for use
+
+    window.draw(title);
+    window.draw(inputText);
 
     m_window.display(); // Displays the windows contents
 }
@@ -141,6 +185,16 @@ void Game::InGameState(sf::RenderWindow& window)
     m_window.display(); // Displays the windows contents
 }
 
+void Game::Pause(sf::RenderWindow& window)
+{
+
+}
+
+void Game::EndGameState(sf::RenderWindow& window)
+{
+
+}
+
 void Game::Run()
 {
     srand((unsigned int)time(0));
@@ -170,7 +224,7 @@ void Game::Run()
         switch (m_state)
         {
         case GameState::FrontEnd:
-            FrontEndState(m_window);
+            FrontEndState(m_window, m_showText);
             break;
         case GameState::InGame:
             InGameState(m_window);
