@@ -6,9 +6,7 @@
 Snake::Snake(int type, sf::Vector2f headPosition) : m_controlType(type)
 {
 	for (int i = 1; i <= m_startingSegments; i++)
-	{
-		m_segmentList.push_back({ headPosition.x - (i * segmentSize), headPosition.y});
-	}
+		m_segmentList.push_back({ headPosition.x - (i * segmentSize), headPosition.y });
 }
 
 void Snake::Draw(sf::RenderWindow &window)
@@ -116,13 +114,9 @@ void Snake::Update()
 
 	// Only removes the last item from the list if the snake isn't currently growing
 	if (m_growAmount == 0)
-	{
 		m_segmentList.pop_back();
-	}
-	else if (m_growAmount != 0)
-	{
+	else
 		m_growAmount--;
-	}
 }
 
 void Snake::CollectableCollision(std::vector<Collectable*>& collectableVector)
@@ -136,18 +130,14 @@ void Snake::CollectableCollision(std::vector<Collectable*>& collectableVector)
 			(*it)->setToDead(false);
 		}
 		else
-		{
 			++it;
-		}
 	}
 }
 
 void Snake::BoundsCollision(sf::RenderWindow& window, Wall tankWalls)
 {
 	if (m_segmentList.front().x < tankWalls.getLeftWallPos() - (tankWalls.getWallWidth() / 2) || m_segmentList.front().x > window.getSize().x - tankWalls.getWallWidth() || m_segmentList.front().y < 0 || m_segmentList.front().y > window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight())
-	{	
 		m_isAlive = false;
-	}
 }
 
 void Snake::OtherSnakeCollision(Snake* other)
@@ -165,18 +155,14 @@ void Snake::OtherSnakeCollision(Snake* other)
 	for (const auto& segment : other->getSegmentList())
 	{
 		if (m_segmentList.front() == segment)
-		{
-			m_isAlive = false; 
-		}
+			m_isAlive = false;
 	}
 
 	// Check if the other snake's head collides with this snake's body
 	for (const auto& segment : m_segmentList)
 	{
 		if (other->getSegmentList().front() == segment)
-		{
-			other->setToDead(false); 
-		}
+			other->setToDead(false);
 	}
 }
 
@@ -189,9 +175,7 @@ void Snake::SelfCollision()
 	for (; it != m_segmentList.end(); ++it)
 	{
 		if (m_segmentList.front() == *it)
-		{
 			m_isAlive = false;
-		}
 	}
 }
 
@@ -242,10 +226,7 @@ void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
 
 		// Checks if the snake's corpse has fallen to the bottom of the tank
 		if (!m_atBottom)
-		{
-			// Sets direction to down, so the snake moves to the floor upon death
-			m_direction = Direction::Down;
-		}
+			m_direction = Direction::Down; // Sets direction to down, so the snake moves to the floor upon death
 		else
 		{
 			// Stops movement and ensures the snake is the correct size

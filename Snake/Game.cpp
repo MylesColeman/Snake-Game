@@ -20,9 +20,7 @@ sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight, Wall tankW
         for (const auto& segment : snake->getSegmentList())
         {
             if (randomVector == segment)
-            {
                 return GetRandomFreePosition(screenWidth, screenHeight, tankWalls, snakeVector, collectableVector);
-            }
         }
     }
 
@@ -30,9 +28,7 @@ sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight, Wall tankW
     for (Collectable* collectable : collectableVector)
     {
         if (randomVector.x == collectable->getCollectablePosition().x)
-        {
             return GetRandomFreePosition(screenWidth, screenHeight, tankWalls, snakeVector, collectableVector);
-        }
     }
 
     return randomVector;
@@ -199,9 +195,7 @@ void Game::Run()
     m_window.create(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen);
 
     if (!m_mainFont.openFromFile("data\\Snake Chan.ttf"))
-    {
-        std::cerr << "Error loading font" << std::endl;;
-    }
+        std::cerr << "Error loading font" << std::endl;
 
     // Creates the snakes
     for (int i = 0; i < 2; i++)

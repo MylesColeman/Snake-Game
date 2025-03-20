@@ -1,0 +1,169 @@
+#pragma once
+#include <SFML/Graphics.hpp>
+#include <iostream>
+
+template <typename T>
+class Node
+{
+public:
+	Node(T newData) : data{ newData } {}
+
+	T data;
+
+	Node* next{ nullptr };
+};
+
+template <typename T>
+class LinkedList
+{
+public:
+	Node<T>* head{ nullptr };
+
+	// Calls the first item in the list
+	T front() const
+	{
+		if (head == nullptr)
+		{
+			std::cerr << "Error -  Accessing From Empty List!" << std::endl;
+			return T();
+		}
+
+		return head->data;
+	}
+
+	// Calls the last item in the list
+	T back() const
+	{
+		if (head == nullptr)
+		{
+			std::cerr << "Error -  Accessing From Empty List!" << std::endl;
+			return T();
+		}
+		else
+		{
+			Node<T>* tempPtr{ head };
+
+			while (tempPtr->next)
+				tempPtr++;
+		}
+
+		return tempPtr;
+	}
+
+	// Calls the size of the list
+	int size() const
+	{
+		Node<T>* tempPtr{ head };
+		int itemCounter{ 0 };
+
+		while (tempPtr->next)
+		{
+			tempPtr++;
+			itemCounter++;
+		}
+
+		return itemCounter;
+	}
+
+	// Inserts an item to the list at a specific point
+	void Insert(size_t pos, T value)
+	{
+
+	}
+
+	// Adds an item to the front of the list
+	void push_front(T newData)
+	{
+		Node<T>* newNode = new Node<T>(newData);
+
+		if (head == nullptr)
+			head = newNode;
+		else
+		{
+			newNode->next = head;
+			head = newNode;
+		}
+	}
+
+	// Adds an item to the back of the list
+	void push_back(T newData)
+	{
+		Node<T>* newNode = new Node<T>(newData);
+
+		if (head == nullptr)
+			head = newNode;
+		else
+		{
+			Node<T>* tempPtr{ head };
+
+			while (tempPtr->next)
+				tempPtr++;
+
+			tempPtr->next = newNode;
+		}
+	}
+
+	// Removes the item at the front of the list
+	void pop_front()
+	{
+		if (head == nullptr)
+		{
+			std::cerr << "Error -  Accessing From Empty List!" << std::endl;
+			return;
+		}
+
+		Node<T>* tempPtr{ head };
+
+		head = tempPtr->next;
+
+		delete tempPtr;
+	}
+
+	// Removes the item at the back of the list
+	void pop_back()
+	{
+		if (head == nullptr)
+		{
+			std::cerr << "Error -  Accessing From Empty List!" << std::endl;
+			return;
+		}
+		else
+		{
+			Node<T>* tempPtr{ head };
+
+			while (tempPtr->next)
+				tempPtr++;
+
+			delete tempPtr;
+		}
+	}
+
+	// Removes an item from a specific point in the list
+	void Erase(size_t pos, T value)
+	{
+
+	}
+
+	// Removes all items from the lits
+	void Clear()
+	{
+		Node<T>* tempPtr{ head };
+
+		while (tempPtr->next)
+		{
+			tempPtr++;
+			delete tempPtr;
+		}
+	}
+
+	// Checks whether the list is empty
+	bool empty() const
+	{
+		if (head == nullptr)
+		{
+			return true;
+		}
+		else
+			return false;
+	}
+};
