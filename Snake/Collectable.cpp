@@ -2,7 +2,7 @@
 #include "Snake.h"
 #include <iostream>
 
-Collectable::Collectable(int value, sf::Vector2f fruitPosition) : m_collectableValue(value), m_fruitPosition(fruitPosition)
+Collectable::Collectable(sf::Vector2f fruitPosition) : m_fruitPosition(fruitPosition)
 {
 
 }
@@ -19,24 +19,31 @@ void Collectable::Draw(sf::RenderWindow& window)
 		collectableFruit.setFillColor({ (233), (26), (26) });
 		collectableFruit.setOutlineColor({ (168), (21), (21) });
 	}
-	else if (m_collectableValue == 2)
+	else if (m_collectableValue == 2) // Green
 	{
-		collectableFruit.setFillColor({ (66), (222), (23) }); // Green
+		collectableFruit.setFillColor({ (66), (222), (23) }); 
 		collectableFruit.setOutlineColor({ (50), (155), (21) });
 	}
-	else if (m_collectableValue == 3)
+	else if (m_collectableValue == 3) // Blue
 	{
-		collectableFruit.setFillColor({ (17), (48), (224) }); // Blue
+		collectableFruit.setFillColor({ (17), (48), (224) });  
 		collectableFruit.setOutlineColor({ (15), (34), (142) });
 	}
 
-	if (!m_isAlive)
+	if (!m_isAlive) // Transparent
 	{
 		collectableFruit.setFillColor({ (0), (0), (0), (0) });
 		collectableFruit.setOutlineColor({ (0),(0),(0),(0) });
 	}
 
 	window.draw(collectableFruit);
+}
+
+void Collectable::Spawn(sf::Vector2f pos)
+{
+	m_fruitPosition = pos;
+	m_isAlive = true;
+	m_collectableValue = rand() % 3 + 1;
 }
 
 const bool& Collectable::getCollectableAliveStatus() const

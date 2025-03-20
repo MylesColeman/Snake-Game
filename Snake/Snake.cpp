@@ -115,7 +115,7 @@ void Snake::Update()
 	}
 
 	// Only removes the last item from the list if the snake isn't currently growing
-	if (m_growAmount == 0 || !m_atBottom)
+	if (m_growAmount == 0)
 	{
 		m_segmentList.pop_back();
 	}
@@ -157,7 +157,6 @@ void Snake::OtherSnakeCollision(Snake* other)
 	// Check for head-on collision
 	if (m_segmentList.front() == other->getSegmentList().front())
 	{
-		std::cout << "Head-on collision detected!" << std::endl;
 		m_isAlive = false;
 		other->setToDead(false); 
 	}
@@ -167,7 +166,6 @@ void Snake::OtherSnakeCollision(Snake* other)
 	{
 		if (m_segmentList.front() == segment)
 		{
-			std::cout << "This snake's head collided with the other snake's body!" << std::endl;
 			m_isAlive = false; 
 		}
 	}
@@ -177,7 +175,6 @@ void Snake::OtherSnakeCollision(Snake* other)
 	{
 		if (other->getSegmentList().front() == segment)
 		{
-			std::cout << "The other snake's head collided with this snake's body!" << std::endl;
 			other->setToDead(false); 
 		}
 	}

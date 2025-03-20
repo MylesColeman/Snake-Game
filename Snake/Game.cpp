@@ -46,8 +46,12 @@ void Game::Run()
 
     sf::Clock simulationClock;
 
+    // Creates the snakes
     for (int i = 0; i < 2; i++)
         m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector)));
+
+    for (int i = 0; i < 5; i++)
+        m_collectableVector.push_back(new Collectable(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector)));
 
     // Loops whilst the window is open
     while (m_window.isOpen())
@@ -82,9 +86,13 @@ void Game::Run()
             // Rolls a dice 1 to 20, and if 1 lands checks whether a new collectable can be created (limit of 5)
             if (rand() % 20 == 0)
             {
-                if (m_collectableVector.size() < 5)
+                for (auto* collectable : m_collectableVector)
                 {
-                    m_collectableVector.push_back(new Collectable(rand() % 3 + 1, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector))); // Creates a collectable and assigns it a random value
+                    if (!collectable->getCollectableAliveStatus())
+                    {
+                        collectable->Spawn(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector));
+                        break;
+                    }
                 }
             }
 
