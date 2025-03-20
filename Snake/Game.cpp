@@ -38,13 +38,116 @@ sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight, Wall tankW
     return randomVector;
 }
 
+void Game::SwitchState(GameState newState)
+{
+    // On exit from state
+    switch (m_state)
+    {
+    case GameState::FrontEnd:
+        break;
+    case GameState::InGame:
+        break;
+    case GameState::Pause:
+        break;
+    case GameState::EndGame:
+        break;
+    default:
+        break;
+    }
+
+    m_state = newState;
+
+    // On entry to state
+    switch (m_state)
+    {
+    case GameState::FrontEnd:
+        break;
+    case GameState::InGame:
+        break;
+    case GameState::Pause:
+        break;
+    case GameState::EndGame:
+        break;
+    default:
+        break;
+    }
+}
+
+// Before game - start screen
+void Game::FrontEndState(sf::RenderWindow& window)
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+        SwitchState(GameState::InGame);
+
+    m_window.clear(); // Resets the window for use
+
+    m_window.display(); // Displays the windows contents
+}
+
+// Actual game
+void Game::InGameState(sf::RenderWindow& window)
+{
+    if (simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
+    {
+        for (Snake* snake : m_snakeVector)
+        {
+            snake->Update();
+            snake->CollectableCollision(m_collectableVector);
+            snake->BoundsCollision(m_window, m_tankWalls);
+            snake->SelfCollision();
+
+            snake->isDead(m_window, m_tankWalls);
+        }
+
+        for (size_t i = 0; i < m_snakeVector.size(); i++)
+        {
+            for (size_t j = i + 1; j < m_snakeVector.size(); j++)
+            {
+                m_snakeVector[i]->OtherSnakeCollision(m_snakeVector[j]);
+            }
+        }
+
+        // Rolls a dice 1 to 20, and if 1 lands checks whether any of the collectables are dead - if so, creates a collectable
+        if (rand() % 20 == 0)
+        {
+            for (auto* collectable : m_collectableVector)
+            {
+                if (!collectable->getCollectableAliveStatus())
+                {
+                    collectable->Spawn(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector));
+                    break;
+                }
+            }
+        }
+
+        simulationClock.restart();
+    }
+
+    m_window.clear(); // Resets the window for use
+
+    m_tankWalls.Draw(m_window);
+
+    for (Snake* snake : m_snakeVector)
+    {
+        snake->Draw(m_window);
+        snake->MovementInput();
+    }
+
+    for (Collectable* collectable : m_collectableVector)
+    {
+        collectable->Draw(m_window);
+    }
+
+    m_window.display(); // Displays the windows contents
+}
+
 void Game::Run()
 {
     srand((unsigned int)time(0));
 
     m_window.create(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen);
 
-    sf::Clock simulationClock;
+    
 
     // Creates the snakes
     for (int i = 0; i < 2; i++)
@@ -63,58 +166,22 @@ void Game::Run()
                 m_window.close();
         }
 
-        if (simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
+        // Allows the switching of states
+        switch (m_state)
         {
-            for (Snake* snake : m_snakeVector)
-            {
-                snake->Update();
-                snake->CollectableCollision(m_collectableVector);
-                snake->BoundsCollision(m_window, m_tankWalls);
-                snake->SelfCollision();
-
-                snake->isDead(m_window, m_tankWalls);
-            }
-
-            for (size_t i = 0; i < m_snakeVector.size(); i++)
-            {
-                for (size_t j = i + 1; j < m_snakeVector.size(); j++)
-                {
-                    m_snakeVector[i]->OtherSnakeCollision(m_snakeVector[j]);
-                }
-            }
-                
-            // Rolls a dice 1 to 20, and if 1 lands checks whether any of the collectables are dead - if so, creates a collectable
-            if (rand() % 20 == 0)
-            {
-                for (auto* collectable : m_collectableVector)
-                {
-                    if (!collectable->getCollectableAliveStatus())
-                    {
-                        collectable->Spawn(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector));
-                        break;
-                    }
-                }
-            }
-
-            simulationClock.restart();
+        case GameState::FrontEnd:
+            FrontEndState(m_window);
+            break;
+        case GameState::InGame:
+            InGameState(m_window);
+            break;
+        case GameState::Pause:
+            break;
+        case GameState::EndGame:
+            break;
+        default:
+            break;
         }
-
-        m_window.clear(); // Resets the window for use
-
-        m_tankWalls.Draw(m_window);
-
-        for (Snake* snake : m_snakeVector)
-        {
-            snake->Draw(m_window);
-            snake->MovementInput();
-        }
-
-        for (Collectable* collectable : m_collectableVector)
-        {
-            collectable->Draw(m_window);
-        }
-
-        m_window.display();
     }
 
     for (Snake* snake : m_snakeVector)

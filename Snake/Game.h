@@ -5,10 +5,26 @@
 #include "Snake.h"
 #include "Collectable.h"
 
+enum class GameState
+{
+	FrontEnd,
+	InGame,
+	Pause,
+	EndGame
+};
+
 class Game
 {
 private:
+	GameState m_state{ GameState::FrontEnd };
+	void SwitchState(GameState newState);
+	void FrontEndState(sf::RenderWindow& window);
+	void InGameState(sf::RenderWindow& window);
+	void Pause(sf::RenderWindow& window);
+	void EndGameState(sf::RenderWindow& window);
+	
 	sf::RenderWindow m_window;
+	sf::Clock simulationClock;
 
 	Wall m_tankWalls;
 	std::vector<Snake*> m_snakeVector;
