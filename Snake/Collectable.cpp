@@ -30,7 +30,7 @@ void Collectable::Draw(sf::RenderWindow& window)
 		collectableFruit.setOutlineColor({ (15), (34), (142) });
 	}
 
-	if (!m_isAlive) // Transparent
+	if (!m_isAlive) // Turns collectable transparent, if collectable is dead
 	{
 		collectableFruit.setFillColor({ (0), (0), (0), (0) });
 		collectableFruit.setOutlineColor({ (0),(0),(0),(0) });
@@ -39,6 +39,7 @@ void Collectable::Draw(sf::RenderWindow& window)
 	window.draw(collectableFruit);
 }
 
+// Sets default collectable variables for spawning
 void Collectable::Spawn(sf::Vector2f pos)
 {
 	m_fruitPosition = pos;

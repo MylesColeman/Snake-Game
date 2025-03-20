@@ -83,7 +83,7 @@ void Game::Run()
                 }
             }
                 
-            // Rolls a dice 1 to 20, and if 1 lands checks whether a new collectable can be created (limit of 5)
+            // Rolls a dice 1 to 20, and if 1 lands checks whether any of the collectables are dead - if so, creates a collectable
             if (rand() % 20 == 0)
             {
                 for (auto* collectable : m_collectableVector)
