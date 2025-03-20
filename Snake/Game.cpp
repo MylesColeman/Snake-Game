@@ -74,15 +74,13 @@ void Game::SwitchState(GameState newState)
 }
 
 // Before game - start screen
-void Game::FrontEndState(sf::RenderWindow& window, bool showText)
+void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainFont)
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
     {
         SwitchState(GameState::InGame);
         simulationClock.restart();
     }
-
-    sf::Font mainFont("data\\Snake Chan.ttf");
 
     sf::Text title(mainFont);
     title.setCharacterSize(72);
@@ -101,8 +99,7 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText)
     inputText.setOrigin(inputText.getGlobalBounds().getCenter());
     inputText.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 2.0f });
 
-    
-
+    // Flashes the text
     if (simulationClock.getElapsedTime().asSeconds() >= 0.8)
     {
         m_showText = !m_showText;
@@ -201,7 +198,10 @@ void Game::Run()
 
     m_window.create(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen);
 
-    
+    if (!m_mainFont.openFromFile("data\\Snake Chan.ttf"))
+    {
+        std::cerr << "Error loading font" << std::endl;;
+    }
 
     // Creates the snakes
     for (int i = 0; i < 2; i++)
@@ -224,7 +224,7 @@ void Game::Run()
         switch (m_state)
         {
         case GameState::FrontEnd:
-            FrontEndState(m_window, m_showText);
+            FrontEndState(m_window, m_showText, m_mainFont);
             break;
         case GameState::InGame:
             InGameState(m_window);

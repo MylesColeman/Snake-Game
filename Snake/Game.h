@@ -18,13 +18,15 @@ class Game
 private:
 	GameState m_state{ GameState::FrontEnd };
 	void SwitchState(GameState newState);
-	void FrontEndState(sf::RenderWindow& window, bool showText);
+	void FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainFont);
 	void InGameState(sf::RenderWindow& window);
 	void Pause(sf::RenderWindow& window);
 	void EndGameState(sf::RenderWindow& window);
 	
 	sf::RenderWindow m_window;
 	sf::Clock simulationClock;
+
+	sf::Font m_mainFont;
 
 	bool m_showText = true;
 
