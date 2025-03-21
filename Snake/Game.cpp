@@ -17,11 +17,12 @@ sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight, Wall tankW
     // Ensures the position is free, checking off the snake
     for (Snake* snake : snakeVector)
     {
-        for (const auto& segment : snake->getSegmentList())
+        Node<sf::Vector2f>* current = snake->getSegmentList().head;
+        while (current != nullptr)
         {
-            if (randomVector == segment)
+            if (randomVector == current->data)
                 return GetRandomFreePosition(screenWidth, screenHeight, tankWalls, snakeVector, collectableVector);
-        }
+        } 
     }
 
     // Ensures the position is free, checking off the collectabkes x value. - As only one fruit can grow in each collumn
