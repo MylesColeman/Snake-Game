@@ -43,8 +43,8 @@ public:
 		{
 			Node<T>* tempPtr{ head };
 
-			while (tempPtr->next)
-				tempPtr++;
+			while (tempPtr->next != nullptr)
+				tempPtr = tempPtr->next;
 
 			return tempPtr->data;
 		}
@@ -56,9 +56,9 @@ public:
 		Node<T>* tempPtr{ head };
 		int itemCounter{ 0 };
 
-		while (tempPtr->next)
+		while (tempPtr != nullptr)
 		{
-			tempPtr++;
+			tempPtr = tempPtr->next;
 			itemCounter++;
 		}
 
@@ -127,14 +127,24 @@ public:
 			std::cerr << "Error -  Accessing From Empty List!" << std::endl;
 			return;
 		}
+		else if (head->next == nullptr)
+		{
+			delete head;
+			head = nullptr;
+		}
 		else
 		{
-			Node<T>* tempPtr{ head };
+			Node<T>* current{ head };
+			Node<T>* previous{ nullptr };
 
-			while (tempPtr->next)
-				tempPtr++;
+			while (current->next != nullptr)
+			{
+				previous = current;
+				current = current->next;
+			}
 
-			delete tempPtr;
+			previous->next = nullptr;
+			delete current;
 		}
 	}
 
@@ -149,11 +159,13 @@ public:
 	{
 		Node<T>* tempPtr{ head };
 
-		while (tempPtr->next)
+		while (tempPtr != nullptr)
 		{
-			tempPtr++;
+			Node<T>* next{ tempPtr->next };
 			delete tempPtr;
+			tempPtr = next;
 		}
+		head = nullptr;
 	}
 
 	// Checks whether the list is empty
