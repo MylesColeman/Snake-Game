@@ -195,7 +195,7 @@ void Game::Run()
 {
     srand((unsigned int)time(0));
 
-    m_window.create(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen);
+    m_window.create(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732"/*, sf::State::Fullscreen*/);
 
     if (!m_mainFont.openFromFile("data\\Snake Chan.ttf"))
         std::cerr << "Error loading font" << std::endl;
