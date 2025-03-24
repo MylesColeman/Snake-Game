@@ -22,6 +22,8 @@ sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight, Wall tankW
         {
             if (randomVector == current->data)
                 return GetRandomFreePosition(screenWidth, screenHeight, tankWalls, snakeVector, collectableVector);
+
+            current = current->next;
         } 
     }
 
