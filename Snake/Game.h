@@ -3,13 +3,13 @@
 #include <vector>
 #include "Wall.h"
 #include "Snake.h"
+#include "Water.h"
 #include "Collectable.h"
 
 enum class GameState
 {
 	FrontEnd,
 	InGame,
-	Pause,
 	EndGame
 };
 
@@ -20,7 +20,6 @@ private:
 	void SwitchState(GameState newState);
 	void FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainFont);
 	void InGameState(sf::RenderWindow& window);
-	void Pause(sf::RenderWindow& window);
 	void EndGameState(sf::RenderWindow& window);
 	
 	sf::RenderWindow m_window;
@@ -32,7 +31,9 @@ private:
 
 	Wall m_tankWalls;
 	std::vector<Snake*> m_snakeVector;
+	Water m_water;
 	std::vector<Collectable*> m_collectableVector;
 public: 
+	Game();
 	void Run();
 };

@@ -46,8 +46,6 @@ void Game::SwitchState(GameState newState)
         break;
     case GameState::InGame:
         break;
-    case GameState::Pause:
-        break;
     case GameState::EndGame:
         break;
     default:
@@ -62,8 +60,6 @@ void Game::SwitchState(GameState newState)
     case GameState::FrontEnd:
         break;
     case GameState::InGame:
-        break;
-    case GameState::Pause:
         break;
     case GameState::EndGame:
         break;
@@ -160,12 +156,12 @@ void Game::InGameState(sf::RenderWindow& window)
             }
         }
 
+        m_water.Update();
+
         simulationClock.restart();
     }
 
     m_window.clear(); // Resets the window for use
-
-    m_tankWalls.Draw(m_window);
 
     for (Snake* snake : m_snakeVector)
     {
@@ -178,12 +174,10 @@ void Game::InGameState(sf::RenderWindow& window)
         collectable->Draw(m_window);
     }
 
+    m_water.Draw(m_window, m_tankWalls);
+    m_tankWalls.Draw(m_window);
+
     m_window.display(); // Displays the windows contents
-}
-
-void Game::Pause(sf::RenderWindow& window)
-{
-
 }
 
 void Game::EndGameState(sf::RenderWindow& window)
@@ -191,12 +185,8 @@ void Game::EndGameState(sf::RenderWindow& window)
 
 }
 
-void Game::Run()
+Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen), m_water(m_window, m_tankWalls)
 {
-    srand((unsigned int)time(0));
-
-    m_window.create(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen);
-
     if (!m_mainFont.openFromFile("data\\Snake Chan.ttf"))
         std::cerr << "Error loading font" << std::endl;
 
@@ -206,6 +196,11 @@ void Game::Run()
 
     for (int i = 0; i < 5; i++)
         m_collectableVector.push_back(new Collectable(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector)));
+}
+
+void Game::Run()
+{
+    srand((unsigned int)time(0));
 
     // Loops whilst the window is open
     while (m_window.isOpen())
@@ -225,8 +220,6 @@ void Game::Run()
             break;
         case GameState::InGame:
             InGameState(m_window);
-            break;
-        case GameState::Pause:
             break;
         case GameState::EndGame:
             break;

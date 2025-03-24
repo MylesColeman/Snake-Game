@@ -136,7 +136,7 @@ void Snake::CollectableCollision(std::vector<Collectable*>& collectableVector)
 	}
 }
 
-void Snake::BoundsCollision(sf::RenderWindow& window, Wall tankWalls)
+void Snake::BoundsCollision(sf::RenderWindow& window, const Wall& tankWalls)
 {
 	if (m_segmentList.front().x < tankWalls.getLeftWallPos() - (tankWalls.getWallWidth() / 2) || m_segmentList.front().x > window.getSize().x - tankWalls.getWallWidth() || m_segmentList.front().y < 0 || m_segmentList.front().y > window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight())
 		m_isAlive = false;
@@ -201,7 +201,7 @@ void Snake::GrowAmount(int amount)
 	m_growAmount += amount;
 }
 
-void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
+void Snake::isDead(sf::RenderWindow& window, const Wall& tankWalls)
 {
 	// Checks if dead
 	if (!m_isAlive)
