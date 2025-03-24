@@ -2,10 +2,7 @@
 #include "Snake.h"
 #include <iostream>
 
-Collectable::Collectable(sf::Vector2f fruitPosition) : m_fruitPosition(fruitPosition)
-{
-
-}
+Collectable::Collectable(sf::Vector2f fruitPosition) : m_fruitPosition(fruitPosition) {}
 
 void Collectable::Draw(sf::RenderWindow& window)
 {

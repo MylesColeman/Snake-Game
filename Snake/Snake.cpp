@@ -6,19 +6,18 @@
 Snake::Snake(int type, sf::Vector2f headPosition) : m_controlType(type)
 {
 	for (int i = 1; i <= m_startingSegments; i++)
-	{
-		m_segmentList.push_back({ headPosition.x - (i * segmentSize), headPosition.y});
-	}
+		m_segmentList.push_back({ headPosition.x - (i * segmentSize), headPosition.y });
 }
 
 void Snake::Draw(sf::RenderWindow &window)
 {
-	for (sf::Vector2f segment : m_segmentList)
+	Node<sf::Vector2f>* current = m_segmentList.head;
+	while (current != nullptr)
 	{
 		sf::RectangleShape snakeSegment({ (segmentSize), (segmentSize) });
 		snakeSegment.setOutlineThickness(-3.0f);
 		snakeSegment.setOrigin({ (segmentSize / 2), (segmentSize / 2) });
-		snakeSegment.setPosition(segment);
+		snakeSegment.setPosition(current->data);
 
 		if (m_controlType == 0) // Yellow Snake
 		{
@@ -33,6 +32,7 @@ void Snake::Draw(sf::RenderWindow &window)
 
 
 		window.draw(snakeSegment);
+		current = current->next;
 	}
 }
 
@@ -116,13 +116,9 @@ void Snake::Update()
 
 	// Only removes the last item from the list if the snake isn't currently growing
 	if (m_growAmount == 0)
-	{
 		m_segmentList.pop_back();
-	}
-	else if (m_growAmount != 0)
-	{
+	else
 		m_growAmount--;
-	}
 }
 
 void Snake::CollectableCollision(std::vector<Collectable*>& collectableVector)
@@ -136,24 +132,18 @@ void Snake::CollectableCollision(std::vector<Collectable*>& collectableVector)
 			(*it)->setToDead(false);
 		}
 		else
-		{
 			++it;
-		}
 	}
 }
 
 void Snake::BoundsCollision(sf::RenderWindow& window, Wall tankWalls)
 {
 	if (m_segmentList.front().x < tankWalls.getLeftWallPos() - (tankWalls.getWallWidth() / 2) || m_segmentList.front().x > window.getSize().x - tankWalls.getWallWidth() || m_segmentList.front().y < 0 || m_segmentList.front().y > window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight())
-	{	
 		m_isAlive = false;
-	}
 }
 
 void Snake::OtherSnakeCollision(Snake* other)
 {
-	assert(other);
-
 	// Check for head-on collision
 	if (m_segmentList.front() == other->getSegmentList().front())
 	{
@@ -162,36 +152,47 @@ void Snake::OtherSnakeCollision(Snake* other)
 	}
 
 	// Check if this snake's head collides with the other snake's body
-	for (const auto& segment : other->getSegmentList())
+	Node<sf::Vector2f>* currentOther = other->getSegmentList().head;
+	while (currentOther != nullptr)
 	{
-		if (m_segmentList.front() == segment)
+		if (m_segmentList.front() == currentOther->data)
 		{
-			m_isAlive = false; 
+			m_isAlive = false;
+			break;
 		}
+		currentOther = currentOther->next;
 	}
 
 	// Check if the other snake's head collides with this snake's body
-	for (const auto& segment : m_segmentList)
+	Node<sf::Vector2f>* currentThis = m_segmentList.head;
+	while (currentThis != nullptr)
 	{
-		if (other->getSegmentList().front() == segment)
+		if (other->getSegmentList().front() == currentThis->data)
 		{
-			other->setToDead(false); 
+			other->setToDead(false);
+			break;
 		}
+		currentThis = currentThis->next;
 	}
 }
 
 void Snake::SelfCollision()
 {
 	// Starts the check from the second position, skipping the head
-	auto it = m_segmentList.begin();
-	++it; 
-
-	for (; it != m_segmentList.end(); ++it)
+	Node<sf::Vector2f>* current = m_segmentList.head;
+	if (current != nullptr)
 	{
-		if (m_segmentList.front() == *it)
+		current = current->next; // Skip the head
+	}
+
+	while (current != nullptr)
+	{
+		if (m_segmentList.front() == current->data)
 		{
 			m_isAlive = false;
+			break;
 		}
+		current = current->next;
 	}
 }
 
@@ -205,14 +206,16 @@ void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
 	// Checks if dead
 	if (!m_isAlive)
 	{
-		for (auto& segment : m_segmentList)
+		Node<sf::Vector2f>* current = m_segmentList.head;
+		while (current->next != nullptr)
 		{
 			// Checks whether the snake is at the bottom
-			if (segment.y >= window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight() - segmentSize)
+			if (current->data.y >= window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight() - segmentSize)
 			{
 				m_atBottom = true;
 				break;
 			}
+			current = current->next;
 		}
 
 		// Ensures the resizing is only done once
@@ -242,10 +245,7 @@ void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
 
 		// Checks if the snake's corpse has fallen to the bottom of the tank
 		if (!m_atBottom)
-		{
-			// Sets direction to down, so the snake moves to the floor upon death
-			m_direction = Direction::Down;
-		}
+			m_direction = Direction::Down; // Sets direction to down, so the snake moves to the floor upon death
 		else
 		{
 			// Stops movement and ensures the snake is the correct size
@@ -255,7 +255,7 @@ void Snake::isDead(sf::RenderWindow& window, Wall tankWalls)
 	}
 }
 
-const std::list<sf::Vector2f>& Snake::getSegmentList() const
+const LinkedList<sf::Vector2f>& Snake::getSegmentList() const
 {
 	return m_segmentList;
 }
