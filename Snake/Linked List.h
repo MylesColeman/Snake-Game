@@ -45,9 +45,9 @@ public:
 
 			while (tempPtr->next)
 				tempPtr++;
-		}
 
-		return tempPtr;
+			return tempPtr->data;
+		}
 	}
 
 	// Calls the size of the list
