@@ -144,8 +144,6 @@ void Snake::BoundsCollision(sf::RenderWindow& window, Wall tankWalls)
 
 void Snake::OtherSnakeCollision(Snake* other)
 {
-	assert(other);
-
 	// Check for head-on collision
 	if (m_segmentList.front() == other->getSegmentList().front())
 	{

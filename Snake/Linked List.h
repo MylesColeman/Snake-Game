@@ -68,7 +68,29 @@ public:
 	// Inserts an item to the list at a specific point
 	void Insert(size_t pos, T value)
 	{
+		if (pos > size())
+		{
+			std::cerr << "Error - Invalid position for insertion!" << std::endl;
+			return;
+		}
 
+		Node<T>* newNode = new Node<T>(value);
+
+		if (pos == 0)
+		{
+			newNode->next = head;
+			head = newNode;
+		}
+		else
+		{
+			Node<T>* current = head;
+			for (size_t i = 0; i < pos - 1; ++i)
+			{
+				current = current->next;
+			}
+			newNode->next = current->next;
+			current->next = newNode;
+		}
 	}
 
 	// Adds an item to the front of the list
@@ -96,8 +118,8 @@ public:
 		{
 			Node<T>* tempPtr{ head };
 
-			while (tempPtr->next)
-				tempPtr++;
+			while (tempPtr->next != nullptr)
+				tempPtr = tempPtr->next;
 
 			tempPtr->next = newNode;
 		}
@@ -151,7 +173,30 @@ public:
 	// Removes an item from a specific point in the list
 	void Erase(size_t pos, T value)
 	{
+		if (head == nullptr || pos >= size())
+		{
+			std::cerr << "Error - Invalid position for erasure!" << std::endl;
+			return;
+		}
 
+		Node<T>* temp = head;
+
+		if (pos == 0)
+		{
+			head = head->next;
+			delete temp;
+		}
+		else
+		{
+			Node<T>* previous = nullptr;
+			for (size_t i = 0; i < pos; ++i)
+			{
+				previous = temp;
+				temp = temp->next;
+			}
+			previous->next = temp->next;
+			delete temp;
+		}
 	}
 
 	// Removes all items from the lits
