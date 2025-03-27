@@ -19,5 +19,5 @@ void Water::Draw(sf::RenderWindow& window, const Wall& tankWalls)
 
 void Water::Update()
 {
-	waterLevel += 30; // Lowers the water by one snake segment
+	waterLevel += Snake::segmentSize; // Lowers the water by one snake segment
 }
