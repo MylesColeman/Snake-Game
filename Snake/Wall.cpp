@@ -28,7 +28,7 @@ void Wall::Draw(sf::RenderWindow& window)
 	tankSurface.setOutlineThickness(-3.0f);
 	tankSurface.setOutlineColor(sf::Color(204, 194, 112));
 	tankSurface.setOrigin({ ((float)window.getSize().x - leftWallPos - wallWidth) / 2, surfaceHeight / 2 });
-	tankSurface.setPosition({ (((float)window.getSize().x - leftWallPos - wallWidth) / 2) + leftWallPos, (float)window.getSize().y - wallWidth - (surfaceHeight / 2)});
+	tankSurface.setPosition({ (((float)window.getSize().x - leftWallPos - wallWidth) / 2) + leftWallPos, (float)window.getSize().y - wallWidth - (surfaceHeight / 2) });
 
 	window.draw(leftTankWall);
 	window.draw(rightTankWall);

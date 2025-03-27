@@ -21,9 +21,10 @@ private:
 	void FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainFont);
 	void InGameState(sf::RenderWindow& window);
 	void EndGameState(sf::RenderWindow& window);
-	
+
 	sf::RenderWindow m_window;
-	sf::Clock simulationClock;
+	sf::Clock m_simulationClock;
+	sf::Clock m_gameClock;
 
 	sf::Font m_mainFont;
 
@@ -33,7 +34,7 @@ private:
 	std::vector<Snake*> m_snakeVector;
 	Water m_water;
 	std::vector<Collectable*> m_collectableVector;
-public: 
+public:
 	Game();
 	void Run();
 };

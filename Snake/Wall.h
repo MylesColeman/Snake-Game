@@ -3,11 +3,11 @@
 
 class Wall
 {
-private: 
+private:
 	float wallWidth{ 10.0f };
-	float leftWallPos{ 140 };
-	float surfaceHeight{ 50 };
-public: 
+	float leftWallPos{ 140.0f };
+	float surfaceHeight{ 50.0f };
+public:
 	void Draw(sf::RenderWindow& window);
 
 	const float& getWallWidth() const;

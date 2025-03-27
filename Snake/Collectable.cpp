@@ -18,12 +18,12 @@ void Collectable::Draw(sf::RenderWindow& window)
 	}
 	else if (m_collectableValue == 2) // Green
 	{
-		collectableFruit.setFillColor({ (66), (222), (23) }); 
+		collectableFruit.setFillColor({ (66), (222), (23) });
 		collectableFruit.setOutlineColor({ (50), (155), (21) });
 	}
 	else if (m_collectableValue == 3) // Blue
 	{
-		collectableFruit.setFillColor({ (17), (48), (224) });  
+		collectableFruit.setFillColor({ (17), (48), (224) });
 		collectableFruit.setOutlineColor({ (15), (34), (142) });
 	}
 

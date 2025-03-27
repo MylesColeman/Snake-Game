@@ -9,7 +9,7 @@ Snake::Snake(int type, sf::Vector2f headPosition) : m_controlType(type)
 		m_segmentList.push_back({ headPosition.x - (i * segmentSize), headPosition.y });
 }
 
-void Snake::Draw(sf::RenderWindow &window)
+void Snake::Draw(sf::RenderWindow& window)
 {
 	Node<sf::Vector2f>* current = m_segmentList.head;
 	while (current != nullptr)
@@ -99,7 +99,7 @@ void Snake::Update()
 		m_previousDirection = Direction::Down;
 		break;
 	case Direction::Left:
-		m_segmentList.push_front({ m_segmentList.front().x - segmentSize, m_segmentList.front().y});
+		m_segmentList.push_front({ m_segmentList.front().x - segmentSize, m_segmentList.front().y });
 		m_previousDirection = Direction::Left;
 		break;
 	case Direction::Right:
@@ -148,7 +148,7 @@ void Snake::OtherSnakeCollision(Snake* other)
 	if (m_segmentList.front() == other->getSegmentList().front())
 	{
 		m_isAlive = false;
-		other->setToDead(false); 
+		other->setToDead(false);
 	}
 
 	// Check if this snake's head collides with the other snake's body
