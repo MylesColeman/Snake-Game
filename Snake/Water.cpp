@@ -9,15 +9,21 @@ Water::Water(const sf::RenderWindow& window, const Wall& tankWalls)
 
 void Water::Draw(sf::RenderWindow& window, const Wall& tankWalls)
 {
-	sf::RectangleShape water({ (float)window.getSize().x - tankWalls.getLeftWallPos() - tankWalls.getWallWidth(), m_waterLevel });
-	water.setFillColor(sf::Color(12, 56, 133, 90)); // Dark Blue
-	water.setOrigin({ ((float)window.getSize().x - tankWalls.getLeftWallPos() - tankWalls.getWallWidth()) / 2, m_waterLevel / 2 });
-	water.setPosition({ (((float)window.getSize().x - tankWalls.getLeftWallPos() - tankWalls.getWallWidth()) / 2) + tankWalls.getLeftWallPos(), (m_waterLevel / 2) * m_waterRatio });
-
-	window.draw(water);
+	m_water.setSize({ (float)window.getSize().x - tankWalls.getLeftWallPos() - tankWalls.getWallWidth(), m_waterLevel });
+	m_water.setFillColor(sf::Color(12, 56, 133, 90)); // Dark Blue
+	m_water.setOrigin({ ((float)window.getSize().x - tankWalls.getLeftWallPos() - tankWalls.getWallWidth()) / 2, 0 });
+	m_water.setPosition({ (((float)window.getSize().x - tankWalls.getLeftWallPos() - tankWalls.getWallWidth()) / 2) + tankWalls.getLeftWallPos(), m_predictedNextWaterPosition });
+	window.draw(m_water);
 }
 
 void Water::Update(const sf::Time& time)
 {
 	m_waterRatio = time.asSeconds() / 90.0f;
+
+	// Water level multiplied by the water ratio gives us the game time divided up into the screen heigh - from this we can compare where the next water position should be; and then implement it. 
+	if (m_waterLevel * m_waterRatio > m_predictedNextWaterPosition)
+	{
+		m_water.setPosition({ m_water.getPosition().x, m_predictedNextWaterPosition });
+		m_predictedNextWaterPosition = m_water.getPosition().y + Snake::segmentSize;
+	}
 }

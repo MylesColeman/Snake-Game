@@ -147,33 +147,77 @@ void Snake::OtherSnakeCollision(Snake* other)
 	// Check for head-on collision
 	if (m_segmentList.front() == other->getSegmentList().front())
 	{
-		m_isAlive = false;
-		other->setToDead(false);
+		if (m_isAlive && other->getIsAlive())
+		{
+			m_isAlive = false;
+			other->setToDead(false);
+		}
+		else if (m_isAlive && !other->getIsAlive())
+		{
+			other->removeSegment(0);
+			m_growAmount++;
+		}
+		else if (!m_isAlive && other->getIsAlive())
+		{
+			removeSegment(0);
+			other->GrowAmount(1);
+		}
 	}
 
 	// Check if this snake's head collides with the other snake's body
 	Node<sf::Vector2f>* currentOther = other->getSegmentList().head;
+	if (currentOther != nullptr)
+		currentOther = currentOther->next;
+	int thisSegmentCounter = 0;
 	while (currentOther != nullptr)
 	{
 		if (m_segmentList.front() == currentOther->data)
 		{
-			m_isAlive = false;
-			break;
+			if (other->getIsAlive())
+			{
+				m_isAlive = false;
+				break;
+			}
+			else
+			{
+				other->removeSegment(thisSegmentCounter);
+				m_growAmount++;
+				break;
+			}
 		}
+		thisSegmentCounter++;
 		currentOther = currentOther->next;
 	}
 
 	// Check if the other snake's head collides with this snake's body
 	Node<sf::Vector2f>* currentThis = m_segmentList.head;
+	if (currentThis != nullptr)
+		currentThis = currentThis->next;
+	int otherSegmentCounter = 0;
 	while (currentThis != nullptr)
 	{
 		if (other->getSegmentList().front() == currentThis->data)
 		{
-			other->setToDead(false);
-			break;
+			if (m_isAlive)
+			{
+				other->setToDead(false);
+				break;
+			}
+			else
+			{
+				removeSegment(otherSegmentCounter);
+				other->GrowAmount(1);
+				break;
+			}
 		}
+		otherSegmentCounter++;
 		currentThis = currentThis->next;
 	}
+}
+
+void Snake::removeSegment(int index)
+{
+	m_segmentList.Erase(index);
 }
 
 void Snake::SelfCollision()
@@ -258,6 +302,11 @@ void Snake::isDead(sf::RenderWindow& window, const Wall& tankWalls)
 const LinkedList<sf::Vector2f>& Snake::getSegmentList() const
 {
 	return m_segmentList;
+}
+
+const bool& Snake::getIsAlive() const
+{
+	return m_isAlive;
 }
 
 void Snake::setToDead(bool isAlive)
