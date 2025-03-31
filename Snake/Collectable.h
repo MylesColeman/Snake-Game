@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+class Water;
+
 class Collectable
 {
 private:
@@ -13,6 +15,7 @@ public:
 	Collectable(sf::Vector2f fruitPosition);
 	void Draw(sf::RenderWindow& window);
 	void Spawn(sf::Vector2f pos);
+	void Update(const Water& water);
 
 	const bool& getCollectableAliveStatus() const;
 	void setToDead(bool isAlive);

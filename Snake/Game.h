@@ -20,11 +20,13 @@ private:
 	void SwitchState(GameState newState);
 	void FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainFont);
 	void InGameState(sf::RenderWindow& window);
-	void EndGameState(sf::RenderWindow& window);
+	void EndGameState(sf::RenderWindow& window, sf::Font mainFont);
 
 	sf::RenderWindow m_window;
 	sf::Clock m_simulationClock;
 	sf::Clock m_gameClock;
+
+	sf::Time m_gameTime = sf::seconds(90);
 
 	sf::Font m_mainFont;
 

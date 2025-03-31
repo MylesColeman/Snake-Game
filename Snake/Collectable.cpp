@@ -1,5 +1,6 @@
 #include "Collectable.h"
 #include "Snake.h"
+#include "Water.h"
 #include <iostream>
 
 Collectable::Collectable(sf::Vector2f fruitPosition) : m_fruitPosition(fruitPosition) {}
@@ -42,6 +43,12 @@ void Collectable::Spawn(sf::Vector2f pos)
 	m_fruitPosition = pos;
 	m_isAlive = true;
 	m_collectableValue = rand() % 3 + 1;
+}
+
+void Collectable::Update(const Water& water)
+{
+	if (m_fruitPosition.y < water.getPredictedNextWaterPosition())
+		m_fruitPosition.y += Snake::segmentSize;
 }
 
 const bool& Collectable::getCollectableAliveStatus() const

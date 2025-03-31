@@ -15,7 +15,7 @@ sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight, Wall tankW
 	int rangeY = screenHeight - (int)tankWalls.getSurfaceHeight() - (int)tankWalls.getWallWidth() - (int)water.getPredictedNextWaterPosition() - yPosBuffer;
 
 	if (rangeY <= 0)
-		rangeY = Snake::segmentSize;
+		rangeY = (int)Snake::segmentSize;
 
 	int randomX = (rand() % (rangeX / (int)Snake::segmentSize) * (int)Snake::segmentSize) + ((int)Snake::segmentSize / 2) + (int)tankWalls.getLeftWallPos() + (int)Snake::segmentSize + (xPosBuffer / 2);
 	int randomY = (rand() % (rangeY / (int)Snake::segmentSize) * (int)Snake::segmentSize) + ((int)Snake::segmentSize / 2) + (int)water.getPredictedNextWaterPosition() + (yPosBuffer / 2);
@@ -165,27 +165,34 @@ void Game::InGameState(sf::RenderWindow& window)
 			}
 		}
 
-		m_water.Update(m_gameClock.getElapsedTime());
+		m_water.Update(m_gameClock.getElapsedTime(), m_gameTime);
+		for (auto* collectable : m_collectableVector)
+		{
+			if (collectable->getCollectableAliveStatus())
+			{
+				collectable->Update(m_water);
+			}
+		}
 
 		m_simulationClock.restart();
 	}
 
 
 	// End of game - Winner Declaration
-	if (m_gameClock.getElapsedTime().asSeconds() >= 90)
+	if (m_gameClock.getElapsedTime() >= m_gameTime)
 		SwitchState(GameState::EndGame);
 
 	m_window.clear({ (188), (180), (178) }); // Resets the window for use
+
+	for (Collectable* collectable : m_collectableVector)
+	{
+		collectable->Draw(m_window);
+	}
 
 	for (Snake* snake : m_snakeVector)
 	{
 		snake->Draw(m_window);
 		snake->MovementInput();
-	}
-
-	for (Collectable* collectable : m_collectableVector)
-	{
-		collectable->Draw(m_window);
 	}
 
 	m_water.Draw(m_window, m_tankWalls);
@@ -195,9 +202,21 @@ void Game::InGameState(sf::RenderWindow& window)
 }
 
 // Post Game - Winner
-void Game::EndGameState(sf::RenderWindow& window)
+void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont)
 {
+	sf::Text gameOver(mainFont);
+	gameOver.setCharacterSize(72);
+	gameOver.setFillColor({ (212), (202), (19) });
+	gameOver.setOutlineThickness(-3.0f);
+	gameOver.setOutlineColor({ (103), (99), (14) });
+	gameOver.setStyle(sf::Text::Bold);
+	gameOver.setString("Game Over!");
+	gameOver.setOrigin(gameOver.getGlobalBounds().getCenter());
+	gameOver.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 6.0f });
+
 	m_window.clear({ (188), (180), (178) }); // Resets the window for use
+
+	window.draw(gameOver);
 
 	m_window.display(); // Displays the windows contents
 }
@@ -239,7 +258,7 @@ void Game::Run()
 			InGameState(m_window);
 			break;
 		case GameState::EndGame:
-			EndGameState(m_window);
+			EndGameState(m_window, m_mainFont);
 			break;
 		default:
 			break;

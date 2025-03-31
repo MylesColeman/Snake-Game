@@ -16,9 +16,9 @@ void Water::Draw(sf::RenderWindow& window, const Wall& tankWalls)
 	window.draw(m_water);
 }
 
-void Water::Update(const sf::Time& time)
+void Water::Update(const sf::Time& gameTimer, const sf::Time& gameTime)
 {
-	m_waterRatio = time.asSeconds() / 90.0f;
+	m_waterRatio = gameTimer / gameTime;
 
 	// Water level multiplied by the water ratio gives us the game time divided up into the screen heigh - from this we can compare where the next water position should be; and then implement it. 
 	if (m_waterLevel * m_waterRatio > m_predictedNextWaterPosition)
