@@ -195,7 +195,7 @@ void Game::EndGameState(sf::RenderWindow& window)
 	m_window.display(); // Displays the windows contents
 }
 
-Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732"/*, sf::State::Fullscreen*/), m_water(m_window, m_tankWalls)
+Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen), m_water(m_window, m_tankWalls)
 {
 	if (!m_mainFont.openFromFile("data\\Snake Chan.ttf"))
 		std::cerr << "Error loading font" << std::endl;

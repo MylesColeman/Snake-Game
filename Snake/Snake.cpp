@@ -186,9 +186,19 @@ void Snake::OtherSnakeCollision(Snake* other)
 		{
 			if (m_segmentList.front() == currentOther->data)
 			{
-				other->RemoveSegment(thisSegmentCounter);
-				m_growAmount++;
-				break;
+				// Needed if one snake is dead and the other is alive
+				if (!other->getIsAlive())
+				{
+					other->RemoveSegment(thisSegmentCounter);
+					m_growAmount++;
+					break;
+				}
+				else
+				{
+					m_isAlive = false;
+					break;
+				}
+				
 			}
 			thisSegmentCounter++;
 			currentOther = currentOther->next;
@@ -201,9 +211,19 @@ void Snake::OtherSnakeCollision(Snake* other)
 		{
 			if (other->getSegmentList().front() == currentThis->data)
 			{
-				RemoveSegment(otherSegmentCounter);
-				other->GrowAmount(1);
-				break;
+				// Needed if one snake is dead and the other is alive
+				if (!m_isAlive)
+				{
+					RemoveSegment(otherSegmentCounter);
+					other->GrowAmount(1);
+					break;
+				}
+				else
+				{
+					other->setToDead(false);
+					break;
+				}
+				
 			}
 			otherSegmentCounter++;
 			currentThis = currentThis->next;
