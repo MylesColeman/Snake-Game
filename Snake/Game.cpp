@@ -3,15 +3,22 @@
 
 const float simulationTimer = 0.2f;
 
-sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight, Wall tankWalls, std::vector<Snake*> snakeVector, std::vector<Collectable*> collectableVector)
+sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight, Wall tankWalls, std::vector<Snake*> snakeVector, std::vector<Collectable*> collectableVector, Water water)
 {
-	int posBuffer = 300;
+	int xPosBuffer = 300;
+	int yPosBuffer = 300;
 
-	int rangeX = screenWidth - (int)tankWalls.getLeftWallPos() - (int)tankWalls.getWallWidth() - posBuffer;
-	int rangeY = screenHeight - (int)tankWalls.getSurfaceHeight() - (int)tankWalls.getWallWidth() - posBuffer;
+	if (water.getPredictedNextWaterPosition() >= (screenHeight - (int)tankWalls.getSurfaceHeight() - (int)tankWalls.getWallWidth() - yPosBuffer))
+		yPosBuffer = 0;
 
-	int randomX = (rand() % (rangeX / (int)Snake::segmentSize) * (int)Snake::segmentSize) + ((int)Snake::segmentSize / 2) + (int)tankWalls.getLeftWallPos() + (int)Snake::segmentSize + (posBuffer / 2);
-	int randomY = (rand() % (rangeY / (int)Snake::segmentSize) * (int)Snake::segmentSize) + ((int)Snake::segmentSize / 2) + (posBuffer / 2);
+	int rangeX = screenWidth - (int)tankWalls.getLeftWallPos() - (int)tankWalls.getWallWidth() - xPosBuffer;
+	int rangeY = screenHeight - (int)tankWalls.getSurfaceHeight() - (int)tankWalls.getWallWidth() - (int)water.getPredictedNextWaterPosition() - yPosBuffer;
+
+	if (rangeY <= 0)
+		rangeY = Snake::segmentSize;
+
+	int randomX = (rand() % (rangeX / (int)Snake::segmentSize) * (int)Snake::segmentSize) + ((int)Snake::segmentSize / 2) + (int)tankWalls.getLeftWallPos() + (int)Snake::segmentSize + (xPosBuffer / 2);
+	int randomY = (rand() % (rangeY / (int)Snake::segmentSize) * (int)Snake::segmentSize) + ((int)Snake::segmentSize / 2) + (int)water.getPredictedNextWaterPosition() + (yPosBuffer / 2);
 	sf::Vector2f randomVector = { (float)randomX, (float)randomY };
 
 	// Ensures the position is free, checking off the snake
@@ -21,7 +28,7 @@ sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight, Wall tankW
 		while (current != nullptr)
 		{
 			if (randomVector == current->data)
-				return GetRandomFreePosition(screenWidth, screenHeight, tankWalls, snakeVector, collectableVector);
+				return GetRandomFreePosition(screenWidth, screenHeight, tankWalls, snakeVector, collectableVector, water);
 
 			current = current->next;
 		}
@@ -31,7 +38,7 @@ sf::Vector2f GetRandomFreePosition(int screenWidth, int screenHeight, Wall tankW
 	for (Collectable* collectable : collectableVector)
 	{
 		if (randomVector.x == collectable->getCollectablePosition().x)
-			return GetRandomFreePosition(screenWidth, screenHeight, tankWalls, snakeVector, collectableVector);
+			return GetRandomFreePosition(screenWidth, screenHeight, tankWalls, snakeVector, collectableVector, water);
 	}
 
 	return randomVector;
@@ -146,13 +153,13 @@ void Game::InGameState(sf::RenderWindow& window)
 		}
 
 		// Rolls a dice 1 to 20, and if 1 lands checks whether any of the collectables are dead - if so, creates a collectable
-		if (rand() % 20 == 0)
+		if (rand() % 10 == 0)
 		{
 			for (auto* collectable : m_collectableVector)
 			{
 				if (!collectable->getCollectableAliveStatus())
 				{
-					collectable->Spawn(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector));
+					collectable->Spawn(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water));
 					break;
 				}
 			}
@@ -202,10 +209,10 @@ Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109
 
 	// Creates the snakes
 	for (int i = 0; i < 2; i++)
-		m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector)));
+		m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
 
 	for (int i = 0; i < 5; i++)
-		m_collectableVector.push_back(new Collectable(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector)));
+		m_collectableVector.push_back(new Collectable(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
 }
 
 void Game::Run()

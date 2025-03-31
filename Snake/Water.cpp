@@ -27,3 +27,8 @@ void Water::Update(const sf::Time& time)
 		m_predictedNextWaterPosition = m_water.getPosition().y + Snake::segmentSize;
 	}
 }
+
+const float& Water::getPredictedNextWaterPosition() const
+{
+	return m_predictedNextWaterPosition;
+}

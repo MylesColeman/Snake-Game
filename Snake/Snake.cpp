@@ -123,23 +123,29 @@ void Snake::Update()
 
 void Snake::CollectableCollision(std::vector<Collectable*>& collectableVector)
 {
-	// Loops through the collectables vector only incrementing if a collision isn't detected
-	for (auto it = collectableVector.begin(); it != collectableVector.end();)
+	if (m_isAlive)
 	{
-		if (m_segmentList.front() == (*it)->getCollectablePosition() && (*it)->getCollectableAliveStatus())
+		// Loops through the collectables vector only incrementing if a collision isn't detected
+		for (auto it = collectableVector.begin(); it != collectableVector.end();)
 		{
-			GrowAmount((*it)->getCollectableValue());
-			(*it)->setToDead(false);
+			if (m_segmentList.front() == (*it)->getCollectablePosition() && (*it)->getCollectableAliveStatus())
+			{
+				GrowAmount((*it)->getCollectableValue());
+				(*it)->setToDead(false);
+			}
+			else
+				++it;
 		}
-		else
-			++it;
 	}
 }
 
 void Snake::BoundsCollision(sf::RenderWindow& window, const Wall& tankWalls)
 {
-	if (m_segmentList.front().x < tankWalls.getLeftWallPos() - (tankWalls.getWallWidth() / 2) || m_segmentList.front().x > window.getSize().x - tankWalls.getWallWidth() || m_segmentList.front().y < 0 || m_segmentList.front().y > window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight())
-		m_isAlive = false;
+	if (m_isAlive)
+	{
+		if (m_segmentList.front().x < tankWalls.getLeftWallPos() - (tankWalls.getWallWidth() / 2) || m_segmentList.front().x > window.getSize().x - tankWalls.getWallWidth() || m_segmentList.front().y < 0 || m_segmentList.front().y > window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight())
+			m_isAlive = false;
+	}
 }
 
 void Snake::OtherSnakeCollision(Snake* other)
@@ -267,40 +273,43 @@ void Snake::isDead(sf::RenderWindow& window, const Wall& tankWalls)
 	if (!m_isAlive)
 	{
 		Node<sf::Vector2f>* current = m_segmentList.head;
-		while (current->next != nullptr)
+		if (current != nullptr)
 		{
-			// Checks whether the snake is at the bottom
-			if (current->data.y >= window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight() - segmentSize)
+			while (current->next != nullptr)
 			{
-				m_atBottom = true;
-				break;
-			}
-			current = current->next;
-		}
-
-		// Ensures the resizing is only done once
-		if (!m_deadLoop)
-		{
-			m_segmentList.pop_front();
-
-			if (m_direction == Direction::Up)
-			{
-				m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y + segmentSize });
-			}
-			else if (m_direction == Direction::Down)
-			{
-				m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y - segmentSize });
-			}
-			else if (m_direction == Direction::Left)
-			{
-				m_segmentList.push_back({ m_segmentList.back().x + segmentSize, m_segmentList.back().y });
-			}
-			else if (m_direction == Direction::Right)
-			{
-				m_segmentList.push_back({ m_segmentList.back().x - segmentSize, m_segmentList.back().y });
+				// Checks whether the snake is at the bottom
+				if (current->data.y >= window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight() - segmentSize)
+				{
+					m_atBottom = true;
+					break;
+				}
+				current = current->next;
 			}
 
-			m_deadLoop = true;
+			// Ensures the resizing is only done once
+			if (!m_deadLoop)
+			{
+				m_segmentList.pop_front();
+
+				if (m_direction == Direction::Up)
+				{
+					m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y + segmentSize });
+				}
+				else if (m_direction == Direction::Down)
+				{
+					m_segmentList.push_back({ m_segmentList.back().x, m_segmentList.back().y - segmentSize });
+				}
+				else if (m_direction == Direction::Left)
+				{
+					m_segmentList.push_back({ m_segmentList.back().x + segmentSize, m_segmentList.back().y });
+				}
+				else if (m_direction == Direction::Right)
+				{
+					m_segmentList.push_back({ m_segmentList.back().x - segmentSize, m_segmentList.back().y });
+				}
+
+				m_deadLoop = true;
+			}
 		}
 
 		// Checks if the snake's corpse has fallen to the bottom of the tank

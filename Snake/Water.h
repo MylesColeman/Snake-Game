@@ -16,4 +16,6 @@ public:
 	Water(const sf::RenderWindow& window, const Wall& tankWalls);
 	void Draw(sf::RenderWindow& window, const Wall& tankWalls);
 	void Update(const sf::Time& time); // Handles the water level sinking
+
+	const float& getPredictedNextWaterPosition() const;
 };
