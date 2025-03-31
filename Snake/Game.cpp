@@ -43,8 +43,11 @@ void Game::SwitchState(GameState newState)
 	switch (m_state)
 	{
 	case GameState::FrontEnd:
+		m_simulationClock.restart();
 		break;
 	case GameState::InGame:
+		m_simulationClock.stop();
+		m_gameClock.stop();
 		break;
 	case GameState::EndGame:
 		break;
@@ -73,10 +76,7 @@ void Game::SwitchState(GameState newState)
 void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainFont)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
-	{
 		SwitchState(GameState::InGame);
-		m_simulationClock.restart();
-	}
 
 	sf::Text title(mainFont);
 	title.setCharacterSize(72);
@@ -113,7 +113,7 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainF
 		inputText.setOutlineColor({ (0), (0), (0), (0) });
 	}
 
-	m_window.clear(); // Resets the window for use
+	m_window.clear({ (188), (180), (178) }); // Resets the window for use
 
 	window.draw(title);
 	window.draw(inputText);
@@ -126,22 +126,23 @@ void Game::InGameState(sf::RenderWindow& window)
 {
 	if (m_simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
 	{
-		for (Snake* snake : m_snakeVector)
-		{
-			snake->Update();
-			snake->CollectableCollision(m_collectableVector);
-			snake->BoundsCollision(m_window, m_tankWalls);
-			snake->SelfCollision();
-
-			snake->isDead(m_window, m_tankWalls);
-		}
-
 		for (size_t i = 0; i < m_snakeVector.size(); i++)
 		{
 			for (size_t j = i + 1; j < m_snakeVector.size(); j++)
 			{
 				m_snakeVector[i]->OtherSnakeCollision(m_snakeVector[j]);
 			}
+		}
+
+		for (Snake* snake : m_snakeVector)
+		{
+			snake->CollectableCollision(m_collectableVector);
+			snake->BoundsCollision(m_window, m_tankWalls);
+			snake->SelfCollision();
+
+			snake->isDead(m_window, m_tankWalls);
+
+			snake->Update();
 		}
 
 		// Rolls a dice 1 to 20, and if 1 lands checks whether any of the collectables are dead - if so, creates a collectable
@@ -162,7 +163,12 @@ void Game::InGameState(sf::RenderWindow& window)
 		m_simulationClock.restart();
 	}
 
-	m_window.clear(); // Resets the window for use
+
+	// End of game - Winner Declaration
+	if (m_gameClock.getElapsedTime().asSeconds() >= 90)
+		SwitchState(GameState::EndGame);
+
+	m_window.clear({ (188), (180), (178) }); // Resets the window for use
 
 	for (Snake* snake : m_snakeVector)
 	{
@@ -181,9 +187,12 @@ void Game::InGameState(sf::RenderWindow& window)
 	m_window.display(); // Displays the windows contents
 }
 
+// Post Game - Winner
 void Game::EndGameState(sf::RenderWindow& window)
 {
+	m_window.clear({ (188), (180), (178) }); // Resets the window for use
 
+	m_window.display(); // Displays the windows contents
 }
 
 Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen), m_water(m_window, m_tankWalls)
@@ -223,6 +232,7 @@ void Game::Run()
 			InGameState(m_window);
 			break;
 		case GameState::EndGame:
+			EndGameState(m_window);
 			break;
 		default:
 			break;

@@ -171,7 +171,7 @@ public:
 	}
 
 	// Removes an item from a specific point in the list
-	void Erase(size_t pos, T value)
+	void Erase(size_t pos)
 	{
 		if (head == nullptr || pos >= size())
 		{

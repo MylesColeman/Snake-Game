@@ -42,6 +42,7 @@ public:
 	void CollectableCollision(std::vector<Collectable*>& collectableVector);
 	void BoundsCollision(sf::RenderWindow& window, const Wall& tankWalls);
 	void OtherSnakeCollision(Snake* other);
+	void RemoveSegment(int index);
 	void SelfCollision();
 
 	void GrowAmount(int amount);
@@ -49,5 +50,6 @@ public:
 	void isDead(sf::RenderWindow& window, const Wall& tankWalls);
 
 	const LinkedList<sf::Vector2f>& getSegmentList() const;
+	const bool& getIsAlive() const;
 	void setToDead(bool isAlive);
 };
