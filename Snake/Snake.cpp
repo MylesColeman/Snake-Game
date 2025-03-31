@@ -106,7 +106,7 @@ void Snake::Update()
 		m_segmentList.push_front({ m_segmentList.front().x + segmentSize, m_segmentList.front().y });
 		m_previousDirection = Direction::Right;
 		break;
-	case Direction::None:
+	case Direction::None: // For when the snake is dead
 		m_previousDirection = Direction::None;
 		break;
 	default:
@@ -144,78 +144,74 @@ void Snake::BoundsCollision(sf::RenderWindow& window, const Wall& tankWalls)
 
 void Snake::OtherSnakeCollision(Snake* other)
 {
-	// Check for head-on collision
-	if (m_segmentList.front() == other->getSegmentList().front())
+	if (m_isAlive && other->getIsAlive())
 	{
-		if (m_isAlive && other->getIsAlive())
+		// Check for head-on collision
+		if (m_segmentList.front() == other->getSegmentList().front())
 		{
 			m_isAlive = false;
 			other->setToDead(false);
 		}
-		else if (m_isAlive && !other->getIsAlive())
-		{
-			other->removeSegment(0);
-			m_growAmount++;
-		}
-		else if (!m_isAlive && other->getIsAlive())
-		{
-			removeSegment(0);
-			other->GrowAmount(1);
-		}
-	}
 
-	// Check if this snake's head collides with the other snake's body
-	Node<sf::Vector2f>* currentOther = other->getSegmentList().head;
-	if (currentOther != nullptr)
-		currentOther = currentOther->next;
-	int thisSegmentCounter = 0;
-	while (currentOther != nullptr)
-	{
-		if (m_segmentList.front() == currentOther->data)
+		// Check if this snake's head collides with the other snake's body
+		Node<sf::Vector2f>* currentOther = other->getSegmentList().head;
+		while (currentOther != nullptr)
 		{
-			if (other->getIsAlive())
+			if (m_segmentList.front() == currentOther->data)
 			{
 				m_isAlive = false;
 				break;
 			}
-			else
-			{
-				other->removeSegment(thisSegmentCounter);
-				m_growAmount++;
-				break;
-			}
+			currentOther = currentOther->next;
 		}
-		thisSegmentCounter++;
-		currentOther = currentOther->next;
-	}
 
-	// Check if the other snake's head collides with this snake's body
-	Node<sf::Vector2f>* currentThis = m_segmentList.head;
-	if (currentThis != nullptr)
-		currentThis = currentThis->next;
-	int otherSegmentCounter = 0;
-	while (currentThis != nullptr)
-	{
-		if (other->getSegmentList().front() == currentThis->data)
+		// Check if the other snake's head collides with this snake's body
+		Node<sf::Vector2f>* currentThis = m_segmentList.head;
+		while (currentThis != nullptr)
 		{
-			if (m_isAlive)
+			if (other->getSegmentList().front() == currentThis->data)
 			{
 				other->setToDead(false);
 				break;
 			}
-			else
+			currentThis = currentThis->next;
+		}
+	}
+	else
+	{
+		// Check if this snake's head collides with the other snake's body
+		Node<sf::Vector2f>* currentOther = other->getSegmentList().head;
+		int thisSegmentCounter = 0;
+		while (currentOther != nullptr)
+		{
+			if (m_segmentList.front() == currentOther->data)
 			{
-				removeSegment(otherSegmentCounter);
+				other->RemoveSegment(thisSegmentCounter);
+				m_growAmount++;
+				break;
+			}
+			thisSegmentCounter++;
+			currentOther = currentOther->next;
+		}
+
+		// Check if the other snake's head collides with this snake's body
+		Node<sf::Vector2f>* currentThis = m_segmentList.head;
+		int otherSegmentCounter = 0;
+		while (currentThis != nullptr)
+		{
+			if (other->getSegmentList().front() == currentThis->data)
+			{
+				RemoveSegment(otherSegmentCounter);
 				other->GrowAmount(1);
 				break;
 			}
+			otherSegmentCounter++;
+			currentThis = currentThis->next;
 		}
-		otherSegmentCounter++;
-		currentThis = currentThis->next;
 	}
 }
 
-void Snake::removeSegment(int index)
+void Snake::RemoveSegment(int index)
 {
 	m_segmentList.Erase(index);
 }
