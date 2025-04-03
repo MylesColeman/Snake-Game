@@ -56,6 +56,9 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls)
 
 		breathRemaining.setOrigin({ (0 - outlineDepth), (breathRemaining.getGlobalBounds().getCenter().y) });
 		breathRemaining.setPosition({ breathBlock.getPosition() });
+
+		// Decreases the breath bar - dependent on breath
+		breathRemaining.setScale({ ((float)m_breath / (float)m_maxBreath), (breathRemaining.getScale().y) });
 	}
 	else if (m_controlType == 1)
 	{
@@ -64,18 +67,10 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls)
 
 		breathRemaining.setOrigin({ ((segmentSize * 10) - outlineDepth), (breathRemaining.getGlobalBounds().getCenter().y) });
 		breathRemaining.setPosition({ breathBlock.getPosition() });
-	}
 
-	// Decreases the breath bar - dependent on breath
-	if (m_breath > 0)
-	{
-		breathRemaining.setScale({ (float)(m_maxBreath / m_breath), (breathRemaining.getScale().y) }); 
+		// Decreases the breath bar - dependent on breath
+		breathRemaining.setScale({ ((float)m_breath / (float)m_maxBreath), (breathRemaining.getScale().y) });
 	}
-	else
-	{
-		breathRemaining.setScale({ (1), (breathRemaining.getScale().y) });
-	}
-	
 	
 	window.draw(breathBlock);
 	window.draw(breathRemaining);
@@ -165,8 +160,6 @@ void Snake::Update()
 	else
 		m_growAmount--;
 
-	m_breath--;
-
 	if (m_segmentList.size() <= 0)
 		m_isAlive = false;
 }
@@ -180,15 +173,21 @@ void Snake::Drowning(const Water& water)
 
 		if (m_segmentList.front().y < water.getPredictedNextWaterPosition())
 		{
-			if (m_segmentList.front().y > water.getPredictedNextWaterPosition() - segmentSize) // Getting air
-			{
-				m_breath = m_maxBreath;
-			}
-			else // Too high up - drying out
-			{
+			m_breath = m_maxBreath;
+
+			// Snake is drying out
+			if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - segmentSize)
 				m_segmentList.pop_back();
-			}
 		}
+		else
+		{
+			if (m_breath > 0)
+				m_breath--;	
+		}	
+	}
+	else
+	{
+		m_breath = 0;
 	}
 }
 
