@@ -150,6 +150,7 @@ void Game::InGameState(sf::RenderWindow& window)
 			snake->isDead(m_window, m_tankWalls);
 
 			snake->Update();
+			snake->Drowning(m_water);
 		}
 
 		// Rolls a dice 1 to 20, and if 1 lands checks whether any of the collectables are dead - if so, creates a collectable

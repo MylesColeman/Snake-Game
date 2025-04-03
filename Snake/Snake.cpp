@@ -1,6 +1,7 @@
 #include "Snake.h"
 #include "Collectable.h"
 #include "Wall.h"
+#include "Water.h"
 #include <iostream>
 
 Snake::Snake(int type, sf::Vector2f headPosition) : m_controlType(type)
@@ -119,6 +120,32 @@ void Snake::Update()
 		m_segmentList.pop_back();
 	else
 		m_growAmount--;
+
+	m_breath--;
+
+	if (m_segmentList.size() <= 0)
+		m_isAlive = false;
+}
+
+void Snake::Drowning(const Water& water)
+{
+	if (m_isAlive)
+	{
+		if (m_breath <= 0) // Snake is drowning
+			m_segmentList.pop_back();
+
+		if (m_segmentList.front().y < water.getPredictedNextWaterPosition())
+		{
+			if (m_segmentList.front().y > water.getPredictedNextWaterPosition() - segmentSize) // Getting air
+			{
+				m_breath = 50;
+			}
+			else // Too high up - drying out
+			{
+				m_segmentList.pop_back();
+			}
+		}
+	}
 }
 
 void Snake::CollectableCollision(std::vector<Collectable*>& collectableVector)

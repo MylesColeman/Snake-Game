@@ -14,6 +14,7 @@ enum class Direction
 
 class Collectable;
 class Wall;
+class Water;
 
 class Snake
 {
@@ -24,6 +25,7 @@ private:
 	LinkedList<sf::Vector2f> m_segmentList;
 	int m_startingSegments{ 4 };
 	int m_growAmount{ 0 };
+	int m_breath{ 50 };
 
 	Direction m_direction{ Direction::Right };
 	Direction m_previousDirection{ Direction::Right };
@@ -38,6 +40,8 @@ public:
 	void Draw(sf::RenderWindow& window); // Defines and displays the snake
 	void MovementInput(); // Handles the input for movement
 	void Update(); // Handles the snake's movement
+
+	void Drowning(const Water& water);
 
 	void CollectableCollision(std::vector<Collectable*>& collectableVector);
 	void BoundsCollision(sf::RenderWindow& window, const Wall& tankWalls);
