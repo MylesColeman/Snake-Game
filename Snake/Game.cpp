@@ -136,9 +136,7 @@ void Game::InGameState(sf::RenderWindow& window)
 		for (size_t i = 0; i < m_snakeVector.size(); i++)
 		{
 			for (size_t j = i + 1; j < m_snakeVector.size(); j++)
-			{
 				m_snakeVector[i]->OtherSnakeCollision(m_snakeVector[j]);
-			}
 		}
 
 		for (Snake* snake : m_snakeVector)
@@ -170,9 +168,7 @@ void Game::InGameState(sf::RenderWindow& window)
 		for (auto* collectable : m_collectableVector)
 		{
 			if (collectable->getCollectableAliveStatus())
-			{
 				collectable->Update(m_water);
-			}
 		}
 
 		m_simulationClock.restart();
@@ -186,18 +182,19 @@ void Game::InGameState(sf::RenderWindow& window)
 	m_window.clear({ (188), (180), (178) }); // Resets the window for use
 
 	for (Collectable* collectable : m_collectableVector)
-	{
 		collectable->Draw(m_window);
-	}
 
 	for (Snake* snake : m_snakeVector)
 	{
-		snake->Draw(m_window);
+		snake->DrawSnake(m_window);
 		snake->MovementInput();
 	}
 
 	m_water.Draw(m_window, m_tankWalls);
 	m_tankWalls.Draw(m_window);
+
+	for (Snake* snake : m_snakeVector)
+		snake->DrawUI(m_window, m_tankWalls);
 
 	m_window.display(); // Displays the windows contents
 }

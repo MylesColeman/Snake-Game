@@ -26,6 +26,7 @@ private:
 	int m_startingSegments{ 4 };
 	int m_growAmount{ 0 };
 	int m_breath{ 50 };
+	int m_maxBreath{ 50 };
 
 	Direction m_direction{ Direction::Right };
 	Direction m_previousDirection{ Direction::Right };
@@ -37,7 +38,8 @@ public:
 
 	Snake(int type, sf::Vector2f headPosition);
 
-	void Draw(sf::RenderWindow& window); // Defines and displays the snake
+	void DrawSnake(sf::RenderWindow& window); // Defines and displays the snake
+	void DrawUI(sf::RenderWindow& window, const Wall& tankWalls); // Draws the UI
 	void MovementInput(); // Handles the input for movement
 	void Update(); // Handles the snake's movement
 

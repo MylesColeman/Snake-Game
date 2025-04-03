@@ -10,7 +10,7 @@ Snake::Snake(int type, sf::Vector2f headPosition) : m_controlType(type)
 		m_segmentList.push_back({ headPosition.x - (i * segmentSize), headPosition.y });
 }
 
-void Snake::Draw(sf::RenderWindow& window)
+void Snake::DrawSnake(sf::RenderWindow& window)
 {
 	Node<sf::Vector2f>* current = m_segmentList.head;
 	while (current != nullptr)
@@ -35,6 +35,50 @@ void Snake::Draw(sf::RenderWindow& window)
 		window.draw(snakeSegment);
 		current = current->next;
 	}
+}
+
+void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls)
+{
+	float outlineDepth = 3.0f;
+
+	sf::RectangleShape breathBlock({ segmentSize * 10, tankWalls.getSurfaceHeight() / 2 });
+	breathBlock.setOutlineThickness(-outlineDepth);
+	breathBlock.setFillColor({ (82), (86), (87) }); // Grey
+	breathBlock.setOutlineColor({ (61), (63), (64) }); // Darker Grey
+
+	sf::RectangleShape breathRemaining({ (segmentSize * 10) - outlineDepth * 2, ((tankWalls.getSurfaceHeight() / 2) - outlineDepth * 2) });
+	breathRemaining.setFillColor({ (12), (56), (133) }); // Blue
+
+	if (m_controlType == 0)
+	{
+		breathBlock.setOrigin({ (0), (tankWalls.getSurfaceHeight() / 2) / 2 });
+		breathBlock.setPosition({ (tankWalls.getWallWidth() + tankWalls.getLeftWallPos()), (window.getSize().y - tankWalls.getWallWidth() - (tankWalls.getSurfaceHeight() / 2)) });
+
+		breathRemaining.setOrigin({ (0 - outlineDepth), (breathRemaining.getGlobalBounds().getCenter().y) });
+		breathRemaining.setPosition({ breathBlock.getPosition() });
+	}
+	else if (m_controlType == 1)
+	{
+		breathBlock.setOrigin({ (segmentSize * 10), (tankWalls.getSurfaceHeight() / 2) / 2 });
+		breathBlock.setPosition({ (window.getSize().x - (tankWalls.getWallWidth() * 2)), (window.getSize().y - tankWalls.getWallWidth() - (tankWalls.getSurfaceHeight() / 2)) });
+
+		breathRemaining.setOrigin({ ((segmentSize * 10) - outlineDepth), (breathRemaining.getGlobalBounds().getCenter().y) });
+		breathRemaining.setPosition({ breathBlock.getPosition() });
+	}
+
+	// Decreases the breath bar - dependent on breath
+	if (m_breath > 0)
+	{
+		breathRemaining.setScale({ (float)(m_maxBreath / m_breath), (breathRemaining.getScale().y) }); 
+	}
+	else
+	{
+		breathRemaining.setScale({ (1), (breathRemaining.getScale().y) });
+	}
+	
+	
+	window.draw(breathBlock);
+	window.draw(breathRemaining);
 }
 
 void Snake::MovementInput()
@@ -138,7 +182,7 @@ void Snake::Drowning(const Water& water)
 		{
 			if (m_segmentList.front().y > water.getPredictedNextWaterPosition() - segmentSize) // Getting air
 			{
-				m_breath = 50;
+				m_breath = m_maxBreath;
 			}
 			else // Too high up - drying out
 			{
