@@ -85,9 +85,10 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainF
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
 		SwitchState(GameState::InGame);
 
+	// Yellow
 	sf::Text title(mainFont);
 	title.setCharacterSize(72);
-	title.setFillColor({ (212), (202), (19) });
+	title.setFillColor({ (212), (202), (19) }); 
 	title.setOutlineThickness(-3.0f);
 	title.setOutlineColor({ (103), (99), (14) });
 	title.setStyle(sf::Text::Bold);
@@ -111,11 +112,13 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainF
 
 	if (showText)
 	{
-		inputText.setFillColor({ (203), (203), (196) });
+		// White
+		inputText.setFillColor({ (203), (203), (196) }); 
 		inputText.setOutlineColor({ (64), (64), (58) });
 	}
 	else
 	{
+		// Invisible
 		inputText.setFillColor({ (0), (0), (0), (0) });
 		inputText.setOutlineColor({ (0), (0), (0), (0) });
 	}
@@ -148,6 +151,7 @@ void Game::InGameState(sf::RenderWindow& window)
 			snake->isDead(m_window, m_tankWalls);
 
 			snake->Update();
+
 			snake->Drowning(m_water);
 		}
 
@@ -194,7 +198,7 @@ void Game::InGameState(sf::RenderWindow& window)
 	m_tankWalls.Draw(m_window);
 
 	for (Snake* snake : m_snakeVector)
-		snake->DrawUI(m_window, m_tankWalls);
+		snake->DrawUI(m_window, m_tankWalls, m_mainFont);
 
 	m_window.display(); // Displays the windows contents
 }

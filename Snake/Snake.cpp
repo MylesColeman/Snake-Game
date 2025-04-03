@@ -37,7 +37,7 @@ void Snake::DrawSnake(sf::RenderWindow& window)
 	}
 }
 
-void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls)
+void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mainFont)
 {
 	float outlineDepth = 3.0f;
 
@@ -49,6 +49,10 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls)
 	sf::RectangleShape breathRemaining({ (segmentSize * 10) - outlineDepth * 2, ((tankWalls.getSurfaceHeight() / 2) - outlineDepth * 2) });
 	breathRemaining.setFillColor({ (12), (56), (133) }); // Blue
 
+	sf::Text score(mainFont);
+	score.setCharacterSize(28);
+	score.setOutlineThickness(-outlineDepth);
+
 	if (m_controlType == 0)
 	{
 		breathBlock.setOrigin({ (0), (tankWalls.getSurfaceHeight() / 2) / 2 });
@@ -59,6 +63,13 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls)
 
 		// Decreases the breath bar - dependent on breath
 		breathRemaining.setScale({ ((float)m_breath / (float)m_maxBreath), (breathRemaining.getScale().y) });
+
+		// Yellow
+		score.setFillColor({ (212), (202), (19) });
+		score.setOutlineColor({ (103), (99), (14) });
+		score.setString(std::to_string(m_score));
+		score.setOrigin(score.getGlobalBounds().getCenter());
+		score.setPosition({ breathBlock.getPosition().x + breathBlock.getSize().x + segmentSize, breathBlock.getPosition().y});
 	}
 	else if (m_controlType == 1)
 	{
@@ -70,10 +81,19 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls)
 
 		// Decreases the breath bar - dependent on breath
 		breathRemaining.setScale({ ((float)m_breath / (float)m_maxBreath), (breathRemaining.getScale().y) });
+
+		// White
+		score.setFillColor({ (203), (203), (196) });
+		score.setOutlineColor({ (64), (64), (58) });
+		score.setString(std::to_string(m_score));
+		score.setOrigin(score.getGlobalBounds().getCenter());
+		score.setPosition({ breathBlock.getPosition().x - breathBlock.getSize().x - segmentSize, breathBlock.getPosition().y});
 	}
 	
 	window.draw(breathBlock);
 	window.draw(breathRemaining);
+
+	window.draw(score);
 }
 
 void Snake::MovementInput()
@@ -169,7 +189,12 @@ void Snake::Drowning(const Water& water)
 	if (m_isAlive)
 	{
 		if (m_breath <= 0) // Snake is drowning
+		{
 			m_segmentList.pop_back();
+			if (m_score > 0)
+				m_score--;
+		}
+			
 
 		if (m_segmentList.front().y < water.getPredictedNextWaterPosition())
 		{
@@ -177,7 +202,12 @@ void Snake::Drowning(const Water& water)
 
 			// Snake is drying out
 			if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - segmentSize)
+			{
 				m_segmentList.pop_back();
+				if (m_score > 0)
+					m_score--;
+			}
+				
 		}
 		else
 		{
@@ -201,6 +231,7 @@ void Snake::CollectableCollision(std::vector<Collectable*>& collectableVector)
 			if (m_segmentList.front() == (*it)->getCollectablePosition() && (*it)->getCollectableAliveStatus())
 			{
 				GrowAmount((*it)->getCollectableValue());
+				m_score += (*it)->getCollectableValue();
 				(*it)->setToDead(false);
 			}
 			else
