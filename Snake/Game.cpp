@@ -178,9 +178,20 @@ void Game::InGameState(sf::RenderWindow& window)
 		m_simulationClock.restart();
 	}
 
-
 	// End of game - Winner Declaration
 	if (m_gameClock.getElapsedTime() >= m_gameTime)
+		SwitchState(GameState::EndGame);
+
+	bool allSnakesDead = true;
+	for (Snake* snake : m_snakeVector)
+	{
+		if (snake->getIsAlive())
+		{
+			allSnakesDead = false;
+			break;
+		}
+	}
+	if (allSnakesDead)
 		SwitchState(GameState::EndGame);
 
 	m_window.clear({ (188), (180), (178) }); // Resets the window for use
