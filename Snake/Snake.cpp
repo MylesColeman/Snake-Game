@@ -435,6 +435,11 @@ const bool& Snake::getIsAlive() const
 	return m_isAlive;
 }
 
+const int& Snake::getScore() const
+{
+	return m_score;
+}
+
 void Snake::setToDead(bool isAlive)
 {
 	m_isAlive = isAlive;

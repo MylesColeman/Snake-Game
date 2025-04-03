@@ -27,6 +27,9 @@ private:
 	sf::Clock m_gameClock;
 
 	sf::Time m_gameTime = sf::seconds(90);
+	bool m_gameOver{ false };
+	std::vector<Snake*> m_winningSnakeVector;
+	int m_highestCurrentScore{ 0 };
 
 	sf::Font m_mainFont;
 

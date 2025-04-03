@@ -60,5 +60,6 @@ public:
 
 	const LinkedList<sf::Vector2f>& getSegmentList() const;
 	const bool& getIsAlive() const;
+	const int& getScore() const;
 	void setToDead(bool isAlive);
 };

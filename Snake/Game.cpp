@@ -179,9 +179,12 @@ void Game::InGameState(sf::RenderWindow& window)
 	}
 
 	// End of game - Winner Declaration
+	// Game Over
+	// Ends the game after the set time
 	if (m_gameClock.getElapsedTime() >= m_gameTime)
-		SwitchState(GameState::EndGame);
+		m_gameOver = true;
 
+	// Checks if all snakes are dead
 	bool allSnakesDead = true;
 	for (Snake* snake : m_snakeVector)
 	{
@@ -191,8 +194,58 @@ void Game::InGameState(sf::RenderWindow& window)
 			break;
 		}
 	}
+	// Ends the game if all snakes are dead
 	if (allSnakesDead)
+		m_gameOver = true;
+
+	// Winner Declaration
+	if (m_gameOver)
+	{
+		m_winningSnakeVector.clear();
+		// Finds the living snakes
+		for (Snake* snake : m_snakeVector)
+		{
+			if (snake->getIsAlive())
+				m_winningSnakeVector.push_back(snake);
+		}
+
+		if (m_winningSnakeVector.empty()) // If there are no living snakes - checks who has the highest score
+		{
+			for (Snake* snake : m_snakeVector)
+			{
+				if (m_highestCurrentScore < snake->getScore())
+				{
+					m_highestCurrentScore = snake->getScore();
+					m_winningSnakeVector.clear();
+					m_winningSnakeVector.push_back(snake);
+				}
+				else if (m_highestCurrentScore = snake->getScore()) // Checks if there is a tie
+					m_winningSnakeVector.push_back(snake);
+			}
+		}
+		else
+		{
+			// Checks through the living snakes for the highest score
+			for (Snake* snake : m_winningSnakeVector)
+			{
+				if (m_highestCurrentScore < snake->getScore())
+					m_highestCurrentScore = snake->getScore();
+			}
+
+			// Removes all snakes from the winning snake vector who don't have the high score
+			auto it = m_winningSnakeVector.begin();
+			while (it != m_winningSnakeVector.end())
+			{
+				if ((*it)->getScore() != m_highestCurrentScore)
+					it = m_winningSnakeVector.erase(it);
+				else
+					++it;
+			}
+
+		}
+
 		SwitchState(GameState::EndGame);
+	}
 
 	m_window.clear({ (188), (180), (178) }); // Resets the window for use
 
@@ -227,9 +280,20 @@ void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont)
 	gameOver.setOrigin(gameOver.getGlobalBounds().getCenter());
 	gameOver.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 6.0f });
 
+	sf::Text score(mainFont);
+	score.setCharacterSize(36);
+	score.setFillColor({ (212), (202), (19) });
+	score.setOutlineThickness(-3.0f);
+	score.setOutlineColor({ (103), (99), (14) });
+	score.setStyle(sf::Text::Bold);
+	score.setString("With a Score of: " + std::to_string(m_highestCurrentScore));
+	score.setOrigin(score.getGlobalBounds().getCenter());
+	score.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 2.0f });
+
 	m_window.clear({ (188), (180), (178) }); // Resets the window for use
 
 	window.draw(gameOver);
+	window.draw(score);
 
 	m_window.display(); // Displays the windows contents
 }
