@@ -29,6 +29,7 @@ private:
 	int m_breath{ 50 };
 	int m_maxBreath{ 50 };
 
+	sf::Clock m_survivalClock;
 	int m_score{ 0 };
 
 	Direction m_direction{ Direction::Right };
@@ -60,6 +61,7 @@ public:
 
 	const LinkedList<sf::Vector2f>& getSegmentList() const;
 	const bool& getIsAlive() const;
+	const sf::Time& getSurvivalTime() const;
 	const int& getScore() const;
 	const int& getControlType() const;
 	void setToDead(bool isAlive);

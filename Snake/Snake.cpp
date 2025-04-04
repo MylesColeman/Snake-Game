@@ -8,6 +8,8 @@ Snake::Snake(int type, sf::Vector2f headPosition) : m_controlType(type)
 {
 	for (int i = 1; i <= m_startingSegments; i++)
 		m_segmentList.push_back({ headPosition.x - (i * segmentSize), headPosition.y });
+
+	m_survivalClock.restart();
 }
 
 void Snake::DrawSnake(sf::RenderWindow& window)
@@ -195,6 +197,8 @@ void Snake::Drowning(const Water& water)
 				m_score--;
 		}
 			
+		if (m_segmentList.empty())
+			return;
 
 		if (m_segmentList.front().y < water.getPredictedNextWaterPosition())
 		{
@@ -291,24 +295,29 @@ void Snake::OtherSnakeCollision(Snake* other)
 		int thisSegmentCounter = 0;
 		while (currentOther != nullptr)
 		{
-			if (m_segmentList.front() == currentOther->data)
+			if (!m_segmentList.empty())
 			{
-				// Needed if one snake is dead and the other is alive
-				if (!other->getIsAlive())
+				if (m_segmentList.front() == currentOther->data)
 				{
-					other->RemoveSegment(thisSegmentCounter);
-					m_growAmount++;
-					break;
+					// Needed if one snake is dead and the other is alive
+					if (!other->getIsAlive())
+					{
+						other->RemoveSegment(thisSegmentCounter);
+						m_growAmount++;
+						break;
+					}
+					else
+					{
+						m_isAlive = false;
+						break;
+					}
+
 				}
-				else
-				{
-					m_isAlive = false;
-					break;
-				}
-				
+				thisSegmentCounter++;
+				currentOther = currentOther->next;
 			}
-			thisSegmentCounter++;
-			currentOther = currentOther->next;
+			else
+				break;
 		}
 
 		// Check if the other snake's head collides with this snake's body
@@ -316,24 +325,29 @@ void Snake::OtherSnakeCollision(Snake* other)
 		int otherSegmentCounter = 0;
 		while (currentThis != nullptr)
 		{
-			if (other->getSegmentList().front() == currentThis->data)
+			if (!other->getSegmentList().empty())
 			{
-				// Needed if one snake is dead and the other is alive
-				if (!m_isAlive)
+				if (other->getSegmentList().front() == currentThis->data)
 				{
-					RemoveSegment(otherSegmentCounter);
-					other->GrowAmount(1);
-					break;
+					// Needed if one snake is dead and the other is alive
+					if (!m_isAlive)
+					{
+						RemoveSegment(otherSegmentCounter);
+						other->GrowAmount(1);
+						break;
+					}
+					else
+					{
+						other->setToDead(false);
+						break;
+					}
+
 				}
-				else
-				{
-					other->setToDead(false);
-					break;
-				}
-				
+				otherSegmentCounter++;
+				currentThis = currentThis->next;
 			}
-			otherSegmentCounter++;
-			currentThis = currentThis->next;
+			else
+				break;
 		}
 	}
 }
@@ -373,6 +387,7 @@ void Snake::isDead(sf::RenderWindow& window, const Wall& tankWalls)
 	// Checks if dead
 	if (!m_isAlive)
 	{
+		m_survivalClock.stop();
 		Node<sf::Vector2f>* current = m_segmentList.head;
 		if (current != nullptr)
 		{
@@ -433,6 +448,11 @@ const LinkedList<sf::Vector2f>& Snake::getSegmentList() const
 const bool& Snake::getIsAlive() const
 {
 	return m_isAlive;
+}
+
+const sf::Time& Snake::getSurvivalTime() const
+{
+	return m_survivalClock.getElapsedTime();
 }
 
 const int& Snake::getScore() const

@@ -201,49 +201,44 @@ void Game::InGameState(sf::RenderWindow& window)
 	// Winner Declaration
 	if (m_gameOver)
 	{
-		m_winningSnakeVector.clear();
-		// Finds the living snakes
+		//  Finds the highest survival time
 		for (Snake* snake : m_snakeVector)
 		{
-			if (snake->getIsAlive())
+			if (m_highestCurrentSurvivalTime < snake->getSurvivalTime())
+				m_highestCurrentSurvivalTime = snake->getSurvivalTime();
+		}
+
+		// Adds all snakes who surivived the longest to the winners vector
+		for (Snake* snake : m_snakeVector)
+		{
+			if (snake->getSurvivalTime() == m_highestCurrentSurvivalTime)
 				m_winningSnakeVector.push_back(snake);
 		}
 
-		if (m_winningSnakeVector.empty()) // If there are no living snakes - checks who has the highest score
+		// If more than one snake survived the longest (last snakes died at same time or survived till the end)
+		if (m_winningSnakeVector.size() > 1)
 		{
-			for (Snake* snake : m_snakeVector)
-			{
-				if (m_highestCurrentScore < snake->getScore())
-				{
-					m_highestCurrentScore = snake->getScore();
-					m_winningSnakeVector.clear();
-					m_winningSnakeVector.push_back(snake);
-				}
-				else if (m_highestCurrentScore = snake->getScore()) // Checks if there is a tie
-					m_winningSnakeVector.push_back(snake);
-			}
-		}
-		else
-		{
-			// Checks through the living snakes for the highest score
+			// Finds the highest score amongst the snakes who survived the longest
 			for (Snake* snake : m_winningSnakeVector)
 			{
 				if (m_highestCurrentScore < snake->getScore())
 					m_highestCurrentScore = snake->getScore();
 			}
 
-			// Removes all snakes from the winning snake vector who don't have the high score
-			auto it = m_winningSnakeVector.begin();
-			while (it != m_winningSnakeVector.end())
+			// Creates a vector for the survivors with the highest score, adds those snakes to it. Then sets the winning snake vector to equal this one
+			std::vector<Snake*> survivorsWithHighestScore;
+			for (Snake* snake : m_winningSnakeVector)
 			{
-				if ((*it)->getScore() != m_highestCurrentScore)
-					it = m_winningSnakeVector.erase(it);
-				else
-					++it;
+				if (snake->getScore() == m_highestCurrentScore)
+				{
+					survivorsWithHighestScore.push_back(snake);
+				}
 			}
-
+			m_winningSnakeVector = survivorsWithHighestScore;
 		}
-
+		else // If only one snake survived, sets the highest score to its
+			m_highestCurrentScore = m_winningSnakeVector[0]->getScore();
+			
 		SwitchState(GameState::EndGame);
 	}
 
