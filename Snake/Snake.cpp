@@ -382,6 +382,11 @@ void Snake::GrowAmount(int amount)
 	m_growAmount += amount;
 }
 
+void Snake::stopSurvivalClock()
+{
+	m_survivalClock.stop();
+}
+
 void Snake::isDead(sf::RenderWindow& window, const Wall& tankWalls)
 {
 	// Checks if dead

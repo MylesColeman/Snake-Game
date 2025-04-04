@@ -182,8 +182,14 @@ void Game::InGameState(sf::RenderWindow& window)
 	// Game Over
 	// Ends the game after the set time
 	if (m_gameClock.getElapsedTime() >= m_gameTime)
-		m_gameOver = true;
+	{
+		// Stops all snakes survival times
+		for (Snake* snake : m_snakeVector)
+			snake->stopSurvivalClock();
 
+		m_gameOver = true;
+	}
+		
 	// Checks if all snakes are dead
 	bool allSnakesDead = true;
 	for (Snake* snake : m_snakeVector)
@@ -211,7 +217,7 @@ void Game::InGameState(sf::RenderWindow& window)
 		// Adds all snakes who surivived the longest to the winners vector
 		for (Snake* snake : m_snakeVector)
 		{
-			if (snake->getSurvivalTime() == m_highestCurrentSurvivalTime)
+			if (snake->getSurvivalTime() >= m_highestCurrentSurvivalTime)
 				m_winningSnakeVector.push_back(snake);
 		}
 

@@ -57,6 +57,8 @@ public:
 
 	void GrowAmount(int amount);
 
+	void stopSurvivalClock();
+
 	void isDead(sf::RenderWindow& window, const Wall& tankWalls);
 
 	const LinkedList<sf::Vector2f>& getSegmentList() const;
