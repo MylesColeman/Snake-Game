@@ -270,6 +270,7 @@ void Game::InGameState(sf::RenderWindow& window)
 // Post Game - Winner
 void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont)
 {
+	// Yellow
 	sf::Text gameOver(mainFont);
 	gameOver.setCharacterSize(72);
 	gameOver.setFillColor({ (212), (202), (19) });
@@ -280,12 +281,33 @@ void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont)
 	gameOver.setOrigin(gameOver.getGlobalBounds().getCenter());
 	gameOver.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 6.0f });
 
+	// White
+	sf::Text winners(mainFont);
+	winners.setCharacterSize(48);
+	winners.setOutlineThickness(-3.0f);
+	winners.setFillColor({ (203), (203), (196) });
+	winners.setOutlineColor({ (64), (64), (58) });
+	winners.setStyle(sf::Text::Bold);
+
+	winners.setString("Player ");
+	for (size_t i = 0; i < m_winningSnakeVector.size(); i++)
+	{
+		if (i == m_winningSnakeVector.size() - 1)
+			winners.setString(winners.getString() + std::to_string(m_winningSnakeVector[i]->getControlType() + 1));
+		else
+			winners.setString(winners.getString() + std::to_string(m_winningSnakeVector[i]->getControlType() + 1) + ", ");
+	}
+	winners.setString(winners.getString() + " Wins!");
+
+	winners.setOrigin(winners.getGlobalBounds().getCenter());
+	winners.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 3.0f });
+
+	// Yellow
 	sf::Text score(mainFont);
 	score.setCharacterSize(36);
 	score.setFillColor({ (212), (202), (19) });
 	score.setOutlineThickness(-3.0f);
 	score.setOutlineColor({ (103), (99), (14) });
-	score.setStyle(sf::Text::Bold);
 	score.setString("With a Score of: " + std::to_string(m_highestCurrentScore));
 	score.setOrigin(score.getGlobalBounds().getCenter());
 	score.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 2.0f });
@@ -293,6 +315,7 @@ void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont)
 	m_window.clear({ (188), (180), (178) }); // Resets the window for use
 
 	window.draw(gameOver);
+	window.draw(winners);
 	window.draw(score);
 
 	m_window.display(); // Displays the windows contents

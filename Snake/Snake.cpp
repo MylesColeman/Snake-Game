@@ -440,6 +440,11 @@ const int& Snake::getScore() const
 	return m_score;
 }
 
+const int& Snake::getControlType() const
+{
+	return m_controlType;
+}
+
 void Snake::setToDead(bool isAlive)
 {
 	m_isAlive = isAlive;
