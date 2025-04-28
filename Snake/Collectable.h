@@ -27,4 +27,6 @@ public:
 
 	const sf::Vector2f& getCollectablePosition() const;
 	const int& getCollectableValue() const;
+
+	const bool& getIsVineFullyGrown() const;
 };
