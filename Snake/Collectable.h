@@ -1,5 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Linked List.h"
+#include "Vine.h"
 
 class Water;
 class Wall;
@@ -12,10 +14,12 @@ private:
 	int m_collectableValue{ 1 };
 
 	sf::Vector2f m_fruitPosition{ 395.0f, 900.0f };
+
+	Vine m_vine;
 public:
 	Collectable(sf::Vector2f fruitPosition);
-	void Draw(sf::RenderWindow& window, const Wall& tankWalls);
-	void Spawn(sf::Vector2f pos);
+	void Draw(sf::RenderWindow& window);
+	void Spawn(sf::Vector2f pos, sf::RenderWindow& window, const Wall& tankWalls);
 	void Update(const Water& water);
 
 	const bool& getCollectableAliveStatus() const;

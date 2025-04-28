@@ -2,12 +2,14 @@
 #include "Snake.h"
 #include "Water.h"
 #include "Wall.h"
-#include <iostream>
+#include "Vine.h"
 
 Collectable::Collectable(sf::Vector2f fruitPosition) : m_fruitPosition(fruitPosition) {}
 
-void Collectable::Draw(sf::RenderWindow& window, const Wall& tankWalls)
+void Collectable::Draw(sf::RenderWindow& window)
 {
+	m_vine.Draw(window, this); // Draws the vine
+
 	sf::CircleShape collectableFruit(Snake::segmentSize / 2);
 	collectableFruit.setOutlineThickness(-3.0f);
 	collectableFruit.setOrigin(collectableFruit.getGlobalBounds().getCenter());
@@ -28,28 +30,25 @@ void Collectable::Draw(sf::RenderWindow& window, const Wall& tankWalls)
 		collectableFruit.setFillColor({ (17), (48), (224) });
 		collectableFruit.setOutlineColor({ (15), (34), (142) });
 	}
-
+	
 	if (!m_isAlive) // Turns collectable transparent, if collectable is dead
 	{
 		collectableFruit.setFillColor({ (0), (0), (0), (0) });
 		collectableFruit.setOutlineColor({ (0),(0),(0),(0) });
 	}
 
-	sf::RectangleShape fruitVine({ Snake::segmentSize, Snake::segmentSize });
-	fruitVine.setFillColor(sf::Color::Green);
-	fruitVine.setOrigin(fruitVine.getGlobalBounds().getCenter());
-	fruitVine.setPosition({ m_fruitPosition.x, (window.getSize().y - tankWalls.getSurfaceHeight() - tankWalls.getWallWidth()) + fruitVine.getSize().y });
-
-	window.draw(fruitVine);
 	window.draw(collectableFruit);
 }
 
 // Sets default collectable variables for spawning
-void Collectable::Spawn(sf::Vector2f pos)
+void Collectable::Spawn(sf::Vector2f pos, sf::RenderWindow& window, const Wall& tankWalls)
 {
 	m_fruitPosition = pos;
+
 	m_isAlive = true;
 	m_collectableValue = rand() % 3 + 1;
+
+	m_vine.Update(window, tankWalls, this); // Sets the vine's nodes up
 }
 
 void Collectable::Update(const Water& water)
