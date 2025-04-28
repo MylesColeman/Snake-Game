@@ -253,6 +253,9 @@ void Game::InGameState(sf::RenderWindow& window)
 	for (Collectable* collectable : m_collectableVector)
 		collectable->Draw(m_window);
 
+	for (Vine* vine : m_vineVector)
+		vine->Draw(m_window, m_collectableVector);
+
 	for (Snake* snake : m_snakeVector)
 	{
 		snake->DrawSnake(m_window);

@@ -5,6 +5,7 @@
 #include "Snake.h"
 #include "Water.h"
 #include "Collectable.h"
+#include "Vine.h"
 
 enum class GameState
 {
@@ -40,6 +41,7 @@ private:
 	std::vector<Snake*> m_snakeVector;
 	Water m_water;
 	std::vector<Collectable*> m_collectableVector;
+	std::vector<Vine*> m_vineVector;
 public:
 	Game();
 	void Run();

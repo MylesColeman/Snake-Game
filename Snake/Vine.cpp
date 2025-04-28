@@ -3,7 +3,7 @@
 #include "Wall.h"
 #include "Collectable.h"
 
-void Vine::Draw(sf::RenderWindow& window, const Collectable& collectable)
+void Vine::Draw(sf::RenderWindow& window, std::vector<Collectable*>& collectableVector)
 {
 	Node<sf::Vector2f>* current = m_vineList.head;
 	while (current != nullptr)
@@ -24,7 +24,7 @@ void Vine::Draw(sf::RenderWindow& window, const Collectable& collectable)
 	}
 }
 
-void Vine::Update(sf::RenderWindow& window, const Wall& tankWalls, const Collectable& collectable)
+void Vine::Update(sf::RenderWindow& window, const Wall& tankWalls, std::vector<Collectable*>& collectableVector)
 {
 	bool m_atBottom = false;
 	m_vineList.Clear();

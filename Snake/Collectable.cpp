@@ -28,7 +28,7 @@ void Collectable::Draw(sf::RenderWindow& window)
 		collectableFruit.setOutlineColor({ (15), (34), (142) });
 	}
 
-	Node<sf::Vector2f>* current = m_vineList.head;
+	/*Node<sf::Vector2f>* current = m_vineList.head;
 	while (current != nullptr)
 	{
 		sf::RectangleShape fruitVine({ Snake::segmentSize, Snake::segmentSize });
@@ -44,7 +44,7 @@ void Collectable::Draw(sf::RenderWindow& window)
 
 		window.draw(fruitVine);
 		current = current->next;
-	}
+	}*/
 	
 	if (!m_isAlive) // Turns collectable transparent, if collectable is dead
 	{
@@ -59,11 +59,11 @@ void Collectable::Draw(sf::RenderWindow& window)
 // Sets default collectable variables for spawning
 void Collectable::Spawn(sf::Vector2f pos, sf::RenderWindow& window, const Wall& tankWalls)
 {
-	bool m_atBottom = false;
-	m_vineList.Clear();
+	/*bool m_atBottom = false;
+	m_vineList.Clear();*/
 	m_fruitPosition = pos;
 
-	while (!m_atBottom)
+	/*while (!m_atBottom)
 	{
 		if (m_vineList.empty())
 			m_vinePosition = m_fruitPosition.y + Snake::segmentSize;
@@ -74,7 +74,7 @@ void Collectable::Spawn(sf::Vector2f pos, sf::RenderWindow& window, const Wall& 
 
 		if (m_vinePosition >= window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight() - (Snake::segmentSize / 2))
 			m_atBottom = true;
-	}
+	}*/
 
 	m_isAlive = true;
 	m_collectableValue = rand() % 3 + 1;
