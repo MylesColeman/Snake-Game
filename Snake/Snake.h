@@ -1,6 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <list>
 #include "Linked List.h"
 
 enum class Direction

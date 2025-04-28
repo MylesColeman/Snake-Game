@@ -162,7 +162,7 @@ void Game::InGameState(sf::RenderWindow& window)
 			{
 				if (!collectable->getCollectableAliveStatus())
 				{
-					collectable->Spawn(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water));
+					collectable->Spawn(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water), m_window, m_tankWalls);
 					break;
 				}
 			}
@@ -251,7 +251,7 @@ void Game::InGameState(sf::RenderWindow& window)
 	m_window.clear({ (188), (180), (178) }); // Resets the window for use
 
 	for (Collectable* collectable : m_collectableVector)
-		collectable->Draw(m_window, m_tankWalls);
+		collectable->Draw(m_window);
 
 	for (Snake* snake : m_snakeVector)
 	{
