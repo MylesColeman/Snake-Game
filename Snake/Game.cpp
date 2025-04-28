@@ -1,5 +1,5 @@
 #include "Game.h"
-#include <iostream>
+#include "WaterLeak.h"
 
 const float simulationTimer = 0.2f;
 
@@ -109,6 +109,9 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainF
 	if (m_inputCooldownTimer.getElapsedTime().asSeconds() > 0.2f && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
 		SwitchState(GameState::InGame);
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+		window.close();
+
 	// Yellow
 	sf::Text title(mainFont);
 	title.setCharacterSize(72);
@@ -123,7 +126,7 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainF
 	sf::Text inputText(mainFont);
 	inputText.setCharacterSize(36);
 	inputText.setOutlineThickness(-3.0f);
-	inputText.setString("Press Space to Play");
+	inputText.setString("Press Space to Play - Esc to Exit");
 	inputText.setOrigin(inputText.getGlobalBounds().getCenter());
 	inputText.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 2.0f });
 
@@ -198,6 +201,7 @@ void Game::InGameState(sf::RenderWindow& window)
 			if (collectable->getCollectableAliveStatus())
 				collectable->Update(m_water);
 		}
+		m_waterLeak.Update(m_simulationClock.getElapsedTime());
 
 		m_simulationClock.restart();
 	}
@@ -286,6 +290,8 @@ void Game::InGameState(sf::RenderWindow& window)
 	m_water.Draw(m_window, m_tankWalls);
 	m_tankWalls.Draw(m_window);
 
+	m_waterLeak.Draw(m_window);
+
 	for (Snake* snake : m_snakeVector)
 		snake->DrawUI(m_window, m_tankWalls, m_mainFont);
 
@@ -297,6 +303,9 @@ void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont, bool showTe
 {
 	if (m_inputCooldownTimer.getElapsedTime().asSeconds() > 0.2f && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
 		SwitchState(GameState::FrontEnd);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+		window.close();
 
 	// Yellow
 	sf::Text gameOver(mainFont);
@@ -343,7 +352,7 @@ void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont, bool showTe
 	sf::Text inputText(mainFont);
 	inputText.setCharacterSize(36);
 	inputText.setOutlineThickness(-3.0f);
-	inputText.setString("Press Space to Play Again");
+	inputText.setString("Press Space to Play Again - Esc to Exit");
 	inputText.setOrigin(inputText.getGlobalBounds().getCenter());
 	inputText.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 1.4f });
 
@@ -377,7 +386,7 @@ void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont, bool showTe
 	m_window.display(); // Displays the windows contents
 }
 
-Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen), m_water(m_window, m_tankWalls)
+Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen), m_water(m_window, m_tankWalls), m_waterLeak({ m_tankWalls.getLeftWallPos() - m_tankWalls.getWallWidth(), m_window.getSize().y - m_tankWalls.getSurfaceHeight() - m_tankWalls.getWallWidth()}, 150)
 {
 	if (!m_mainFont.openFromFile("data\\Snake Chan.ttf"))
 		std::cerr << "Error loading font" << std::endl;

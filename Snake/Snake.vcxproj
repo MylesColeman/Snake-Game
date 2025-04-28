@@ -154,6 +154,7 @@
     <ClCompile Include="Vine.cpp" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="Water.cpp" />
+    <ClCompile Include="WaterLeak.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collectable.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Vine.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="Water.h" />
+    <ClInclude Include="WaterLeak.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
