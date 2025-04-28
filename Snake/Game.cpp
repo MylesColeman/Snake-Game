@@ -51,13 +51,16 @@ void Game::SwitchState(GameState newState)
 	{
 	case GameState::FrontEnd:
 		m_simulationClock.restart();
+		m_inputCooldownTimer.restart();
 		break;
 	case GameState::InGame:
 		m_simulationClock.stop();
 		m_gameClock.stop();
 		m_water.reset(m_window, m_tankWalls);
+		m_inputCooldownTimer.restart();
 		break;
 	case GameState::EndGame:
+		m_inputCooldownTimer.restart();
 		break;
 	default:
 		break;
@@ -102,7 +105,7 @@ void Game::SwitchState(GameState newState)
 // Before game - start screen
 void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainFont)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
+	if (m_inputCooldownTimer.getElapsedTime().asSeconds() > 0.2f && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
 		SwitchState(GameState::InGame);
 
 	// Yellow
@@ -291,7 +294,7 @@ void Game::InGameState(sf::RenderWindow& window)
 // Post Game - Winner
 void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+	if (m_inputCooldownTimer.getElapsedTime().asSeconds() > 0.2f && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
 		SwitchState(GameState::FrontEnd);
 
 	// Yellow

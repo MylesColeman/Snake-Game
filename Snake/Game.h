@@ -25,6 +25,7 @@ private:
 	sf::RenderWindow m_window;
 	sf::Clock m_simulationClock;
 	sf::Clock m_gameClock;
+	sf::Clock m_inputCooldownTimer; // Necessary so end game state doesn't immediately switch to ingame state
 
 	sf::Time m_gameTime = sf::seconds(90);
 	bool m_gameOver{ false };
