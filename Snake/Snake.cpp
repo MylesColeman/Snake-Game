@@ -19,7 +19,7 @@ void Snake::DrawSnake(sf::RenderWindow& window)
 	{
 		sf::RectangleShape snakeSegment({ (segmentSize), (segmentSize) });
 		snakeSegment.setOutlineThickness(-3.0f);
-		snakeSegment.setOrigin({ (segmentSize / 2), (segmentSize / 2) });
+		snakeSegment.setOrigin({ snakeSegment.getGlobalBounds().getCenter()});
 		snakeSegment.setPosition(current->data);
 
 		if (m_controlType == 0) // Yellow Snake

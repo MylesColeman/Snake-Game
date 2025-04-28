@@ -20,7 +20,7 @@ private:
 	void SwitchState(GameState newState);
 	void FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainFont);
 	void InGameState(sf::RenderWindow& window);
-	void EndGameState(sf::RenderWindow& window, sf::Font mainFont);
+	void EndGameState(sf::RenderWindow& window, sf::Font mainFont, bool showText);
 
 	sf::RenderWindow m_window;
 	sf::Clock m_simulationClock;

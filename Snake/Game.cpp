@@ -96,6 +96,7 @@ void Game::SwitchState(GameState newState)
 		m_gameClock.restart();
 		break;
 	case GameState::EndGame:
+		m_simulationClock.restart();
 		break;
 	default:
 		break;
@@ -292,7 +293,7 @@ void Game::InGameState(sf::RenderWindow& window)
 }
 
 // Post Game - Winner
-void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont)
+void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont, bool showText)
 {
 	if (m_inputCooldownTimer.getElapsedTime().asSeconds() > 0.2f && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
 		SwitchState(GameState::FrontEnd);
@@ -339,11 +340,39 @@ void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont)
 	score.setOrigin(score.getGlobalBounds().getCenter());
 	score.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 2.0f });
 
+	sf::Text inputText(mainFont);
+	inputText.setCharacterSize(36);
+	inputText.setOutlineThickness(-3.0f);
+	inputText.setString("Press Space to Play Again");
+	inputText.setOrigin(inputText.getGlobalBounds().getCenter());
+	inputText.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 1.4f });
+
+	// Flashes the text
+	if (m_simulationClock.getElapsedTime().asSeconds() >= 0.8)
+	{
+		m_showText = !m_showText;
+		m_simulationClock.restart();
+	}
+
+	if (showText)
+	{
+		// White
+		inputText.setFillColor({ (203), (203), (196) });
+		inputText.setOutlineColor({ (64), (64), (58) });
+	}
+	else
+	{
+		// Invisible
+		inputText.setFillColor({ (0), (0), (0), (0) });
+		inputText.setOutlineColor({ (0), (0), (0), (0) });
+	}
+
 	m_window.clear({ (188), (180), (178) }); // Resets the window for use
 
 	window.draw(gameOver);
 	window.draw(winners);
 	window.draw(score);
+	window.draw(inputText);
 
 	m_window.display(); // Displays the windows contents
 }
@@ -385,7 +414,7 @@ void Game::Run()
 			InGameState(m_window);
 			break;
 		case GameState::EndGame:
-			EndGameState(m_window, m_mainFont);
+			EndGameState(m_window, m_mainFont, m_showText);
 			break;
 		default:
 			break;
