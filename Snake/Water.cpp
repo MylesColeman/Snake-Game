@@ -20,7 +20,7 @@ void Water::Update(const sf::Time& gameTimer, const sf::Time& gameTime)
 {
 	m_waterRatio = gameTimer / gameTime;
 
-	// Water level multiplied by the water ratio gives us the game time divided up into the screen heigh - from this we can compare where the next water position should be; and then implement it. 
+	// Water level multiplied by the water ratio gives us the game time divided up into the screen height - from this we can compare where the next water position should be; and then implement it. 
 	if (m_waterLevel * m_waterRatio > m_predictedNextWaterPosition)
 	{
 		m_water.setPosition({ m_water.getPosition().x, m_predictedNextWaterPosition });

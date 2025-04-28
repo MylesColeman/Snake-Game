@@ -1,15 +1,16 @@
 #include "Collectable.h"
 #include "Snake.h"
 #include "Water.h"
+#include "Wall.h"
 #include <iostream>
 
 Collectable::Collectable(sf::Vector2f fruitPosition) : m_fruitPosition(fruitPosition) {}
 
-void Collectable::Draw(sf::RenderWindow& window)
+void Collectable::Draw(sf::RenderWindow& window, const Wall& tankWalls)
 {
 	sf::CircleShape collectableFruit(Snake::segmentSize / 2);
 	collectableFruit.setOutlineThickness(-3.0f);
-	collectableFruit.setOrigin({ (Snake::segmentSize / 2), (Snake::segmentSize / 2) });
+	collectableFruit.setOrigin(collectableFruit.getGlobalBounds().getCenter());
 	collectableFruit.setPosition(m_fruitPosition);
 
 	if (m_collectableValue == 1) // Red
@@ -34,6 +35,12 @@ void Collectable::Draw(sf::RenderWindow& window)
 		collectableFruit.setOutlineColor({ (0),(0),(0),(0) });
 	}
 
+	sf::RectangleShape fruitVine({ Snake::segmentSize, Snake::segmentSize });
+	fruitVine.setFillColor(sf::Color::Green);
+	fruitVine.setOrigin(fruitVine.getGlobalBounds().getCenter());
+	fruitVine.setPosition({ m_fruitPosition.x, (window.getSize().y - tankWalls.getSurfaceHeight() - tankWalls.getWallWidth()) + fruitVine.getSize().y });
+
+	window.draw(fruitVine);
 	window.draw(collectableFruit);
 }
 

@@ -251,7 +251,7 @@ void Game::InGameState(sf::RenderWindow& window)
 	m_window.clear({ (188), (180), (178) }); // Resets the window for use
 
 	for (Collectable* collectable : m_collectableVector)
-		collectable->Draw(m_window);
+		collectable->Draw(m_window, m_tankWalls);
 
 	for (Snake* snake : m_snakeVector)
 	{
