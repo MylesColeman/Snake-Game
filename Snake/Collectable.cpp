@@ -4,7 +4,7 @@
 #include "Wall.h"
 #include "Vine.h"
 
-Collectable::Collectable(sf::Vector2f fruitPosition) : m_fruitPosition(fruitPosition) {}
+Collectable::Collectable(sf::Vector2f fruitPosition) : m_fruitPosition(fruitPosition), m_vine(fruitPosition) {}
 
 void Collectable::Draw(sf::RenderWindow& window)
 {

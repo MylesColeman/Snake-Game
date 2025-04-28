@@ -5,7 +5,7 @@
 
 Vine::Vine(sf::Vector2f fruitPosition) : m_vinePosition(fruitPosition.y + Snake::segmentSize), m_growTime(0)
 {
-	if (!m_vineTexture.loadFromFile("path/to/your/vine_texture.png"))
+	if (!m_vineTexture.loadFromFile("data\\Vine Sprite.png"))
 		std::cerr << "Error loading vine texture!" << std::endl;
 }
 
