@@ -82,6 +82,7 @@ const int& Collectable::getCollectableValue() const
 	return m_collectableValue;
 }
 
+// Necessary so the snake only eats fully grown fruit
 const bool& Collectable::getIsVineFullyGrown() const
 {
 	return m_vine.getVineIsFullyGrown();

@@ -12,6 +12,7 @@ Vine::Vine(sf::Vector2f fruitPosition) : m_vinePosition(fruitPosition.y + Snake:
 // Draws the vine itself, iterating through the linked list
 void Vine::Draw(sf::RenderWindow& window, const Collectable* collectable)
 {
+	// Doesn't draw the vine, if theres no vine to be drawn
 	if (m_vineList.empty())
 	{
 		m_vineIsFullyGrown = false;
@@ -23,8 +24,10 @@ void Vine::Draw(sf::RenderWindow& window, const Collectable* collectable)
 
 	Node<sf::Vector2f>* current = m_vineList.head;
 	int drawnCount = 0;
+	// Loops through whilst not at the end of list, and whilst there's still segments to draw
 	while (current != nullptr && drawnCount < segmentsToDraw)
 	{
+		// If the growth time has passed, grows a vine
 		if (m_growthClock.getElapsedTime().asSeconds() >= m_growTime)
 		{
 			sf::RectangleShape fruitVine({ Snake::segmentSize, Snake::segmentSize });
@@ -33,6 +36,7 @@ void Vine::Draw(sf::RenderWindow& window, const Collectable* collectable)
 			fruitVine.setOrigin(fruitVine.getGlobalBounds().getCenter());
 			fruitVine.setPosition(current->data);
 
+			// Makes vine invisible if dead
 			if (!collectable->getCollectableAliveStatus())
 			{
 				fruitVine.setFillColor({ (0), (0), (0), (0) });
@@ -45,6 +49,7 @@ void Vine::Draw(sf::RenderWindow& window, const Collectable* collectable)
 		}
 	}
 
+	// Checks whether the entire list has been drawn
 	if (drawnCount >= m_vineList.size())
 	{
 		m_vineIsFullyGrown = true;
@@ -61,6 +66,7 @@ void Vine::Update(sf::RenderWindow& window, const Wall& tankWalls, const Collect
 	bool m_atCollectable = false;
 	m_vineList.Clear();
 
+	// For each snake sized segment from the surface to a collectable, adds to the vine list
 	while (!m_atCollectable)
 	{
 		if (m_vineList.empty())
@@ -74,6 +80,7 @@ void Vine::Update(sf::RenderWindow& window, const Wall& tankWalls, const Collect
 			m_atCollectable = true;
 	}
 
+	// As long as the vine list isn't empty, calculates how many intervals to divide the growth amongst three seconds
 	if (!m_vineList.empty())
 		m_growTime = m_fullyGrownTime / static_cast<float>(m_vineList.size());
 
@@ -81,6 +88,7 @@ void Vine::Update(sf::RenderWindow& window, const Wall& tankWalls, const Collect
 	m_vineIsFullyGrown = false;
 }
 
+// Checks whether the vine is at or above the collectable (as its been moved down due to water), then pops the back vine
 void Vine::outOfWater(const Collectable* collectable)
 {
 	if (m_vineList.back().y <= collectable->getCollectablePosition().y)
