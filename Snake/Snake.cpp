@@ -200,12 +200,12 @@ void Snake::Drowning(const Water& water)
 		if (m_segmentList.empty())
 			return;
 
-		if (m_segmentList.front().y < water.getPredictedNextWaterPosition())
+		if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - segmentSize)
 		{
 			m_breath = m_maxBreath;
 
 			// Snake is drying out
-			if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - segmentSize)
+			if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - (segmentSize * 2))
 			{
 				m_segmentList.pop_back();
 				if (m_score > 0)
@@ -473,4 +473,9 @@ const int& Snake::getControlType() const
 void Snake::setToDead(bool isAlive)
 {
 	m_isAlive = isAlive;
+}
+
+void Snake::resetDeadLoop()
+{
+	m_deadLoop = false;
 }

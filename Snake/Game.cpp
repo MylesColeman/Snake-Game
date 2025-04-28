@@ -55,6 +55,7 @@ void Game::SwitchState(GameState newState)
 	case GameState::InGame:
 		m_simulationClock.stop();
 		m_gameClock.stop();
+		m_water.reset(m_window, m_tankWalls);
 		break;
 	case GameState::EndGame:
 		break;
@@ -68,6 +69,25 @@ void Game::SwitchState(GameState newState)
 	switch (m_state)
 	{
 	case GameState::FrontEnd:
+		for (Snake* snake : m_snakeVector)
+		{
+			snake->setToDead(false);
+			snake->resetDeadLoop(); 
+			delete snake;
+		}
+		m_snakeVector.clear();
+		for (int i = 0; i < 2; i++)
+			m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
+		for (Collectable* collectable : m_collectableVector)
+			delete collectable;
+		m_collectableVector.clear();
+		for (int i = 0; i < 5; i++)
+			m_collectableVector.push_back(new Collectable(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
+		m_gameOver = false;
+		m_winningSnakeVector.clear();
+		m_highestCurrentSurvivalTime = sf::Time::Zero;
+		m_highestCurrentScore = 0;
+		m_simulationClock.restart();
 		break;
 	case GameState::InGame:
 		m_gameClock.restart();
@@ -82,7 +102,7 @@ void Game::SwitchState(GameState newState)
 // Before game - start screen
 void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainFont)
 {
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
 		SwitchState(GameState::InGame);
 
 	// Yellow
@@ -271,6 +291,9 @@ void Game::InGameState(sf::RenderWindow& window)
 // Post Game - Winner
 void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont)
 {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+		SwitchState(GameState::FrontEnd);
+
 	// Yellow
 	sf::Text gameOver(mainFont);
 	gameOver.setCharacterSize(72);

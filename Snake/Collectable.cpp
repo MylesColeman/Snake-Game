@@ -56,7 +56,7 @@ void Collectable::Spawn(sf::Vector2f pos, sf::RenderWindow& window, const Wall& 
 
 void Collectable::Update(const Water& water)
 {
-	if (m_fruitPosition.y < water.getPredictedNextWaterPosition())
+	if (m_fruitPosition.y < water.getPredictedNextWaterPosition() - Snake::segmentSize)
 		m_fruitPosition.y += Snake::segmentSize;
 
 	m_vine.outOfWater(this);

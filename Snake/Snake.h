@@ -66,4 +66,6 @@ public:
 	const int& getScore() const;
 	const int& getControlType() const;
 	void setToDead(bool isAlive);
+
+	void resetDeadLoop();
 };
