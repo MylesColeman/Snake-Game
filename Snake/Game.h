@@ -1,6 +1,10 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <algorithm>
 #include "Wall.h"
 #include "Snake.h"
 #include "Water.h"
@@ -44,6 +48,15 @@ private:
 	std::vector<Collectable*> m_collectableVector;
 
 	WaterLeak m_waterLeak;
+
+	// Highscore Table
+	std::vector<int> m_highScores;
+	std::string m_highScoreFileName = "data\\highscores.txt"; // Name of the high score file
+
+	void LoadHighScores();
+	void SaveHighScores();
+	void AddNewHighScore(int score);
+	void SortHighScores();
 public:
 	Game();
 	void Run();

@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "WaterLeak.h"
 
 const float simulationTimer = 0.2f;
 
@@ -96,6 +95,7 @@ void Game::SwitchState(GameState newState)
 		m_gameClock.restart();
 		break;
 	case GameState::EndGame:
+		AddNewHighScore(m_highestCurrentScore); // Adds the highest current score here, to ensure its not updated
 		m_simulationClock.restart();
 		break;
 	default:
@@ -123,12 +123,30 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainF
 	title.setOrigin(title.getGlobalBounds().getCenter());
 	title.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 6.0f });
 
+	// White
+	sf::Text highscoreText(mainFont);
+	highscoreText.setCharacterSize(42);
+	highscoreText.setFillColor({ 203, 203, 196 });
+	highscoreText.setOutlineThickness(-3.0f);
+	highscoreText.setOutlineColor({ 64, 64, 58 });
+	highscoreText.setString("Highscores:");
+	highscoreText.setOrigin(highscoreText.getGlobalBounds().getCenter());
+	highscoreText.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 4.0f });
+
+	// Yellow
+	sf::Text scoreText(mainFont);
+	scoreText.setCharacterSize(18);
+	scoreText.setFillColor({ (212), (202), (19) });
+	scoreText.setOutlineThickness(-3.0f);
+	scoreText.setOutlineColor({ (103), (99), (14) });
+	scoreText.setOrigin(scoreText.getGlobalBounds().getCenter());
+
 	sf::Text inputText(mainFont);
 	inputText.setCharacterSize(36);
 	inputText.setOutlineThickness(-3.0f);
 	inputText.setString("Press Space to Play - Esc to Exit");
 	inputText.setOrigin(inputText.getGlobalBounds().getCenter());
-	inputText.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 2.0f });
+	inputText.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 1.2f });
 
 	// Flashes the text
 	if (m_simulationClock.getElapsedTime().asSeconds() >= 0.8)
@@ -153,6 +171,19 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainF
 	m_window.clear({ (188), (180), (178) }); // Resets the window for use
 
 	window.draw(title);
+	window.draw(highscoreText);
+
+	for (size_t i = 0; i < m_highScores.size(); i++)
+	{
+		scoreText.setString(std::to_string(m_highScores[i]));
+		scoreText.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 3.8f + (i + 1) * 40 });
+
+		window.draw(scoreText);
+
+		if (i >= 9) // Only display top 10
+			break;
+	}
+
 	window.draw(inputText);
 
 	m_window.display(); // Displays the windows contents
@@ -386,10 +417,65 @@ void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont, bool showTe
 	m_window.display(); // Displays the windows contents
 }
 
+void Game::LoadHighScores()
+{
+	std::ifstream inputFile(m_highScoreFileName);
+	if (inputFile.is_open())
+	{
+		int score;
+		while (inputFile >> score)
+		{
+			m_highScores.push_back(score);
+		}
+		inputFile.close();
+	}
+	else
+	{
+		std::cerr << "Error opening high score file for loading." << std::endl;
+	}
+	SortHighScores();
+}
+
+void Game::SaveHighScores()
+{
+	std::ofstream outputFile(m_highScoreFileName);
+	if (outputFile.is_open())
+	{
+		for (int score : m_highScores)
+		{
+			outputFile << score << std::endl;
+		}
+		outputFile.close();
+	}
+	else
+	{
+		std::cerr << "Error opening high score file for saving." << std::endl;
+	}
+}
+
+void Game::AddNewHighScore(int score)
+{
+	m_highScores.push_back(score); // Adds the highest current score from the game
+	SortHighScores();
+	if (m_highScores.size() > 10)
+	{
+		m_highScores.resize(10);
+	}
+	SaveHighScores();
+}
+
+void Game::SortHighScores()
+{
+	std::sort(m_highScores.rbegin(), m_highScores.rend()); // Sorts the highscores, highest to lowest
+}
+
 Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen), m_water(m_window, m_tankWalls), m_waterLeak({ m_tankWalls.getLeftWallPos() - m_tankWalls.getWallWidth(), m_window.getSize().y - m_tankWalls.getSurfaceHeight() - m_tankWalls.getWallWidth()}, 150)
 {
 	if (!m_mainFont.openFromFile("data\\Snake Chan.ttf"))
 		std::cerr << "Error loading font" << std::endl;
+
+	LoadHighScores();
+	SortHighScores();
 
 	// Creates the snakes
 	for (int i = 0; i < 2; i++)
