@@ -19,7 +19,7 @@ void Snake::DrawSnake(sf::RenderWindow& window)
 	{
 		sf::RectangleShape snakeSegment({ (segmentSize), (segmentSize) });
 		snakeSegment.setOutlineThickness(-3.0f);
-		snakeSegment.setOrigin({ snakeSegment.getGlobalBounds().getCenter()});
+		snakeSegment.setOrigin({ snakeSegment.getGlobalBounds().getCenter() });
 		snakeSegment.setPosition(current->data);
 
 		if (m_controlType == 0) // Yellow Snake
@@ -71,7 +71,7 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mai
 		score.setOutlineColor({ (103), (99), (14) });
 		score.setString(std::to_string(m_score));
 		score.setOrigin(score.getGlobalBounds().getCenter());
-		score.setPosition({ breathBlock.getPosition().x + breathBlock.getSize().x + segmentSize, breathBlock.getPosition().y});
+		score.setPosition({ breathBlock.getPosition().x + breathBlock.getSize().x + segmentSize, breathBlock.getPosition().y });
 	}
 	else if (m_controlType == 1)
 	{
@@ -89,9 +89,9 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mai
 		score.setOutlineColor({ (64), (64), (58) });
 		score.setString(std::to_string(m_score));
 		score.setOrigin(score.getGlobalBounds().getCenter());
-		score.setPosition({ breathBlock.getPosition().x - breathBlock.getSize().x - segmentSize, breathBlock.getPosition().y});
+		score.setPosition({ breathBlock.getPosition().x - breathBlock.getSize().x - segmentSize, breathBlock.getPosition().y });
 	}
-	
+
 	window.draw(breathBlock);
 	window.draw(breathRemaining);
 
@@ -196,7 +196,7 @@ void Snake::Drowning(const Water& water)
 			if (m_score > 0)
 				m_score--;
 		}
-			
+
 		if (m_segmentList.empty())
 			return;
 
@@ -211,13 +211,13 @@ void Snake::Drowning(const Water& water)
 				if (m_score > 0)
 					m_score--;
 			}
-				
+
 		}
 		else
 		{
 			if (m_breath > 0)
-				m_breath--;	
-		}	
+				m_breath--;
+		}
 	}
 	else
 	{

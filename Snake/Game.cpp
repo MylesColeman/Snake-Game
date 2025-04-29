@@ -74,7 +74,7 @@ void Game::SwitchState(GameState newState)
 		for (Snake* snake : m_snakeVector)
 		{
 			snake->setToDead(false);
-			snake->resetDeadLoop(); 
+			snake->resetDeadLoop();
 			delete snake;
 		}
 		m_snakeVector.clear();
@@ -115,7 +115,7 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainF
 	// Yellow
 	sf::Text title(mainFont);
 	title.setCharacterSize(72);
-	title.setFillColor({ (212), (202), (19) }); 
+	title.setFillColor({ (212), (202), (19) });
 	title.setOutlineThickness(-3.0f);
 	title.setOutlineColor({ (103), (99), (14) });
 	title.setStyle(sf::Text::Bold);
@@ -158,7 +158,7 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainF
 	if (showText)
 	{
 		// White
-		inputText.setFillColor({ (203), (203), (196) }); 
+		inputText.setFillColor({ (203), (203), (196) });
 		inputText.setOutlineColor({ (64), (64), (58) });
 	}
 	else
@@ -248,7 +248,7 @@ void Game::InGameState(sf::RenderWindow& window)
 
 		m_gameOver = true;
 	}
-		
+
 	// Checks if all snakes are dead
 	bool allSnakesDead = true;
 	for (Snake* snake : m_snakeVector)
@@ -303,7 +303,7 @@ void Game::InGameState(sf::RenderWindow& window)
 		}
 		else // If only one snake survived, sets the highest score to its
 			m_highestCurrentScore = m_winningSnakeVector[0]->getScore();
-			
+
 		SwitchState(GameState::EndGame);
 	}
 
@@ -469,7 +469,7 @@ void Game::SortHighScores()
 	std::sort(m_highScores.rbegin(), m_highScores.rend()); // Sorts the highscores, highest to lowest
 }
 
-Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen), m_water(m_window, m_tankWalls), m_waterLeak({ m_tankWalls.getLeftWallPos() - m_tankWalls.getWallWidth(), m_window.getSize().y - m_tankWalls.getSurfaceHeight() - m_tankWalls.getWallWidth()}, 150)
+Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen), m_water(m_window, m_tankWalls), m_waterLeak({ m_tankWalls.getLeftWallPos() - m_tankWalls.getWallWidth(), m_window.getSize().y - m_tankWalls.getSurfaceHeight() - m_tankWalls.getWallWidth() }, 150)
 {
 	if (!m_mainFont.openFromFile("data\\Snake Chan.ttf"))
 		std::cerr << "Error loading font" << std::endl;
