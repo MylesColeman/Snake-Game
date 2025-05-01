@@ -101,35 +101,38 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mai
 
 void Snake::Move()
 {
-	// Causes the snake to move
-	switch (m_direction)
+	if (!m_segmentList.empty())
 	{
-	case Direction::Up:
-		m_segmentList.push_front({ m_segmentList.front().x, m_segmentList.front().y - segmentSize });
-		m_previousDirection = Direction::Up;
-		break;
-	case Direction::Down:
-		m_segmentList.push_front({ m_segmentList.front().x, m_segmentList.front().y + segmentSize });
-		m_previousDirection = Direction::Down;
-		break;
-	case Direction::Left:
-		m_segmentList.push_front({ m_segmentList.front().x - segmentSize, m_segmentList.front().y });
-		m_previousDirection = Direction::Left;
-		break;
-	case Direction::Right:
-		m_segmentList.push_front({ m_segmentList.front().x + segmentSize, m_segmentList.front().y });
-		m_previousDirection = Direction::Right;
-		break;
-	case Direction::None: // For when the snake is dead
-		m_previousDirection = Direction::None;
-		break;
-	default:
-		std::cout << "Error - Unknown Direction" << std::endl;
-		break;
+		// Causes the snake to move
+		switch (m_direction)
+		{
+		case Direction::Up:
+			m_segmentList.push_front({ m_segmentList.front().x, m_segmentList.front().y - segmentSize });
+			m_previousDirection = Direction::Up;
+			break;
+		case Direction::Down:
+			m_segmentList.push_front({ m_segmentList.front().x, m_segmentList.front().y + segmentSize });
+			m_previousDirection = Direction::Down;
+			break;
+		case Direction::Left:
+			m_segmentList.push_front({ m_segmentList.front().x - segmentSize, m_segmentList.front().y });
+			m_previousDirection = Direction::Left;
+			break;
+		case Direction::Right:
+			m_segmentList.push_front({ m_segmentList.front().x + segmentSize, m_segmentList.front().y });
+			m_previousDirection = Direction::Right;
+			break;
+		case Direction::None: // For when the snake is dead
+			m_previousDirection = Direction::None;
+			break;
+		default:
+			std::cout << "Error - Unknown Direction" << std::endl;
+			break;
+		}
 	}
-
+	
 	// Only removes the last item from the list if the snake isn't currently growing
-	if (m_growAmount == 0)
+	if (m_growAmount == 0 && !m_segmentList.empty())
 		m_segmentList.pop_back();
 	else
 		m_growAmount--;
@@ -142,15 +145,15 @@ void Snake::Drowning(const Water& water)
 {
 	if (m_isAlive)
 	{
+		if (m_segmentList.empty())
+			return;
+
 		if (m_breath <= 0) // Snake is drowning
 		{
 			m_segmentList.pop_back();
 			if (m_score > 0)
 				m_score--;
 		}
-
-		if (m_segmentList.empty())
-			return;
 
 		if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - segmentSize)
 		{
@@ -182,16 +185,19 @@ void Snake::CollectableCollision(std::vector<Collectable*>& collectableVector)
 	if (m_isAlive)
 	{
 		// Loops through the collectables vector only incrementing if a collision isn't detected
-		for (auto it = collectableVector.begin(); it != collectableVector.end();)
+		if (!m_segmentList.empty())
 		{
-			if (m_segmentList.front() == (*it)->getCollectablePosition() && (*it)->getCollectableAliveStatus() && (*it)->getIsVineFullyGrown())
+			for (auto it = collectableVector.begin(); it != collectableVector.end();)
 			{
-				GrowAmount((*it)->getCollectableValue());
-				m_score += (*it)->getCollectableValue();
-				(*it)->setToDead(false);
+				if (m_segmentList.front() == (*it)->getCollectablePosition() && (*it)->getCollectableAliveStatus() && (*it)->getIsVineFullyGrown())
+				{
+					GrowAmount((*it)->getCollectableValue());
+					m_score += (*it)->getCollectableValue();
+					(*it)->setToDead(false);
+				}
+				else
+					++it;
 			}
-			else
-				++it;
 		}
 	}
 }
@@ -360,7 +366,7 @@ void Snake::isDead(sf::RenderWindow& window, const Wall& tankWalls)
 			}
 
 			// Ensures the resizing is only done once
-			if (!m_deadLoop)
+			if (!m_deadLoop && !m_segmentList.empty())
 			{
 				m_segmentList.pop_front();
 
