@@ -78,8 +78,10 @@ void Game::SwitchState(GameState newState)
 			delete snake;
 		}
 		m_snakeVector.clear();
-		for (int i = 0; i < 2; i++)
-			m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
+		for (int i = 0; i < 1; i++)
+			m_snakeVector.push_back(new PlayerSnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
+		for (int i = 0; i < 1; i++)
+			m_snakeVector.push_back(new AISnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
 		for (Collectable* collectable : m_collectableVector)
 			delete collectable;
 		m_collectableVector.clear();
@@ -480,8 +482,10 @@ Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109
 	SortHighScores();
 
 	// Creates the snakes
-	for (int i = 0; i < 2; i++)
-		m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
+	for (int i = 0; i < 1; i++)
+		m_snakeVector.push_back(new PlayerSnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
+	for (int i = 0; i < 1; i++)
+		m_snakeVector.push_back(new AISnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
 
 	for (int i = 0; i < 5; i++)
 		m_collectableVector.push_back(new Collectable(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));

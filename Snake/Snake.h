@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Linked List.h"
-#include "IReceivesInput.h"
 
 enum class Direction
 {
@@ -16,10 +15,10 @@ class Collectable;
 class Wall;
 class Water;
 
-class Snake : public IReceivesInput
+class Snake
 {
 private:
-	int m_controlType{ 0 }; // Used to determine a player 1 and 2, and their control scheme
+	
 	bool m_isAlive{ true };
 
 	LinkedList<sf::Vector2f> m_segmentList;
@@ -45,7 +44,9 @@ public:
 	void DrawSnake(sf::RenderWindow& window); // Defines and displays the snake
 	void DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mainFont); // Draws the UI
 	void MovementInput(); // Handles the input for movement
-	void Update(); // Handles the snake's movement
+
+	virtual void Update() = 0; // Handles the snake's movement
+	void Move();
 
 	void Drowning(const Water& water);
 
@@ -69,7 +70,4 @@ public:
 	void setToDead(bool isAlive);
 
 	void resetDeadLoop();
-
-	// Required by IReceivesInput
-	void HandleInput(Actions action) override;
 };

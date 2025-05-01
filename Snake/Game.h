@@ -6,7 +6,8 @@
 #include <iostream>
 #include <algorithm>
 #include "Wall.h"
-#include "Snake.h"
+#include "PlayerSnake.h"
+#include "AISnake.h"
 #include "Water.h"
 #include "Collectable.h"
 #include "WaterLeak.h"
