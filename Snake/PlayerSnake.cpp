@@ -1,9 +1,6 @@
 #include "PlayerSnake.h"
 
-PlayerSnake::PlayerSnake(int type, sf::Vector2f headPosition) : Snake(headPosition), m_controlType(type)
-{
-
-}
+PlayerSnake::PlayerSnake(int type, sf::Vector2f headPosition) : Snake(headPosition), m_controlType(type) {}
 
 void PlayerSnake::HandleInput(Actions action)
 {

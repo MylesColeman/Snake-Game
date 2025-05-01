@@ -40,6 +40,8 @@ protected:
 	bool m_isAlive{ true };
 	Direction m_direction{ Direction::Right };
 	Direction m_previousDirection{ Direction::Right };
+
+	void Move();
 public:
 	inline static float segmentSize = 30.0f;
 
@@ -51,8 +53,7 @@ public:
 	void DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mainFont); // Draws the UI
 
 	virtual void Update() = 0; // Handles the snake's movement
-	void Move();
-
+	
 	void Drowning(const Water& water);
 
 	void CollectableCollision(std::vector<Collectable*>& collectableVector);
