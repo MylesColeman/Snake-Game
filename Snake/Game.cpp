@@ -194,6 +194,8 @@ void Game::InGameState(sf::RenderWindow& window)
 {
 	if (m_simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
 	{
+		m_inputManager.Update();
+
 		for (size_t i = 0; i < m_snakeVector.size(); i++)
 		{
 			for (size_t j = i + 1; j < m_snakeVector.size(); j++)

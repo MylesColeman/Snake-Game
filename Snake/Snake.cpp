@@ -106,23 +106,7 @@ void Snake::MovementInput()
 		// The control scheme for both players
 		if (m_controlType == 0)
 		{
-			// Checks for keyboard input
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && m_previousDirection != Direction::Down)
-			{
-				m_direction = Direction::Up;
-			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) && m_previousDirection != Direction::Up)
-			{
-				m_direction = Direction::Down;
-			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && m_previousDirection != Direction::Right)
-			{
-				m_direction = Direction::Left;
-			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) && m_previousDirection != Direction::Left)
-			{
-				m_direction = Direction::Right;
-			}
+			
 		}
 		else if (m_controlType == 1)
 		{
