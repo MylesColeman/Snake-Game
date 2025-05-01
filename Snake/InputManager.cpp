@@ -7,7 +7,7 @@ void InputManager::AddListener(IReceivesInput* listener)
 
 void InputManager::Update()
 {
-	Actions action{ Actions::eNone };
+	Actions action{ Actions::eStartingDirection };
 
 	// Checks for keyboard input
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
