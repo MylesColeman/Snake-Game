@@ -101,11 +101,6 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mai
 	window.draw(score);
 }
 
-void Snake::MovementInput()
-{
-	
-}
-
 void Snake::Move()
 {
 	// Causes the snake to move

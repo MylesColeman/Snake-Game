@@ -43,7 +43,6 @@ public:
 
 	void DrawSnake(sf::RenderWindow& window); // Defines and displays the snake
 	void DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mainFont); // Draws the UI
-	void MovementInput(); // Handles the input for movement
 
 	virtual void Update() = 0; // Handles the snake's movement
 	void Move();

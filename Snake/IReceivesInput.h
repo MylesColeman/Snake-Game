@@ -10,7 +10,6 @@ enum class Actions
 	eMoveDown2,
 	eMoveRight1,
 	eMoveRight2,
-	eStartingDirection,
 	eNone
 };
 

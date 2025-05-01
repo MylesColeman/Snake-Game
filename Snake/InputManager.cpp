@@ -7,7 +7,7 @@ void InputManager::AddListener(IReceivesInput* listener)
 
 void InputManager::Update()
 {
-	Actions action{ Actions::eStartingDirection };
+	Actions action{ Actions::eNone };
 
 	// Checks for keyboard input
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
@@ -18,6 +18,16 @@ void InputManager::Update()
 		action = Actions::eMoveDown1;
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 		action = Actions::eMoveRight1;
+
+	// Not currently implemented
+	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+		action = Actions::eMoveUp2;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+		action = Actions::eMoveLeft2;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+		action = Actions::eMoveDown2;
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+		action = Actions::eMoveRight2;*/
 
 	for (IReceivesInput* listeners : m_listeners)
 		listeners->HandleInput(action);

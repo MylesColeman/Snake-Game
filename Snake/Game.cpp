@@ -317,10 +317,7 @@ void Game::InGameState(sf::RenderWindow& window)
 		collectable->Draw(m_window);
 
 	for (Snake* snake : m_snakeVector)
-	{
 		snake->DrawSnake(m_window);
-		snake->MovementInput();
-	}
 
 	m_water.Draw(m_window, m_tankWalls);
 	m_tankWalls.Draw(m_window);
