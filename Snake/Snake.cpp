@@ -145,33 +145,33 @@ void Snake::Drowning(const Water& water)
 {
 	if (m_isAlive)
 	{
-		if (m_segmentList.empty())
-			return;
-
-		if (m_breath <= 0) // Snake is drowning
+		if (!m_segmentList.empty())
 		{
-			m_segmentList.pop_back();
-			if (m_score > 0)
-				m_score--;
-		}
-
-		if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - segmentSize)
-		{
-			m_breath = m_maxBreath;
-
-			// Snake is drying out
-			if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - (segmentSize * 2))
+			if (m_breath <= 0) // Snake is drowning
 			{
 				m_segmentList.pop_back();
 				if (m_score > 0)
 					m_score--;
 			}
 
-		}
-		else
-		{
-			if (m_breath > 0)
-				m_breath--;
+			if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - segmentSize)
+			{
+				m_breath = m_maxBreath;
+
+				// Snake is drying out
+				if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - (segmentSize * 2))
+				{
+					m_segmentList.pop_back();
+					if (m_score > 0)
+						m_score--;
+				}
+
+			}
+			else
+			{
+				if (m_breath > 0)
+					m_breath--;
+			}
 		}
 	}
 	else
@@ -206,14 +206,17 @@ void Snake::BoundsCollision(sf::RenderWindow& window, const Wall& tankWalls)
 {
 	if (m_isAlive)
 	{
-		if (m_segmentList.front().x < tankWalls.getLeftWallPos() - (tankWalls.getWallWidth() / 2) || m_segmentList.front().x > window.getSize().x - tankWalls.getWallWidth() || m_segmentList.front().y < 0 || m_segmentList.front().y > window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight())
-			m_isAlive = false;
+		if (!m_segmentList.empty())
+		{
+			if (m_segmentList.front().x < tankWalls.getLeftWallPos() - (tankWalls.getWallWidth() / 2) || m_segmentList.front().x > window.getSize().x - tankWalls.getWallWidth() || m_segmentList.front().y < 0 || m_segmentList.front().y > window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight())
+				m_isAlive = false;
+		}
 	}
 }
 
 void Snake::OtherSnakeCollision(Snake* other)
 {
-	if (m_isAlive && other->getIsAlive())
+	if (m_isAlive && other->getIsAlive() && !m_segmentList.empty() && !other->getSegmentList().empty())
 	{
 		// Check for head-on collision
 		if (m_segmentList.front() == other->getSegmentList().front())
@@ -326,12 +329,15 @@ void Snake::SelfCollision()
 
 	while (current != nullptr)
 	{
-		if (m_segmentList.front() == current->data)
+		if (!m_segmentList.empty())
 		{
-			m_isAlive = false;
-			break;
+			if (m_segmentList.front() == current->data)
+			{
+				m_isAlive = false;
+				break;
+			}
+			current = current->next;
 		}
-		current = current->next;
 	}
 }
 

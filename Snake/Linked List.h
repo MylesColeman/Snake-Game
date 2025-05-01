@@ -24,7 +24,7 @@ public:
 	{
 		if (head == nullptr)
 		{
-			std::cerr << "Error -  Accessing From Empty List!" << std::endl;
+			std::cerr << "Error -  Accessing From Empty Listggggggggggg!" << std::endl;
 			return T();
 		}
 
