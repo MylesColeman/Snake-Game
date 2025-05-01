@@ -150,7 +150,6 @@
     <ClCompile Include="Collectable.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="IReceivesInput.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="Vine.cpp" />

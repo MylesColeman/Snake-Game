@@ -46,7 +46,6 @@ private:
 	Wall m_tankWalls;
 
 	std::vector<Snake*> m_snakeVector;
-	InputManager m_inputManager;
 
 	Water m_water;
 	std::vector<Collectable*> m_collectableVector;

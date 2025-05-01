@@ -1,34 +1,22 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-
-enum class Actions
-{
-	eMoveUp1,
-	eMoveUp2,
-	eMoveLeft1,
-	eMoveLeft2,
-	eMoveDown1,
-	eMoveDown2,
-	eMoveRight1,
-	eMoveRight2
-};
-
-enum class PreviousActions
-{
-	eMoveUp1,
-	eMoveUp2,
-	eMoveLeft1,
-	eMoveLeft2,
-	eMoveDown1,
-	eMoveDown2,
-	eMoveRight1,
-	eMoveRight2
-};
+#include <vector>
+#include "IReceivesInput.h"
 
 class InputManager
 {
 private:
-
+	std::vector<IReceivesInput*> m_listeners;
 public:
+	static InputManager& GetInstance()
+	{
+		static InputManager manager;
+
+		return manager;
+	}
+
+	void AddListener(IReceivesInput* listener);
 	void Update();
 };
+
+#define INPUT_MAN	InputManager::GetInstance()

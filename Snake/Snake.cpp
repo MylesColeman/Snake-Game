@@ -2,12 +2,15 @@
 #include "Collectable.h"
 #include "Wall.h"
 #include "Water.h"
+#include "InputManager.h"
 #include <iostream>
 
 Snake::Snake(int type, sf::Vector2f headPosition) : m_controlType(type)
 {
 	for (int i = 1; i <= m_startingSegments; i++)
 		m_segmentList.push_back({ headPosition.x - (i * segmentSize), headPosition.y });
+
+	INPUT_MAN.AddListener(this);
 
 	m_survivalClock.restart();
 }
@@ -462,4 +465,29 @@ void Snake::setToDead(bool isAlive)
 void Snake::resetDeadLoop()
 {
 	m_deadLoop = false;
+}
+
+void Snake::HandleInput(Actions action)
+{
+	switch (action)
+	{
+	case Actions::eMoveUp1:
+		break;
+	case Actions::eMoveUp2:
+		break;
+	case Actions::eMoveLeft1:
+		break;
+	case Actions::eMoveLeft2:
+		break;
+	case Actions::eMoveDown1:
+		break;
+	case Actions::eMoveDown2:
+		break;
+	case Actions::eMoveRight1:
+		break;
+	case Actions::eMoveRight2:
+		break;
+	default:
+		break;
+	}
 }

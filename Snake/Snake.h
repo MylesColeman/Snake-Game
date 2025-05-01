@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Linked List.h"
+#include "IReceivesInput.h"
 
 enum class Direction
 {
@@ -15,7 +16,7 @@ class Collectable;
 class Wall;
 class Water;
 
-class Snake
+class Snake : public IReceivesInput
 {
 private:
 	int m_controlType{ 0 }; // Used to determine a player 1 and 2, and their control scheme
@@ -68,4 +69,7 @@ public:
 	void setToDead(bool isAlive);
 
 	void resetDeadLoop();
+
+	// Required by IReceivesInput
+	void HandleInput(Actions action) override;
 };
