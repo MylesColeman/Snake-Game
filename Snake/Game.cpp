@@ -74,12 +74,23 @@ void Game::SwitchState(GameState newState)
 		for (Snake* snake : m_snakeVector)
 		{
 			snake->setToDead(false);
-			snake->resetDeadLoop(); 
+			snake->resetDeadLoop();
 			delete snake;
 		}
 		m_snakeVector.clear();
-		for (int i = 0; i < 2; i++)
-			m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
+		INPUT_MAN.ClearListeners();
+		for (int i = 0; i < 1; i++)
+		{
+			PlayerSnake* playerSnake = new PlayerSnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water));
+			m_snakeVector.push_back(playerSnake);
+			INPUT_MAN.AddListener(playerSnake);
+			
+		}
+		for (int i = 0; i < 1; i++)
+		{
+			AISnake* aiSnake = new AISnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water));
+			m_snakeVector.push_back(aiSnake);
+		}
 		for (Collectable* collectable : m_collectableVector)
 			delete collectable;
 		m_collectableVector.clear();
@@ -115,7 +126,7 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainF
 	// Yellow
 	sf::Text title(mainFont);
 	title.setCharacterSize(72);
-	title.setFillColor({ (212), (202), (19) }); 
+	title.setFillColor({ (212), (202), (19) });
 	title.setOutlineThickness(-3.0f);
 	title.setOutlineColor({ (103), (99), (14) });
 	title.setStyle(sf::Text::Bold);
@@ -158,7 +169,7 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainF
 	if (showText)
 	{
 		// White
-		inputText.setFillColor({ (203), (203), (196) }); 
+		inputText.setFillColor({ (203), (203), (196) });
 		inputText.setOutlineColor({ (64), (64), (58) });
 	}
 	else
@@ -192,8 +203,11 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainF
 // Actual game
 void Game::InGameState(sf::RenderWindow& window)
 {
+	INPUT_MAN.Update();
+
 	if (m_simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
 	{
+
 		for (size_t i = 0; i < m_snakeVector.size(); i++)
 		{
 			for (size_t j = i + 1; j < m_snakeVector.size(); j++)
@@ -208,7 +222,7 @@ void Game::InGameState(sf::RenderWindow& window)
 
 			snake->isDead(m_window, m_tankWalls);
 
-			snake->Update();
+			snake->Update(m_gameData);
 
 			snake->Drowning(m_water);
 		}
@@ -248,7 +262,7 @@ void Game::InGameState(sf::RenderWindow& window)
 
 		m_gameOver = true;
 	}
-		
+
 	// Checks if all snakes are dead
 	bool allSnakesDead = true;
 	for (Snake* snake : m_snakeVector)
@@ -303,7 +317,7 @@ void Game::InGameState(sf::RenderWindow& window)
 		}
 		else // If only one snake survived, sets the highest score to its
 			m_highestCurrentScore = m_winningSnakeVector[0]->getScore();
-			
+
 		SwitchState(GameState::EndGame);
 	}
 
@@ -312,11 +326,8 @@ void Game::InGameState(sf::RenderWindow& window)
 	for (Collectable* collectable : m_collectableVector)
 		collectable->Draw(m_window);
 
-	for (Snake* snake : m_snakeVector)
-	{
-		snake->DrawSnake(m_window);
-		snake->MovementInput();
-	}
+	for (auto it = m_snakeVector.rbegin(); it != m_snakeVector.rend(); ++it)
+		(*it)->DrawSnake(m_window);
 
 	m_water.Draw(m_window, m_tankWalls);
 	m_tankWalls.Draw(m_window);
@@ -357,15 +368,15 @@ void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont, bool showTe
 	winners.setOutlineColor({ (64), (64), (58) });
 	winners.setStyle(sf::Text::Bold);
 
-	winners.setString("Player ");
 	for (size_t i = 0; i < m_winningSnakeVector.size(); i++)
 	{
-		if (i == m_winningSnakeVector.size() - 1)
-			winners.setString(winners.getString() + std::to_string(m_winningSnakeVector[i]->getControlType() + 1));
+		if (i == m_winningSnakeVector.size() - 1 && m_winningSnakeVector[i]->getType() == SnakeType::Player)
+			winners.setString("The Player Wins!");
+		else if (i == m_winningSnakeVector.size() - 1 && m_winningSnakeVector[i]->getType() == SnakeType::AI)
+			winners.setString("The AI Wins!");
 		else
-			winners.setString(winners.getString() + std::to_string(m_winningSnakeVector[i]->getControlType() + 1) + ", ");
+			winners.setString("It's a Draw!");
 	}
-	winners.setString(winners.getString() + " Wins!");
 
 	winners.setOrigin(winners.getGlobalBounds().getCenter());
 	winners.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 3.0f });
@@ -469,7 +480,7 @@ void Game::SortHighScores()
 	std::sort(m_highScores.rbegin(), m_highScores.rend()); // Sorts the highscores, highest to lowest
 }
 
-Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen), m_water(m_window, m_tankWalls), m_waterLeak({ m_tankWalls.getLeftWallPos() - m_tankWalls.getWallWidth(), m_window.getSize().y - m_tankWalls.getSurfaceHeight() - m_tankWalls.getWallWidth()}, 150)
+Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109732", sf::State::Fullscreen), m_water(m_window, m_tankWalls), m_waterLeak({ m_tankWalls.getLeftWallPos() - m_tankWalls.getWallWidth(), m_window.getSize().y - m_tankWalls.getSurfaceHeight() - m_tankWalls.getWallWidth() }, 150)
 {
 	if (!m_mainFont.openFromFile("data\\Snake Chan.ttf"))
 		std::cerr << "Error loading font" << std::endl;
@@ -478,8 +489,17 @@ Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109
 	SortHighScores();
 
 	// Creates the snakes
-	for (int i = 0; i < 2; i++)
-		m_snakeVector.push_back(new Snake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
+	for (int i = 0; i < 1; i++)
+	{
+		PlayerSnake* playerSnake = new PlayerSnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water));
+		m_snakeVector.push_back(playerSnake);
+		INPUT_MAN.AddListener(playerSnake);
+	}
+	for (int i = 0; i < 1; i++)
+	{
+		AISnake* aiSnake = new AISnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water));
+		m_snakeVector.push_back(aiSnake);
+	}
 
 	for (int i = 0; i < 5; i++)
 		m_collectableVector.push_back(new Collectable(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
@@ -488,6 +508,12 @@ Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109
 void Game::Run()
 {
 	srand((unsigned int)time(0));
+
+	m_gameData.m_collectableVector = &m_collectableVector;
+	m_gameData.m_snakeVector = &m_snakeVector;
+	m_gameData.m_tankWalls = &m_tankWalls;
+	m_gameData.m_water = &m_water;
+	m_gameData.m_window = &m_window;
 
 	// Loops whilst the window is open
 	while (m_window.isOpen())

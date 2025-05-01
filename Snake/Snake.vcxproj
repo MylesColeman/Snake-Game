@@ -147,9 +147,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AISnake.cpp" />
     <ClCompile Include="Collectable.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PlayerSnake.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="Vine.cpp" />
     <ClCompile Include="Wall.cpp" />
@@ -157,9 +160,14 @@
     <ClCompile Include="WaterLeak.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AISnake.h" />
     <ClInclude Include="Collectable.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameData.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="IReceivesInput.h" />
     <ClInclude Include="Linked List.h" />
+    <ClInclude Include="PlayerSnake.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="Vine.h" />
     <ClInclude Include="Wall.h" />

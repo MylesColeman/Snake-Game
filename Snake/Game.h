@@ -6,10 +6,13 @@
 #include <iostream>
 #include <algorithm>
 #include "Wall.h"
-#include "Snake.h"
+#include "PlayerSnake.h"
+#include "AISnake.h"
 #include "Water.h"
 #include "Collectable.h"
 #include "WaterLeak.h"
+#include "InputManager.h"
+#include "GameData.h"
 
 enum class GameState
 {
@@ -42,8 +45,12 @@ private:
 
 	bool m_showText = true;
 
+	GameData m_gameData;
+
 	Wall m_tankWalls;
+
 	std::vector<Snake*> m_snakeVector;
+
 	Water m_water;
 	std::vector<Collectable*> m_collectableVector;
 

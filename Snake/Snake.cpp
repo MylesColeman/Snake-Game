@@ -2,9 +2,10 @@
 #include "Collectable.h"
 #include "Wall.h"
 #include "Water.h"
+#include "InputManager.h"
 #include <iostream>
 
-Snake::Snake(int type, sf::Vector2f headPosition) : m_controlType(type)
+Snake::Snake(sf::Vector2f headPosition)
 {
 	for (int i = 1; i <= m_startingSegments; i++)
 		m_segmentList.push_back({ headPosition.x - (i * segmentSize), headPosition.y });
@@ -19,15 +20,15 @@ void Snake::DrawSnake(sf::RenderWindow& window)
 	{
 		sf::RectangleShape snakeSegment({ (segmentSize), (segmentSize) });
 		snakeSegment.setOutlineThickness(-3.0f);
-		snakeSegment.setOrigin({ snakeSegment.getGlobalBounds().getCenter()});
+		snakeSegment.setOrigin({ snakeSegment.getGlobalBounds().getCenter() });
 		snakeSegment.setPosition(current->data);
 
-		if (m_controlType == 0) // Yellow Snake
+		if (getType() == SnakeType::Player) // Yellow Snake
 		{
 			snakeSegment.setFillColor({ (212), (202), (19) });
 			snakeSegment.setOutlineColor({ (103), (99), (14) });
 		}
-		else if (m_controlType == 1) // White Snake
+		else if (getType() == SnakeType::AI) // White Snake
 		{
 			snakeSegment.setFillColor({ (203), (203), (196) });
 			snakeSegment.setOutlineColor({ (64), (64), (58) });
@@ -55,7 +56,7 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mai
 	score.setCharacterSize(28);
 	score.setOutlineThickness(-outlineDepth);
 
-	if (m_controlType == 0)
+	if (getType() == SnakeType::Player)
 	{
 		breathBlock.setOrigin({ (0), (tankWalls.getSurfaceHeight() / 2) / 2 });
 		breathBlock.setPosition({ (tankWalls.getWallWidth() + tankWalls.getLeftWallPos()), (window.getSize().y - tankWalls.getWallWidth() - (tankWalls.getSurfaceHeight() / 2)) });
@@ -71,9 +72,9 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mai
 		score.setOutlineColor({ (103), (99), (14) });
 		score.setString(std::to_string(m_score));
 		score.setOrigin(score.getGlobalBounds().getCenter());
-		score.setPosition({ breathBlock.getPosition().x + breathBlock.getSize().x + segmentSize, breathBlock.getPosition().y});
+		score.setPosition({ breathBlock.getPosition().x + breathBlock.getSize().x + segmentSize, breathBlock.getPosition().y });
 	}
-	else if (m_controlType == 1)
+	else if (getType() == SnakeType::AI)
 	{
 		breathBlock.setOrigin({ (segmentSize * 10), (tankWalls.getSurfaceHeight() / 2) / 2 });
 		breathBlock.setPosition({ (window.getSize().x - (tankWalls.getWallWidth() * 2)), (window.getSize().y - tankWalls.getWallWidth() - (tankWalls.getSurfaceHeight() / 2)) });
@@ -89,95 +90,49 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mai
 		score.setOutlineColor({ (64), (64), (58) });
 		score.setString(std::to_string(m_score));
 		score.setOrigin(score.getGlobalBounds().getCenter());
-		score.setPosition({ breathBlock.getPosition().x - breathBlock.getSize().x - segmentSize, breathBlock.getPosition().y});
+		score.setPosition({ breathBlock.getPosition().x - breathBlock.getSize().x - segmentSize, breathBlock.getPosition().y });
 	}
-	
+
 	window.draw(breathBlock);
 	window.draw(breathRemaining);
 
 	window.draw(score);
 }
 
-void Snake::MovementInput()
+void Snake::Move()
 {
-	// Only allows keyboard input if the snake is alive
-	if (m_isAlive)
+	if (!m_segmentList.empty())
 	{
-		// The control scheme for both players
-		if (m_controlType == 0)
+		// Causes the snake to move
+		switch (m_direction)
 		{
-			// Checks for keyboard input
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) && m_previousDirection != Direction::Down)
-			{
-				m_direction = Direction::Up;
-			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S) && m_previousDirection != Direction::Up)
-			{
-				m_direction = Direction::Down;
-			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && m_previousDirection != Direction::Right)
-			{
-				m_direction = Direction::Left;
-			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) && m_previousDirection != Direction::Left)
-			{
-				m_direction = Direction::Right;
-			}
-		}
-		else if (m_controlType == 1)
-		{
-			// Checks for keyboard input
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) && m_previousDirection != Direction::Down)
-			{
-				m_direction = Direction::Up;
-			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down) && m_previousDirection != Direction::Up)
-			{
-				m_direction = Direction::Down;
-			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left) && m_previousDirection != Direction::Right)
-			{
-				m_direction = Direction::Left;
-			}
-			else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) && m_previousDirection != Direction::Left)
-			{
-				m_direction = Direction::Right;
-			}
+		case Direction::Up:
+			m_segmentList.push_front({ m_segmentList.front().x, m_segmentList.front().y - segmentSize });
+			m_previousDirection = Direction::Up;
+			break;
+		case Direction::Down:
+			m_segmentList.push_front({ m_segmentList.front().x, m_segmentList.front().y + segmentSize });
+			m_previousDirection = Direction::Down;
+			break;
+		case Direction::Left:
+			m_segmentList.push_front({ m_segmentList.front().x - segmentSize, m_segmentList.front().y });
+			m_previousDirection = Direction::Left;
+			break;
+		case Direction::Right:
+			m_segmentList.push_front({ m_segmentList.front().x + segmentSize, m_segmentList.front().y });
+			m_previousDirection = Direction::Right;
+			break;
+		case Direction::None: // For when the snake is dead
+			m_previousDirection = Direction::None;
+			break;
+		default:
+			std::cout << "Error - Unknown Direction" << std::endl;
+			break;
 		}
 	}
-}
-
-void Snake::Update()
-{
-	// Causes the snake to move
-	switch (m_direction)
-	{
-	case Direction::Up:
-		m_segmentList.push_front({ m_segmentList.front().x, m_segmentList.front().y - segmentSize });
-		m_previousDirection = Direction::Up;
-		break;
-	case Direction::Down:
-		m_segmentList.push_front({ m_segmentList.front().x, m_segmentList.front().y + segmentSize });
-		m_previousDirection = Direction::Down;
-		break;
-	case Direction::Left:
-		m_segmentList.push_front({ m_segmentList.front().x - segmentSize, m_segmentList.front().y });
-		m_previousDirection = Direction::Left;
-		break;
-	case Direction::Right:
-		m_segmentList.push_front({ m_segmentList.front().x + segmentSize, m_segmentList.front().y });
-		m_previousDirection = Direction::Right;
-		break;
-	case Direction::None: // For when the snake is dead
-		m_previousDirection = Direction::None;
-		break;
-	default:
-		std::cout << "Error - Unknown Direction" << std::endl;
-		break;
-	}
-
+	
 	// Only removes the last item from the list if the snake isn't currently growing
-	if (m_growAmount == 0)
+	if (m_growAmount == 0 && !m_segmentList.empty())
 		m_segmentList.pop_back();
 	else
 		m_growAmount--;
@@ -190,34 +145,34 @@ void Snake::Drowning(const Water& water)
 {
 	if (m_isAlive)
 	{
-		if (m_breath <= 0) // Snake is drowning
+		if (!m_segmentList.empty())
 		{
-			m_segmentList.pop_back();
-			if (m_score > 0)
-				m_score--;
-		}
-			
-		if (m_segmentList.empty())
-			return;
-
-		if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - segmentSize)
-		{
-			m_breath = m_maxBreath;
-
-			// Snake is drying out
-			if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - (segmentSize * 2))
+			if (m_breath <= 0) // Snake is drowning
 			{
 				m_segmentList.pop_back();
 				if (m_score > 0)
 					m_score--;
 			}
-				
+
+			if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - segmentSize)
+			{
+				m_breath = m_maxBreath;
+
+				// Snake is drying out
+				if (m_segmentList.front().y < water.getPredictedNextWaterPosition() - (segmentSize * 2))
+				{
+					m_segmentList.pop_back();
+					if (m_score > 0)
+						m_score--;
+				}
+
+			}
+			else
+			{
+				if (m_breath > 0)
+					m_breath--;
+			}
 		}
-		else
-		{
-			if (m_breath > 0)
-				m_breath--;	
-		}	
 	}
 	else
 	{
@@ -230,16 +185,19 @@ void Snake::CollectableCollision(std::vector<Collectable*>& collectableVector)
 	if (m_isAlive)
 	{
 		// Loops through the collectables vector only incrementing if a collision isn't detected
-		for (auto it = collectableVector.begin(); it != collectableVector.end();)
+		if (!m_segmentList.empty())
 		{
-			if (m_segmentList.front() == (*it)->getCollectablePosition() && (*it)->getCollectableAliveStatus() && (*it)->getIsVineFullyGrown())
+			for (auto it = collectableVector.begin(); it != collectableVector.end();)
 			{
-				GrowAmount((*it)->getCollectableValue());
-				m_score += (*it)->getCollectableValue();
-				(*it)->setToDead(false);
+				if (m_segmentList.front() == (*it)->getCollectablePosition() && (*it)->getCollectableAliveStatus() && (*it)->getIsVineFullyGrown())
+				{
+					GrowAmount((*it)->getCollectableValue());
+					m_score += (*it)->getCollectableValue();
+					(*it)->setToDead(false);
+				}
+				else
+					++it;
 			}
-			else
-				++it;
 		}
 	}
 }
@@ -248,14 +206,17 @@ void Snake::BoundsCollision(sf::RenderWindow& window, const Wall& tankWalls)
 {
 	if (m_isAlive)
 	{
-		if (m_segmentList.front().x < tankWalls.getLeftWallPos() - (tankWalls.getWallWidth() / 2) || m_segmentList.front().x > window.getSize().x - tankWalls.getWallWidth() || m_segmentList.front().y < 0 || m_segmentList.front().y > window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight())
-			m_isAlive = false;
+		if (!m_segmentList.empty())
+		{
+			if (m_segmentList.front().x < tankWalls.getLeftWallPos() - (tankWalls.getWallWidth() / 2) || m_segmentList.front().x > window.getSize().x - tankWalls.getWallWidth() || m_segmentList.front().y < 0 || m_segmentList.front().y > window.getSize().y - tankWalls.getWallWidth() - tankWalls.getSurfaceHeight())
+				m_isAlive = false;
+		}
 	}
 }
 
 void Snake::OtherSnakeCollision(Snake* other)
 {
-	if (m_isAlive && other->getIsAlive())
+	if (m_isAlive && other->getIsAlive() && !m_segmentList.empty() && !other->getSegmentList().empty())
 	{
 		// Check for head-on collision
 		if (m_segmentList.front() == other->getSegmentList().front())
@@ -368,12 +329,15 @@ void Snake::SelfCollision()
 
 	while (current != nullptr)
 	{
-		if (m_segmentList.front() == current->data)
+		if (!m_segmentList.empty())
 		{
-			m_isAlive = false;
-			break;
+			if (m_segmentList.front() == current->data)
+			{
+				m_isAlive = false;
+				break;
+			}
+			current = current->next;
 		}
-		current = current->next;
 	}
 }
 
@@ -408,7 +372,7 @@ void Snake::isDead(sf::RenderWindow& window, const Wall& tankWalls)
 			}
 
 			// Ensures the resizing is only done once
-			if (!m_deadLoop)
+			if (!m_deadLoop && !m_segmentList.empty())
 			{
 				m_segmentList.pop_front();
 
@@ -463,11 +427,6 @@ const sf::Time& Snake::getSurvivalTime() const
 const int& Snake::getScore() const
 {
 	return m_score;
-}
-
-const int& Snake::getControlType() const
-{
-	return m_controlType;
 }
 
 void Snake::setToDead(bool isAlive)
