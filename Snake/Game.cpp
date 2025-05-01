@@ -79,9 +79,16 @@ void Game::SwitchState(GameState newState)
 		}
 		m_snakeVector.clear();
 		for (int i = 0; i < 1; i++)
-			m_snakeVector.push_back(new PlayerSnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
+		{
+			PlayerSnake* playerSnake = new PlayerSnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water));
+			m_snakeVector.push_back(playerSnake);
+			INPUT_MAN.AddListener(playerSnake);
+		}
 		for (int i = 0; i < 1; i++)
-			m_snakeVector.push_back(new AISnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
+		{
+			AISnake* aiSnake = new AISnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water));
+			m_snakeVector.push_back(aiSnake);
+		}
 		for (Collectable* collectable : m_collectableVector)
 			delete collectable;
 		m_collectableVector.clear();
@@ -358,13 +365,14 @@ void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont, bool showTe
 	winners.setOutlineColor({ (64), (64), (58) });
 	winners.setStyle(sf::Text::Bold);
 
-	winners.setString("Player ");
 	for (size_t i = 0; i < m_winningSnakeVector.size(); i++)
 	{
-		if (i == m_winningSnakeVector.size() - 1)
-			winners.setString(winners.getString() + std::to_string(m_winningSnakeVector[i]->getControlType() + 1));
+		if (i == m_winningSnakeVector.size() - 1 && m_winningSnakeVector[i]->getType() == SnakeType::Player)
+			winners.setString("The Player Wins!");
+		else if (i == m_winningSnakeVector.size() - 1 && m_winningSnakeVector[i]->getType() == SnakeType::AI)
+			winners.setString("The AI Wins!");
 		else
-			winners.setString(winners.getString() + std::to_string(m_winningSnakeVector[i]->getControlType() + 1) + ", ");
+			winners.setString("It's a Draw!");
 	}
 	winners.setString(winners.getString() + " Wins!");
 

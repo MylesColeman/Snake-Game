@@ -5,12 +5,10 @@
 #include "InputManager.h"
 #include <iostream>
 
-Snake::Snake(int type, sf::Vector2f headPosition)
+Snake::Snake(sf::Vector2f headPosition)
 {
 	for (int i = 1; i <= m_startingSegments; i++)
 		m_segmentList.push_back({ headPosition.x - (i * segmentSize), headPosition.y });
-
-	INPUT_MAN.AddListener(this);
 
 	m_survivalClock.restart();
 }
@@ -25,12 +23,12 @@ void Snake::DrawSnake(sf::RenderWindow& window)
 		snakeSegment.setOrigin({ snakeSegment.getGlobalBounds().getCenter() });
 		snakeSegment.setPosition(current->data);
 
-		if (m_controlType == 0) // Yellow Snake
+		if (getType() == SnakeType::Player) // Yellow Snake
 		{
 			snakeSegment.setFillColor({ (212), (202), (19) });
 			snakeSegment.setOutlineColor({ (103), (99), (14) });
 		}
-		else if (m_controlType == 1) // White Snake
+		else if (getType() == SnakeType::AI) // White Snake
 		{
 			snakeSegment.setFillColor({ (203), (203), (196) });
 			snakeSegment.setOutlineColor({ (64), (64), (58) });
@@ -58,7 +56,7 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mai
 	score.setCharacterSize(28);
 	score.setOutlineThickness(-outlineDepth);
 
-	if (m_controlType == 0)
+	if (getType() == SnakeType::Player)
 	{
 		breathBlock.setOrigin({ (0), (tankWalls.getSurfaceHeight() / 2) / 2 });
 		breathBlock.setPosition({ (tankWalls.getWallWidth() + tankWalls.getLeftWallPos()), (window.getSize().y - tankWalls.getWallWidth() - (tankWalls.getSurfaceHeight() / 2)) });
@@ -76,7 +74,7 @@ void Snake::DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mai
 		score.setOrigin(score.getGlobalBounds().getCenter());
 		score.setPosition({ breathBlock.getPosition().x + breathBlock.getSize().x + segmentSize, breathBlock.getPosition().y });
 	}
-	else if (m_controlType == 1)
+	else if (getType() == SnakeType::AI)
 	{
 		breathBlock.setOrigin({ (segmentSize * 10), (tankWalls.getSurfaceHeight() / 2) / 2 });
 		breathBlock.setPosition({ (window.getSize().x - (tankWalls.getWallWidth() * 2)), (window.getSize().y - tankWalls.getWallWidth() - (tankWalls.getSurfaceHeight() / 2)) });
@@ -417,11 +415,6 @@ const sf::Time& Snake::getSurvivalTime() const
 const int& Snake::getScore() const
 {
 	return m_score;
-}
-
-const int& Snake::getControlType() const
-{
-	return m_controlType;
 }
 
 void Snake::setToDead(bool isAlive)

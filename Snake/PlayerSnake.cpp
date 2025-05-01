@@ -1,29 +1,12 @@
 #include "PlayerSnake.h"
 
+PlayerSnake::PlayerSnake(int type, sf::Vector2f headPosition) : Snake(headPosition), m_controlType(type)
+{
+
+}
+
 void PlayerSnake::HandleInput(Actions action)
 {
-	switch (action)
-	{
-	case Actions::eMoveUp1:
-		break;
-	case Actions::eMoveUp2:
-		break;
-	case Actions::eMoveLeft1:
-		break;
-	case Actions::eMoveLeft2:
-		break;
-	case Actions::eMoveDown1:
-		break;
-	case Actions::eMoveDown2:
-		break;
-	case Actions::eMoveRight1:
-		break;
-	case Actions::eMoveRight2:
-		break;
-	default:
-		break;
-	}
-
 	// Only allows keyboard input if the snake is alive
 	if (m_isAlive)
 	{
@@ -76,7 +59,7 @@ void PlayerSnake::HandleInput(Actions action)
 	}
 }
 
-void PlayerSnake::Update()
+		void PlayerSnake::Update()
 {
 	Move();
 }

@@ -24,9 +24,6 @@ class Water;
 class Snake
 {
 private:
-	
-	bool m_isAlive{ true };
-
 	LinkedList<sf::Vector2f> m_segmentList;
 	int m_startingSegments{ 4 };
 	int m_growAmount{ 0 };
@@ -37,15 +34,18 @@ private:
 	sf::Clock m_survivalClock;
 	int m_score{ 0 };
 
-	Direction m_direction{ Direction::Right };
-	Direction m_previousDirection{ Direction::Right };
-
 	bool m_atBottom{ false };
 	bool m_deadLoop{ false };
+protected:
+	bool m_isAlive{ true };
+	Direction m_direction{ Direction::Right };
+	Direction m_previousDirection{ Direction::Right };
 public:
 	inline static float segmentSize = 30.0f;
 
 	Snake(sf::Vector2f headPosition);
+
+	virtual SnakeType getType() const = 0;
 
 	void DrawSnake(sf::RenderWindow& window); // Defines and displays the snake
 	void DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mainFont); // Draws the UI
@@ -71,7 +71,6 @@ public:
 	const bool& getIsAlive() const;
 	const sf::Time& getSurvivalTime() const;
 	const int& getScore() const;
-	const int& getControlType() const;
 	void setToDead(bool isAlive);
 
 	void resetDeadLoop();
