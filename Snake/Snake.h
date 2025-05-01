@@ -11,6 +11,12 @@ enum class Direction
 	None
 };
 
+enum class SnakeType
+{
+	Player,
+	AI
+};
+
 class Collectable;
 class Wall;
 class Water;
@@ -39,7 +45,7 @@ private:
 public:
 	inline static float segmentSize = 30.0f;
 
-	Snake(int type, sf::Vector2f headPosition);
+	Snake(sf::Vector2f headPosition);
 
 	void DrawSnake(sf::RenderWindow& window); // Defines and displays the snake
 	void DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mainFont); // Draws the UI
