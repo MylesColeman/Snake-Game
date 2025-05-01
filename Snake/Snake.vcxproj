@@ -163,6 +163,7 @@
     <ClInclude Include="AISnake.h" />
     <ClInclude Include="Collectable.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameData.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="IReceivesInput.h" />
     <ClInclude Include="Linked List.h" />

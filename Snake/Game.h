@@ -12,6 +12,7 @@
 #include "Collectable.h"
 #include "WaterLeak.h"
 #include "InputManager.h"
+#include "GameData.h"
 
 enum class GameState
 {
@@ -43,6 +44,8 @@ private:
 	sf::Font m_mainFont;
 
 	bool m_showText = true;
+
+	GameData m_gameData;
 
 	Wall m_tankWalls;
 

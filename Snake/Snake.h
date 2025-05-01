@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Linked List.h"
+#include "GameData.h"
 
 enum class Direction
 {
@@ -28,7 +29,6 @@ private:
 	int m_startingSegments{ 4 };
 	int m_growAmount{ 0 };
 
-	int m_breath{ 50 };
 	int m_maxBreath{ 50 };
 
 	sf::Clock m_survivalClock;
@@ -37,6 +37,8 @@ private:
 	bool m_atBottom{ false };
 	bool m_deadLoop{ false };
 protected:
+	int m_breath{ 50 };
+
 	bool m_isAlive{ true };
 	Direction m_direction{ Direction::Right };
 	Direction m_previousDirection{ Direction::Right };
@@ -52,7 +54,7 @@ public:
 	void DrawSnake(sf::RenderWindow& window); // Defines and displays the snake
 	void DrawUI(sf::RenderWindow& window, const Wall& tankWalls, sf::Font mainFont); // Draws the UI
 
-	virtual void Update() = 0; // Handles the snake's movement
+	virtual void Update(GameData& m_gameData) = 0; // Handles the snake's movement
 	
 	void Drowning(const Water& water);
 

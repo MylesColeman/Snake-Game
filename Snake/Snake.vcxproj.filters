@@ -86,5 +86,8 @@
     <ClInclude Include="AISnake.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

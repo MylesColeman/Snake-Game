@@ -222,7 +222,7 @@ void Game::InGameState(sf::RenderWindow& window)
 
 			snake->isDead(m_window, m_tankWalls);
 
-			snake->Update();
+			snake->Update(m_gameData);
 
 			snake->Drowning(m_water);
 		}
@@ -508,6 +508,12 @@ Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109
 void Game::Run()
 {
 	srand((unsigned int)time(0));
+
+	m_gameData.m_collectableVector = &m_collectableVector;
+	m_gameData.m_snakeVector = &m_snakeVector;
+	m_gameData.m_tankWalls = &m_tankWalls;
+	m_gameData.m_water = &m_water;
+	m_gameData.m_window = &m_window;
 
 	// Loops whilst the window is open
 	while (m_window.isOpen())

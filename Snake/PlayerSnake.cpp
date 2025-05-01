@@ -1,4 +1,5 @@
 #include "PlayerSnake.h"
+#include "GameData.h"
 
 PlayerSnake::PlayerSnake(int type, sf::Vector2f headPosition) : Snake(headPosition), m_controlType(type) {}
 
@@ -58,7 +59,7 @@ void PlayerSnake::HandleInput(Actions action)
 	}
 }
 
-void PlayerSnake::Update()
+void PlayerSnake::Update(GameData& m_gameData)
 {
 	Move();
 }

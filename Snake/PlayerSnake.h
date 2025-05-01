@@ -2,6 +2,8 @@
 #include "Snake.h"
 #include "IReceivesInput.h"
 
+class Game;
+
 class PlayerSnake : public Snake, public IReceivesInput
 {
 private:
@@ -12,7 +14,7 @@ public:
 	// Required by IReceivesInput
 	void HandleInput(Actions action) override;
 
-	void Update() override;
+	void Update(GameData& m_gameData) override;
 
 	SnakeType getType() const override { return SnakeType::Player; }
 };
