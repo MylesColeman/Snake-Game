@@ -16,6 +16,7 @@ public:
 	}
 
 	void AddListener(IReceivesInput* listener);
+	void ClearListeners(); // For game cycle
 	void Update();
 };
 

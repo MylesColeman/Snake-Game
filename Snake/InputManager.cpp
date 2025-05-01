@@ -5,6 +5,11 @@ void InputManager::AddListener(IReceivesInput* listener)
 	m_listeners.push_back(listener);
 }
 
+void InputManager::ClearListeners()
+{
+	m_listeners.clear();
+}
+
 void InputManager::Update()
 {
 	Actions action{ Actions::eNone };

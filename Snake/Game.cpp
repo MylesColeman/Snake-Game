@@ -78,11 +78,13 @@ void Game::SwitchState(GameState newState)
 			delete snake;
 		}
 		m_snakeVector.clear();
+		INPUT_MAN.ClearListeners();
 		for (int i = 0; i < 1; i++)
 		{
 			PlayerSnake* playerSnake = new PlayerSnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water));
 			m_snakeVector.push_back(playerSnake);
 			INPUT_MAN.AddListener(playerSnake);
+			
 		}
 		for (int i = 0; i < 1; i++)
 		{
@@ -201,9 +203,10 @@ void Game::FrontEndState(sf::RenderWindow& window, bool showText, sf::Font mainF
 // Actual game
 void Game::InGameState(sf::RenderWindow& window)
 {
+	INPUT_MAN.Update();
+
 	if (m_simulationClock.getElapsedTime().asSeconds() >= simulationTimer)
 	{
-		INPUT_MAN.Update();
 
 		for (size_t i = 0; i < m_snakeVector.size(); i++)
 		{
@@ -374,7 +377,6 @@ void Game::EndGameState(sf::RenderWindow& window, sf::Font mainFont, bool showTe
 		else
 			winners.setString("It's a Draw!");
 	}
-	winners.setString(winners.getString() + " Wins!");
 
 	winners.setOrigin(winners.getGlobalBounds().getCenter());
 	winners.setPosition({ window.getSize().x / 2.0f, window.getSize().y / 3.0f });
@@ -488,9 +490,16 @@ Game::Game() : m_window(sf::VideoMode({ 1920, 1200 }), "GSE - Snake Game - E4109
 
 	// Creates the snakes
 	for (int i = 0; i < 1; i++)
-		m_snakeVector.push_back(new PlayerSnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
+	{
+		PlayerSnake* playerSnake = new PlayerSnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water));
+		m_snakeVector.push_back(playerSnake);
+		INPUT_MAN.AddListener(playerSnake);
+	}
 	for (int i = 0; i < 1; i++)
-		m_snakeVector.push_back(new AISnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));
+	{
+		AISnake* aiSnake = new AISnake(i, GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water));
+		m_snakeVector.push_back(aiSnake);
+	}
 
 	for (int i = 0; i < 5; i++)
 		m_collectableVector.push_back(new Collectable(GetRandomFreePosition(m_window.getSize().x, m_window.getSize().y, m_tankWalls, m_snakeVector, m_collectableVector, m_water)));

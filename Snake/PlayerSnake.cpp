@@ -56,10 +56,12 @@ void PlayerSnake::HandleInput(Actions action)
 				break;
 			default:
 				break;
+			}
+		}
 	}
 }
 
-		void PlayerSnake::Update()
+void PlayerSnake::Update()
 {
 	Move();
 }
